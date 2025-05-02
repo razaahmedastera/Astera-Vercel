@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'OpenSansRegular';
+  src: url('./assets/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenSansBold';
+  src: url('./assets/fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenSansLight';
+  src: url('./assets/fonts/OpenSans-Light.ttf') format('truetype');
+  font-weight: 'normal';
+  font-style: normal;
+}
+
+body {
+  font-family: 'OpenSansRegular';
+  background: #F6F8FA;
+}
+
+h1 {
+  font-family: 'OpenSansRegular';
+  font-size: 32px !important;
+  font-style: normal;
+  font-weight: 400;
+}
+h2 {
+  color: #0E0E0E;
+font-family: 'OpenSansBold';
+font-size: 16px !important;
+font-style: normal;
+font-weight: 600 !important;
+margin: 0px !important;
+}
+a{
+  text-decoration: none !important;
+}
+.modal-footer{
+  padding: 0px !important;
+}

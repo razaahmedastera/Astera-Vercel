@@ -1,0 +1,21 @@
+.demoDescription {
+    color: #6D6D6D;
+    text-align: center;
+    font-family: 'OpenSansRegular';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    padding-top: 37px;
+}
+.backBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+}
+@media (max-width: 768px) {
+    .demoDescription {
+        padding: 13px 15px 0px 15px;
+    }
+}

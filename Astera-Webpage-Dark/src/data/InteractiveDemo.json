@@ -1,0 +1,58 @@
+[
+    {
+        "id":1,
+        "image":"Intro.PNG",
+        "title":"Introduction to Artifacts and Projects",
+        "description":"Projects organize work items into files and folders and artifacts are components that streamline data-related tasks within projects.",
+        "link":"https://demo.arcade.software/OoOmkaOvtAjA2Qpx4w2t?embed",
+        "infoLink":"https://documentation.astera.com/ "
+    },
+    {
+        "id":2,
+        "image":"Dataflows.PNG",
+        "title":"Dataflow",
+        "description":"Visual representations of the sequence and logic, through which ETL/ELT processes are guided from sources to targets.",
+        "link":"https://demo.arcade.software/Ch4uLK5DbPBBNdcrP9YH?embed",
+        "infoLink":"https://documentation.astera.com/dataflows "
+    },
+    {
+        "id":3,
+        "image":"Workflow.PNG",
+        "title":"Workflow",
+        "description":"Automate and orchestrate tasks with customizable logic, allowing simultaneous or sequential operations for efficient task management.",
+        "link":"https://demo.arcade.software/fpP4SfnCRervXJLlKan6?embed",
+        "infoLink":"https://documentation.astera.com/workflows "
+    },
+    {
+        "id":4,
+        "image":"ReportMiner.PNG",
+        "title":"Report Model",
+        "description":"Report Models or extraction templates are user-designed templates that guide and direct data extraction from semi/unstructured files.",
+        "link":"https://demo.arcade.software/e70ALfu9JGvzkT2DG8em?embed",
+        "infoLink":"https://documentation.astera.com/report-model "
+    },
+    {
+        "id":5,
+        "image":"Data_Model.PNG",
+        "title":"Data Model",
+        "description":"Structured representations of tables and their relationships in a database, illustrating dataset connections, storage methods and processes.",
+        "link":"https://demo.arcade.software/FUNWxzmvIUq7Q3WDUjOo?embed",
+        "infoLink":"https://documentation.astera.com/data-model "
+    },
+    {
+        "id":6,
+        "image":"API_Flow.PNG",
+        "title":"API Flow",
+        "description":"API Flows are used to design data/function service endpoints, enabling end-to-end processes from input processing to response routing.",
+        "link":"https://demo.arcade.software/yjdzFu0GNJxDcFPMeS4w?embed",
+        "infoLink":"https://documentation.astera.com/api-flow"
+    },
+    {
+        "id":7,
+        "image":"Job_Scheduler.PNG",
+        "title":"Job Scheduler",
+        "description":"The Job Scheduler automates tasks with customizable settings, frequency options, background execution, progress tracking, and email alerts.",
+        "link":"https://demo.arcade.software/UxIefjl07DDgNVzvJMkl?embed",
+        "infoLink":"https://documentation.astera.com/project-management-and-scheduling/job-scheduling "
+    }
+]

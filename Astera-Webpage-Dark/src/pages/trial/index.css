@@ -1,0 +1,28 @@
+.boldText {
+    font-family: 'OpenSansBold';
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.textWrapper {
+    text-align: center;
+}
+
+.heroDesc {
+    color: #6D6D6D;
+    text-align: center;
+    font-family: 'OpenSansRegular';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    padding-top: 9px;
+}
+
+.imageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-grow: 1;
+    padding-bottom: 1rem;
+}

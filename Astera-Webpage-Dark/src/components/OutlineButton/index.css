@@ -1,0 +1,18 @@
+.outlineBtn {
+    border-radius: 5px;
+    border: 0.5px solid #006CB7;
+    background: #006CB7;
+    width: 129px;
+    height: 30px;
+    padding: 0px !important;
+    font-family: 'OpenSansBold';
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.outlineBtn:hover {
+    color: #FFF;
+    background-color: #01348D;
+    border-color: #01348D;
+}

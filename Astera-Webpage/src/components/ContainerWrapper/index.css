@@ -1,0 +1,30 @@
+.mainWrapper {
+    padding-top: 34px;
+    position: relative;
+    flex-grow: 1;
+}
+
+.footerImage {
+    background-image: url('../../assets/icons/Layer_1.png');
+    background-position: center bottom;
+    background-size: cover;
+    width: 100%;
+    height: 79px;
+    background-repeat: no-repeat;
+}
+.mainContainer {
+    background: #F6F8FA;
+    min-height: 100vh;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+@media (max-width: 768px) {
+    .footerImage {
+        height: 59px;
+    }
+}
+

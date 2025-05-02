@@ -1,0 +1,41 @@
+[
+    {
+        "icon": "interactiveDemo.png",
+        "title": "Interactive Product Tour",
+        "description": "Explore Astera Data Stack with our guided walkthrough and navigate the tool's features, functionalities and other capabilities.",
+        "link":"/demo",
+        "video":"on",
+        "videoLink":"https://www.youtube.com/embed/Pa3_VH-WiIA?si=De7GT655R0rZ5M1e?autoplay=0"
+    },
+    {
+        "icon": "documentation.png",
+        "title": "Technical Documentation",
+        "description": "Explore comprehensive documentation to deepen your understanding of Astera Data Stack's functionalities and harness its capabilities to the fullest.",
+        "link":"https://documentation.astera.com/"
+    },
+    {
+        "icon": "asteraLogo.png",
+        "title": "Astera Data Academy",
+        "description": "Expand your expertise with Astera Data Stack's comprehensive online product training courses and practice with real-world use-cases.",
+        "link":"https://academy.astera.com/"
+    },
+    {
+        "icon": "userTestimonial.png",
+        "title": "User Testimonials and Case Studies",
+        "description": "Explore success stories and gain insights into real-world experiences highlighting Astera Data Stack's value in action.",
+        "link":"https://www.astera.com/customers/case-studies/"
+    },
+    {
+        "icon": "supportInfo.png",
+        "title": "Support Information",
+        "description": "Find valuable resources and assistance to address queries, issues, and optimize your experience (with Astera Data Stack).",
+        "link":"https://astera.zendesk.com/hc/en-us/requests/new"
+    },
+    {
+        "icon": "feedBack.png",
+        "title": "Feedback",
+        "description": "Share your insights and suggestions to help us enhance and improve Astera Data Stack for your needs.",
+        "link":"https://forms.office.com/Pages/ResponsePage.aspx?id=5x_FPgFSvUORDttpzJ6dZRqm8xpR2eBAtCc02urj4BVUOEYyVjZZVDFBV0NTQzQ0MzYzNlY1N1ZGVC4u"
+    }
+    
+]
