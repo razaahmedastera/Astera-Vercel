@@ -1,11 +1,12 @@
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import styles from './HomeScreen.module.css';
-import type { PageContent } from '@/types/contentful';
+import type { HomePageContent } from '@/types/contentful';
 
 interface HomeScreenProps {
-  content: PageContent;
+  content: HomePageContent;
 }
 
-export function HomeScreen({ content: _content }: HomeScreenProps) {
+export function HomeScreen({ content }: HomeScreenProps) {
   return (
     <>
       <div className={styles.heroWrapper}>
@@ -14,15 +15,11 @@ export function HomeScreen({ content: _content }: HomeScreenProps) {
           <div className={styles.badge}>#AsteraAI</div>
 
           <h1 className={styles.title}>
-            Agentic Data Stack for Smarter
-            <br />
-            Enterprise Data Management
+            {documentToReactComponents(content.heroSectionHeading)}
           </h1>
 
           <p className={styles.subtitle}>
-            Accelerate data prep, modeling, analytics, ETL and workflows with intelligent
-            automation. Astera&apos;s agentic platform simplifies every step from raw data to
-            real insight.
+            {content.heroSectionParagraph}
           </p>
 
           <div className={styles.actions}>

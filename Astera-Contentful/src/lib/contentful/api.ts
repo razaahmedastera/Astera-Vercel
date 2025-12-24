@@ -1,5 +1,5 @@
 import { contentfulClient } from './client';
-import type { PageContentSkeleton, PageContent } from '@/types/contentful';
+import type { PageContentSkeleton, PageContent, HomePageContentSkeleton, HomePageContent } from '@/types/contentful';
 
 /**
  * Fetch a page content entry by slug (more scalable than entry ID)
@@ -60,11 +60,35 @@ export async function getPageContentById(entryId: string): Promise<PageContent> 
 }
 
 /**
- * Fetch home page content by slug
- * @returns Home page content
+ * Fetch home page content from homePage content type
+ * @returns Home page content with hero section fields
  */
-export async function getHomePageContent(): Promise<PageContent> {
-  return getPageContentBySlug('home');
+export async function getHomePageContent(): Promise<HomePageContent> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'homePage',
+      'fields.slug': 'home',
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) {
+      throw new Error('Home page content not found');
+    }
+
+    const entry = response.items[0];
+
+    return {
+      id: entry.sys.id,
+      heroSectionHeading: entry.fields.heroSectionHeading,
+      heroSectionParagraph: entry.fields.heroSectionParagraph,
+      slug: entry.fields.slug,
+      createdAt: entry.sys.createdAt,
+      updatedAt: entry.sys.updatedAt,
+    };
+  } catch (error) {
+    console.error('Error fetching home page content from Contentful:', error);
+    throw new Error('Failed to fetch home page content from Contentful');
+  }
 }
 
 /**
