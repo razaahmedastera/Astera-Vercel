@@ -13,9 +13,12 @@ export function Navigation() {
         <div className={styles.logo}>
           <Link href="/">
             <img 
-              src="https://www.astera.com/wp-content/uploads/2024/09/Astera-logo.svg" 
+              src="/images/astera-logo.svg" 
               alt="Astera Logo" 
               className={styles.logoImage}
+              loading="eager"
+              width="120"
+              height="32"
             />
           </Link>
         </div>

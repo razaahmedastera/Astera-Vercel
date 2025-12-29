@@ -9,9 +9,12 @@ export function Footer() {
           <div className={styles.footerLogo}>
             <Link href="/">
               <img 
-                src="https://www.astera.com/wp-content/uploads/2024/09/Astera-logo.svg" 
+                src="/images/astera-logo.svg" 
                 alt="Astera Logo" 
                 className={styles.footerLogoImage}
+                loading="lazy"
+                width="120"
+                height="32"
               />
             </Link>
           </div>

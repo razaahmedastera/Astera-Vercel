@@ -1,9 +1,6 @@
-import { HomeScreen } from '@/components/screens/HomeScreen';
-import { getHomePageContent } from '@/lib/contentful';
+import { HomeScreenClient } from '@/components/screens/HomeScreen/HomeScreenClient';
 
-export default async function Home() {
-  const content = await getHomePageContent();
-
-  return <HomeScreen content={content} />;
+export default function Home() {
+  return <HomeScreenClient />;
 }
 

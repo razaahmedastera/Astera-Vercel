@@ -1,10 +1,7 @@
-import { ProductScreen } from '@/components/screens/ProductScreen';
-import { getProductPageContent } from '@/lib/contentful';
+import { ProductScreenClient } from '@/components/screens/ProductScreen/ProductScreenClient';
 
-export default async function ProductPage() {
-  const content = await getProductPageContent();
-
-  return <ProductScreen content={content} />;
+export default function ProductPage() {
+  return <ProductScreenClient />;
 }
 
 

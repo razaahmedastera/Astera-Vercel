@@ -35,6 +35,8 @@ export function ProductScreen({ content }: ProductScreenProps) {
                 src="https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/07/ADPB.png"
                 alt="AI Data Platform"
                 className={styles.heroImage}
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
