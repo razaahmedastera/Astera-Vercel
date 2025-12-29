@@ -3,6 +3,7 @@ export {
   getPageContentBySlug, 
   getPageContentById,
   getHomePageContent,
+  getProductPageContent,
   getAllPages 
 } from './api';
 
