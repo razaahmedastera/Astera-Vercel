@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import { Navigation } from '@/components/ui/Navigation';
+import { Footer } from '@/components/ui/Footer';
 
 export const metadata: Metadata = {
   title: 'Astera Web',
@@ -14,9 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navigation />
-        {children}
+        <main style={{ flex: 1 }}>{children}</main>
+        <Footer />
       </body>
     </html>
   );
