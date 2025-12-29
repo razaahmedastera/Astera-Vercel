@@ -1,5 +1,11 @@
 import { contentfulClient } from './client';
-import type { PageContentSkeleton, PageContent, HomePageContentSkeleton, HomePageContent } from '@/types/contentful';
+import type { 
+  PageContentSkeleton, 
+  PageContent, 
+  HomePageContentSkeleton, 
+  HomePageContent,
+  ProductPageContent 
+} from '@/types/contentful';
 
 /**
  * Fetch a page content entry by slug (more scalable than entry ID)
@@ -61,7 +67,7 @@ export async function getPageContentById(entryId: string): Promise<PageContent> 
 
 /**
  * Fetch home page content from homePage content type
- * @returns Home page content with hero section fields
+ * @returns Home page content with all sections
  */
 export async function getHomePageContent(): Promise<HomePageContent> {
   try {
@@ -76,12 +82,42 @@ export async function getHomePageContent(): Promise<HomePageContent> {
     }
 
     const entry = response.items[0];
+    const fields = entry.fields;
 
     return {
       id: entry.sys.id,
-      heroSectionHeading: entry.fields.heroSectionHeading,
-      heroSectionParagraph: entry.fields.heroSectionParagraph,
-      slug: entry.fields.slug,
+      entryTitle: fields.entryTitle,
+      slug: fields.slug,
+      
+      // Hero Section
+      heroSectionBadge: fields.heroSectionBadge,
+      heroSectionHeading: fields.heroSectionHeading,
+      heroSectionDescription: fields.heroSectionDescription,
+      heroSectionPrimaryCta: fields.heroSectionPrimaryCta,
+      heroSectionSecondaryCta: fields.heroSectionSecondaryCta,
+      
+      // Features Section
+      featuresSectionTitle: fields.featuresSectionTitle,
+      featuresSectionDescription: fields.featuresSectionDescription,
+      features: fields.features || [],
+      
+      // Steps Section
+      stepsSectionTitle: fields.stepsSectionTitle,
+      stepsSectionDescription: fields.stepsSectionDescription,
+      steps: fields.steps || [],
+      
+      // Use Cases Section
+      useCasesSectionTitle: fields.useCasesSectionTitle,
+      useCasesSectionDescription: fields.useCasesSectionDescription,
+      useCases: fields.useCases || [],
+      
+      // CTA Section
+      ctaSectionTitle: fields.ctaSectionTitle,
+      ctaSectionDescription: fields.ctaSectionDescription,
+      ctaSectionPrimaryCta: fields.ctaSectionPrimaryCta,
+      ctaSectionSecondaryCta: fields.ctaSectionSecondaryCta,
+      ctaSectionNote: fields.ctaSectionNote,
+      
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,
     };
@@ -114,6 +150,62 @@ export async function getAllPages(): Promise<PageContent[]> {
   } catch (error) {
     console.error('Error fetching all pages:', error);
     throw new Error('Failed to fetch all pages');
+  }
+}
+
+/**
+ * Fetch product page content from productPage content type
+ * @returns Product page content with all sections
+ */
+export async function getProductPageContent(): Promise<ProductPageContent> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'productPage',
+      'fields.slug': 'product',
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) {
+      throw new Error('Product page content not found');
+    }
+
+    const entry = response.items[0];
+    const fields = entry.fields;
+
+    return {
+      id: entry.sys.id,
+      entryTitle: fields.entryTitle,
+      slug: fields.slug,
+      
+      // Hero Section
+      heroSectionBadge: fields.heroSectionBadge,
+      heroSectionHeading: fields.heroSectionHeading,
+      heroSectionDescription: fields.heroSectionDescription,
+      heroSectionPrimaryCta: fields.heroSectionPrimaryCta,
+      heroSectionSecondaryCta: fields.heroSectionSecondaryCta,
+      
+      // Products Section
+      productsSectionTitle: fields.productsSectionTitle,
+      productsSectionDescription: fields.productsSectionDescription,
+      products: fields.products || [],
+      
+      // Product Features Section
+      productFeaturesSectionTitle: fields.productFeaturesSectionTitle,
+      productFeaturesSectionDescription: fields.productFeaturesSectionDescription,
+      productFeatures: fields.productFeatures || [],
+      
+      // CTA Section
+      ctaSectionTitle: fields.ctaSectionTitle,
+      ctaSectionDescription: fields.ctaSectionDescription,
+      ctaSectionPrimaryCta: fields.ctaSectionPrimaryCta,
+      ctaSectionSecondaryCta: fields.ctaSectionSecondaryCta,
+      
+      createdAt: entry.sys.createdAt,
+      updatedAt: entry.sys.updatedAt,
+    };
+  } catch (error) {
+    console.error('Error fetching product page content from Contentful:', error);
+    throw new Error('Failed to fetch product page content from Contentful');
   }
 }
 

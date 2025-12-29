@@ -30,14 +30,85 @@ export interface PageContent {
 }
 
 /**
+ * Feature card interface
+ */
+export interface Feature {
+  title: string;
+  description: string;
+}
+
+/**
+ * Step interface (How It Works)
+ */
+export interface Step {
+  stepNumber: number;
+  title: string;
+  description: string;
+}
+
+/**
+ * Use Case card interface
+ */
+export interface UseCase {
+  title: string;
+  description: string;
+}
+
+/**
+ * Product card interface
+ */
+export interface Product {
+  name: string;
+  description: string;
+  badge: string;
+  highlights: string[];
+}
+
+/**
+ * Product feature interface (for product page)
+ */
+export interface ProductFeature {
+  title: string;
+  description: string;
+}
+
+/**
  * Contentful Home Page Content Type Skeleton
  */
 export interface HomePageContentSkeleton extends EntrySkeletonType {
   contentTypeId: 'homePage';
   fields: {
-    heroSectionHeading: Document;
-    heroSectionParagraph: string;
+    entryTitle: string;
     slug: string;
+    
+    // Hero Section
+    heroSectionBadge: string;
+    heroSectionHeading: Document;
+    heroSectionDescription: string;
+    heroSectionPrimaryCta: string;
+    heroSectionSecondaryCta: string;
+    
+    // Features Section
+    featuresSectionTitle: string;
+    featuresSectionDescription: string;
+    features: Feature[];
+    
+    // Steps Section
+    stepsSectionTitle: string;
+    stepsSectionDescription: string;
+    steps: Step[];
+    
+    // Use Cases Section
+    useCasesSectionTitle: string;
+    useCasesSectionDescription: string;
+    useCases: UseCase[];
+    
+    // CTA Section
+    ctaSectionTitle: string;
+    ctaSectionDescription: string;
+    ctaSectionPrimaryCta: string;
+    ctaSectionSecondaryCta: string;
+    ctaSectionNote: string;
   };
 }
 
@@ -47,10 +118,110 @@ export type HomePageContentEntry = Entry<HomePageContentSkeleton, undefined, str
  * Parsed/simplified version for home page components
  */
 export interface HomePageContent {
-  heroSectionHeading: Document;
-  heroSectionParagraph: string;
-  slug: string;
   id: string;
+  entryTitle: string;
+  slug: string;
+  
+  // Hero Section
+  heroSectionBadge: string;
+  heroSectionHeading: Document;
+  heroSectionDescription: string;
+  heroSectionPrimaryCta: string;
+  heroSectionSecondaryCta: string;
+  
+  // Features Section
+  featuresSectionTitle: string;
+  featuresSectionDescription: string;
+  features: Feature[];
+  
+  // Steps Section
+  stepsSectionTitle: string;
+  stepsSectionDescription: string;
+  steps: Step[];
+  
+  // Use Cases Section
+  useCasesSectionTitle: string;
+  useCasesSectionDescription: string;
+  useCases: UseCase[];
+  
+  // CTA Section
+  ctaSectionTitle: string;
+  ctaSectionDescription: string;
+  ctaSectionPrimaryCta: string;
+  ctaSectionSecondaryCta: string;
+  ctaSectionNote: string;
+  
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Contentful Product Page Content Type Skeleton
+ */
+export interface ProductPageContentSkeleton extends EntrySkeletonType {
+  contentTypeId: 'productPage';
+  fields: {
+    entryTitle: string;
+    slug: string;
+    
+    // Hero Section
+    heroSectionBadge: string;
+    heroSectionHeading: Document;
+    heroSectionDescription: string;
+    heroSectionPrimaryCta: string;
+    heroSectionSecondaryCta: string;
+    
+    // Products Section
+    productsSectionTitle: string;
+    productsSectionDescription: string;
+    products: Product[];
+    
+    // Product Features Section
+    productFeaturesSectionTitle: string;
+    productFeaturesSectionDescription: string;
+    productFeatures: ProductFeature[];
+    
+    // CTA Section
+    ctaSectionTitle: string;
+    ctaSectionDescription: string;
+    ctaSectionPrimaryCta: string;
+    ctaSectionSecondaryCta: string;
+  };
+}
+
+export type ProductPageContentEntry = Entry<ProductPageContentSkeleton, undefined, string>;
+
+/**
+ * Parsed/simplified version for product page components
+ */
+export interface ProductPageContent {
+  id: string;
+  entryTitle: string;
+  slug: string;
+  
+  // Hero Section
+  heroSectionBadge: string;
+  heroSectionHeading: Document;
+  heroSectionDescription: string;
+  heroSectionPrimaryCta: string;
+  heroSectionSecondaryCta: string;
+  
+  // Products Section
+  productsSectionTitle: string;
+  productsSectionDescription: string;
+  products: Product[];
+  
+  // Product Features Section
+  productFeaturesSectionTitle: string;
+  productFeaturesSectionDescription: string;
+  productFeatures: ProductFeature[];
+  
+  // CTA Section
+  ctaSectionTitle: string;
+  ctaSectionDescription: string;
+  ctaSectionPrimaryCta: string;
+  ctaSectionSecondaryCta: string;
+  
   createdAt: string;
   updatedAt: string;
 }
