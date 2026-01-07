@@ -34,3 +34,27 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Security - ensure no sensitive files are committed
+*.key
+*.pem
+*.cert
+secrets.json
+config.json
+.env.production
+.env.development
+

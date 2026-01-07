@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { HomeScreen } from './HomeScreen';
+import { HomeScreenNew } from './HomeScreenNew';
 import { getHomePageContentBrowser } from '@/lib/contentful/api-browser';
 import type { HomePageContent } from '@/types/contentful';
 
-export function HomeScreenClient() {
+export function HomeScreenNewClient() {
   const [content, setContent] = useState<HomePageContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,11 +19,21 @@ export function HomeScreenClient() {
         const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
         const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
         
+        console.log('Fetching content...', { spaceId: spaceId ? 'Set' : 'Missing', accessToken: accessToken ? 'Set' : 'Missing' });
+        
         if (!spaceId || !accessToken) {
           throw new Error('Contentful credentials not found. Please rebuild with NEXT_PUBLIC_CONTENTFUL_* environment variables.');
         }
         
-        const data = await getHomePageContentBrowser();
+        // Add timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000)
+        );
+        
+        const dataPromise = getHomePageContentBrowser();
+        const data = await Promise.race([dataPromise, timeoutPromise]) as any;
+        
+        console.log('Content fetched successfully:', data);
         setContent(data);
       } catch (err: any) {
         console.error('Failed to fetch content:', err);
@@ -33,7 +43,6 @@ export function HomeScreenClient() {
         setLoading(false);
       }
     }
-
     fetchContent();
   }, []);
 
@@ -82,9 +91,34 @@ export function HomeScreenClient() {
   }
 
   if (!content) {
-    return null;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '50vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <p style={{ color: '#64748b', fontSize: '1.2rem' }}>No content available</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={{
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#0b63e5',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.5rem',
+            cursor: 'pointer',
+            fontSize: '1rem'
+          }}
+        >
+          Reload
+        </button>
+      </div>
+    );
   }
 
-  return <HomeScreen content={content} />;
+  return <HomeScreenNew content={content} />;
 }
 

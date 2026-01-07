@@ -14,17 +14,25 @@ export function ProductScreenClient() {
     async function fetchContent() {
       try {
         setLoading(true);
+        setError(null);
+        
+        const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
+        const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
+        
+        if (!spaceId || !accessToken) {
+          throw new Error('Contentful credentials not found. Please rebuild with NEXT_PUBLIC_CONTENTFUL_* environment variables.');
+        }
+        
         const data = await getProductPageContentBrowser();
         setContent(data);
-        setError(null);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to fetch content:', err);
-        setError('Failed to load content. Please refresh the page.');
+        const errorMessage = err?.message || 'Failed to load content. Please refresh the page.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     }
-
     fetchContent();
   }, []);
 

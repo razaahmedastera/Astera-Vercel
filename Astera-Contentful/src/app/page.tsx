@@ -1,6 +1,6 @@
-import { HomeScreenClient } from '@/components/screens/HomeScreen/HomeScreenClient';
+import { HomeScreenNewClient } from '@/components/screens/HomeScreen/HomeScreenNewClient';
 
 export default function Home() {
-  return <HomeScreenClient />;
+  return <HomeScreenNewClient />;
 }
 
