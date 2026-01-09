@@ -1,0 +1,2476 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import type { ProductPageContent } from '@/types/contentful';
+import { Awards } from '@/components/ui/Awards';
+
+interface ProductScreenNewProps {
+  content: ProductPageContent;
+}
+
+export function ProductScreenNew({ content }: ProductScreenNewProps) {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isMetricsVisible, setIsMetricsVisible] = useState(false);
+  const [activeFeatureTab, setActiveFeatureTab] = useState(0); // First tab always open
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [hoveredUseCaseId, setHoveredUseCaseId] = useState<number | null>(null);
+  const [isUseCasesHovered, setIsUseCasesHovered] = useState(false);
+  const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0); // First FAQ open by default
+  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0); // For carousel navigation dots
+  const useCasesScrollRef = useRef<HTMLDivElement>(null);
+  
+  // Testimonials Data - Contentful-ready structure
+  // In Contentful: Create "Testimonial" content type with fields: quote, author, title, company, image, caseStudyUrl
+  const testimonialsData = content.testimonials || [
+    {
+      id: 'coworx',
+      quote: "Astera has impacted our business in a very positive way. We've been using the product for a year, and still have a lot to learn, but we are always thinking of new ways that Astera can help automate processes for us.",
+      author: 'Robert Jobkar',
+      title: 'Vice President of Technology',
+      company: 'CoWorx Staffing',
+      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
+      caseStudyUrl: '#'
+    },
+    {
+      id: 'testimonial-2',
+      quote: "The AI-powered extraction capabilities have transformed how we handle documents. What used to take hours now takes minutes, with better accuracy.",
+      author: 'Sarah Chen',
+      title: 'Director of Operations',
+      company: 'TechFlow Inc',
+      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
+      caseStudyUrl: '#'
+    },
+    {
+      id: 'testimonial-3',
+      quote: "Implementing Astera was seamless. The no-code interface meant our team could start extracting data from complex documents within days, not months.",
+      author: 'Michael Torres',
+      title: 'CTO',
+      company: 'DataFirst Solutions',
+      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
+      caseStudyUrl: '#'
+    }
+  ];
+
+  // Use Cases Data - Contentful-ready structure
+  // In Contentful: Create "Use Case" content type with fields: title, description, image, linkUrl
+  const useCasesData = content.useCases || [
+    {
+      id: 1,
+      title: 'Loan Applications',
+      description: 'Streamline loan processing by automatically extracting borrower information, financial data, and supporting documents. Reduce processing time and minimize errors.',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=500&fit=crop',
+      linkUrl: '#'
+    },
+    {
+      id: 2,
+      title: 'Claims Processing',
+      description: 'Extract policyholder details, claim amounts, and supporting document information from claims forms. Use data cleansing to ensure accuracy.',
+      image: 'https://www.astera.com/wp-content/uploads/2025/01/Claims-Processing-1.png',
+      linkUrl: 'https://www.astera.com/type/whitepaper/automating-end-to-end-claims-processing-flow/'
+    },
+    {
+      id: 3,
+      title: 'Invoice Processing',
+      description: 'Extract line-item details from unstructured invoices and validate them against purchase orders. Automate tax calculations and inventory updates.',
+      image: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=400&h=500&fit=crop',
+      linkUrl: '#'
+    },
+    {
+      id: 4,
+      title: 'Shipping and Logistics',
+      description: 'Extract shipment details, tracking numbers, and delivery addresses from bills of lading or packing slips. Validate data against customer orders to ensure accuracy.',
+      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=500&fit=crop',
+      linkUrl: 'https://www.astera.com/by-use-case/shipping-document-processing/'
+    },
+    {
+      id: 5,
+      title: 'Energy Consumption Analytics',
+      description: 'Extract meter readings, billing data, and energy consumption patterns from utility bills. Aggregate data for energy usage analytics and reporting.',
+      image: 'https://www.astera.com/wp-content/uploads/2025/01/energy-comsumption-1-1.png',
+      linkUrl: 'https://www.astera.com/type/blog/unstructured-data-analytics-a-complete-guide/'
+    },
+    {
+      id: 6,
+      title: 'Healthcare Records Management',
+      description: 'Digitize and organize patient records, lab results, and medical documents. Ensure compliance while improving accessibility and care coordination.',
+      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=500&fit=crop',
+      linkUrl: '#'
+    }
+  ];
+  
+  // Powerful Features Accordion Data - Contentful-ready structure
+  // In Contentful: Create "Powerful Feature" content type with fields: title, description, subDescription, bulletPoints, footer, linkText, linkUrl, image
+  const powerfulFeaturesData = content.powerfulFeatures || [
+    {
+      id: 'extract-data',
+      title: 'Extract Data from Any Document, in Any Format, in Seconds',
+      description: 'Turn PDFs, Excel sheets, Word files, text documents, and even scanned images into structured, usable data in seconds—with zero manual effort.',
+      subDescription: 'Astera\'s AI-powered extraction tools adapt to both consistent and complex document layouts:',
+      bulletPoints: [
+        { label: 'Auto-Generate Layout (AGL)', text: 'handles recurring formats effortlessly' },
+        { label: 'LLM-Generate', text: 'intelligently processes documents with varying structures' },
+        { label: 'Built-in OCR', text: 'ensures accurate conversion of scanned files into machine-readable text' }
+      ],
+      footer: 'Accelerate reporting, reduce errors, and free up your team from time-consuming data entry.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/06/Extract-data-from-any-format-1.png'
+    },
+    {
+      id: 'intuitive-interface',
+      title: 'Intuitive, Point-and-Click Interface',
+      description: 'Design complex data extraction workflows without writing a single line of code. Our visual interface makes it easy for anyone to get started.',
+      subDescription: 'Key interface features include:',
+      bulletPoints: [
+        { label: 'Drag-and-Drop', text: 'build workflows visually' },
+        { label: 'Real-time Preview', text: 'see your results instantly' },
+        { label: 'Template Library', text: 'start with pre-built templates' }
+      ],
+      footer: 'Empower your team to work independently without IT dependency.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
+    },
+    {
+      id: 'instant-preview',
+      title: 'Instant Data Preview',
+      description: 'Preview your extracted data in real-time before processing. Catch errors early and ensure accuracy.',
+      subDescription: 'Preview capabilities include:',
+      bulletPoints: [
+        { label: 'Live Preview', text: 'see data as you configure extraction' },
+        { label: 'Data Validation', text: 'automatic error detection' },
+        { label: 'Format Preview', text: 'view output in your desired format' }
+      ],
+      footer: 'Reduce rework and ensure data quality from the start.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
+    },
+    {
+      id: 'custom-fields',
+      title: 'Custom Field Creation',
+      description: 'Create custom fields to capture exactly the data you need. No limitations on field types or structures.',
+      subDescription: 'Customization options:',
+      bulletPoints: [
+        { label: 'Flexible Fields', text: 'define any field type you need' },
+        { label: 'Conditional Logic', text: 'create dynamic field rules' },
+        { label: 'Validation Rules', text: 'ensure data integrity' }
+      ],
+      footer: 'Tailor your extraction to match your exact business requirements.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
+    },
+    {
+      id: 'data-quality',
+      title: 'Built-in Data Quality and Transformation',
+      description: 'Clean, transform, and validate your data automatically. Ensure consistency across all your documents.',
+      subDescription: 'Data quality features:',
+      bulletPoints: [
+        { label: 'Auto-Cleaning', text: 'remove duplicates and errors' },
+        { label: 'Transformations', text: 'convert formats automatically' },
+        { label: 'Quality Rules', text: 'enforce data standards' }
+      ],
+      footer: 'Deliver clean, reliable data to your downstream systems.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
+    },
+    {
+      id: 'workflow-automation',
+      title: 'Workflow Automation and Scalability',
+      description: 'Automate your entire document processing pipeline. Scale from hundreds to millions of documents.',
+      subDescription: 'Automation capabilities:',
+      bulletPoints: [
+        { label: 'Scheduled Jobs', text: 'run extractions automatically' },
+        { label: 'Event Triggers', text: 'process documents as they arrive' },
+        { label: 'Parallel Processing', text: 'handle large volumes efficiently' }
+      ],
+      footer: 'Build enterprise-grade automation without complexity.',
+      linkText: 'See it in action',
+      linkUrl: '#',
+      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
+    }
+  ];
+
+  // Metrics Data - Contentful-ready structure
+  // In Contentful: Create "Metric" content type with fields: value (number), unit (text), title (text)
+  const metricsData = content.metrics || [
+    {
+      id: 'fasterExtraction',
+      value: 90,
+      unit: '%',
+      title: 'Faster Data Extraction'
+    },
+    {
+      id: 'fasterProcessing',
+      value: 8,
+      unit: 'x',
+      title: 'Faster Processing'
+    },
+    {
+      id: 'timeSaved',
+      value: 80,
+      unit: '%',
+      title: 'Time Saved'
+    }
+  ];
+
+  // Initialize counters state dynamically from metricsData
+  const initialCounters = metricsData.reduce((acc, metric) => {
+    acc[metric.id] = 0;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const [counters, setCounters] = useState(initialCounters);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dragStartX = useRef(0);
+  const scrollStartX = useRef(0);
+  const isAnimatingRef = useRef(false);
+
+  // Media assets for carousel
+  const mediaAssets = [
+    {
+      id: "leverage-ai",
+      alt_text: "Leverage AI in Astera ReportMiner",
+      url: "/images/carousel/leverage-ai.jpg"
+    },
+    {
+      id: "frame-32",
+      alt_text: "Feature Display Frame 32",
+      url: "/images/carousel/Frame-32.png"
+    },
+    {
+      id: "frame-33",
+      alt_text: "Feature Display Frame 33",
+      url: "/images/carousel/Frame-33.png"
+    },
+    {
+      id: "frame-34",
+      alt_text: "Feature Display Frame 34",
+      url: "/images/carousel/Frame-34.png"
+    },
+    {
+      id: "frame-36",
+      alt_text: "Feature Display Frame 36",
+      url: "/images/carousel/Frame-36.png"
+    },
+    {
+      id: "frame-37",
+      alt_text: "Feature Display Frame 37",
+      url: "/images/carousel/Frame-37.png"
+    }
+  ];
+
+  // Why Astera ReportMiner Cards Data - Contentful-ready structure
+  // In Contentful: Create "Why Astera Card" content type with fields: text, backgroundColor, textColor, iconImage, position
+  const whyAsteraCards = content.whyAsteraCards || [
+    {
+      id: 1,
+      text: "Export extracted data to structured destination, including databases and Excel, for streamlined data analysis and reporting.",
+      backgroundColor: '#EFF5FF',
+      textColor: '#000',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2906/2906274.png',
+      position: 'up'
+    },
+    {
+      id: 2,
+      text: "Extract data from multiple file formats, including PDFs, Excel, and Word, for easy integration across platforms.",
+      backgroundColor: '#005CCC',
+      textColor: 'white',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337946.png',
+      position: 'down'
+    },
+    {
+      id: 3,
+      text: "Leverage AI to accurately extract data from documents with varying layouts and formats.",
+      backgroundColor: '#EFF5FF',
+      textColor: '#000',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2920/2920349.png',
+      position: 'up'
+    },
+    {
+      id: 4,
+      text: "Easily handle hierarchical and scanned PDFs with advanced features like OCR and hierarchical data export.",
+      backgroundColor: '#005CCC',
+      textColor: 'white',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337932.png',
+      position: 'down'
+    },
+    {
+      id: 5,
+      text: "AI-driven intelligent data extraction that learns and adapts to your document patterns for improved accuracy.",
+      backgroundColor: '#EFF5FF',
+      textColor: '#000',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2103/2103633.png',
+      position: 'up'
+    },
+    {
+      id: 6,
+      text: "Seamless cloud integration with popular platforms for real-time data synchronization and collaboration.",
+      backgroundColor: '#005CCC',
+      textColor: 'white',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2885/2885417.png',
+      position: 'down'
+    },
+    {
+      id: 7,
+      text: "Built-in data validation and quality checks ensure accuracy and reliability of extracted information.",
+      backgroundColor: '#EFF5FF',
+      textColor: '#000',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/5610/5610944.png',
+      position: 'up'
+    },
+    {
+      id: 8,
+      text: "Automated workflow scheduling and batch processing to handle large volumes of documents efficiently.",
+      backgroundColor: '#005CCC',
+      textColor: 'white',
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/1828/1828817.png',
+      position: 'down'
+    }
+  ];
+
+  // Handle manual scroll - reset auto-scroll timer and handle infinite loop
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    
+    if (!isDragging) {
+      setIsUserScrolling(true);
+      
+      const container = scrollContainerRef.current;
+      const totalWidth = container.scrollWidth;
+      const singleSetWidth = totalWidth / 2;
+      const currentScroll = container.scrollLeft;
+      
+      // If scrolled past first set, reset to beginning seamlessly
+      if (currentScroll >= singleSetWidth - 50) {
+        container.scrollLeft = currentScroll - singleSetWidth;
+      }
+      
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Set new timeout - auto-scroll after 2 seconds of inactivity
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsUserScrolling(false);
+      }, 2000);
+    }
+  };
+
+  // Handle mouse wheel - convert vertical scroll to horizontal with smooth scrolling
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    
+    // Prevent default vertical scrolling on page
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Stop any ongoing animation for immediate response
+    isAnimatingRef.current = false;
+    
+    // Convert vertical wheel delta to horizontal scroll
+    // Multiply by 0.8 for smoother, more controlled scrolling
+    const delta = (e.deltaY || e.deltaX) * 0.8;
+    const container = scrollContainerRef.current;
+    
+    // Apply scroll directly with smooth CSS behavior
+    container.scrollLeft += delta;
+    
+    // Handle infinite loop
+    const totalWidth = container.scrollWidth;
+    const singleSetWidth = totalWidth / 2;
+    if (container.scrollLeft >= singleSetWidth - 50) {
+      container.scrollLeft = container.scrollLeft - singleSetWidth;
+    } else if (container.scrollLeft < 0) {
+      container.scrollLeft = singleSetWidth + container.scrollLeft;
+    }
+    
+    // Update user scrolling state
+    setIsUserScrolling(true);
+    
+    // Clear existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // Set new timeout - auto-scroll after 2 seconds of inactivity
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsUserScrolling(false);
+    }, 2000);
+  };
+
+  // Drag to scroll handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setIsUserScrolling(true);
+    dragStartX.current = e.clientX;
+    scrollStartX.current = scrollContainerRef.current.scrollLeft;
+    
+    // Clear auto-scroll timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const container = scrollContainerRef.current;
+    const deltaX = dragStartX.current - e.clientX;
+    const newScroll = scrollStartX.current + deltaX;
+    container.scrollLeft = newScroll;
+    
+    // Handle infinite loop
+    const totalWidth = container.scrollWidth;
+    const singleSetWidth = totalWidth / 2;
+    if (container.scrollLeft >= singleSetWidth - 50) {
+      container.scrollLeft = container.scrollLeft - singleSetWidth;
+      scrollStartX.current = container.scrollLeft;
+      dragStartX.current = e.clientX;
+    } else if (container.scrollLeft < 0) {
+      container.scrollLeft = singleSetWidth + container.scrollLeft;
+      scrollStartX.current = container.scrollLeft;
+      dragStartX.current = e.clientX;
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // Resume auto-scroll after 2 seconds
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsUserScrolling(false);
+    }, 2000);
+  };
+
+  // Global mouse move and up listeners for drag functionality
+  useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseMove = (e: MouseEvent) => {
+        handleMouseMove(e);
+      };
+      const handleGlobalMouseUp = () => {
+        handleMouseUp();
+      };
+
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+
+      return () => {
+        document.removeEventListener('mousemove', handleGlobalMouseMove);
+        document.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [isDragging]);
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setIsHovered(false);
+      // Resume auto-scroll after 2 seconds
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsUserScrolling(false);
+      }, 2000);
+    } else {
+      setIsHovered(false);
+    }
+  };
+
+  // Smooth scroll function using requestAnimationFrame with ultra-smooth easing
+  const smoothScrollTo = (element: HTMLDivElement, target: number, duration: number, onComplete?: () => void) => {
+    if (isAnimatingRef.current) return; // Prevent overlapping animations
+    
+    isAnimatingRef.current = true;
+    const start = element.scrollLeft;
+    const distance = target - start;
+    const startTime = performance.now();
+
+    const animateScroll = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Custom smooth easing - slow start, smooth middle, slow end
+      const smoothEase = (t: number): number => {
+        // Using sine-based easing for buttery smooth transitions
+        return t < 0.5
+          ? (1 - Math.cos(t * Math.PI)) / 2
+          : (1 + Math.sin((t - 0.5) * Math.PI)) / 2;
+      };
+      
+      // Apply easing
+      const easedProgress = smoothEase(progress);
+      element.scrollLeft = start + distance * easedProgress;
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      } else {
+        // Ensure we end exactly at target
+        element.scrollLeft = target;
+        isAnimatingRef.current = false;
+        if (onComplete) onComplete();
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
+  // Intersection Observer for metrics section - triggers counter when section is visible
+  useEffect(() => {
+    const metricsSection = document.getElementById('product-metrics');
+    if (!metricsSection || isMetricsVisible) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsMetricsVisible(true);
+          observer.disconnect(); // Disconnect after triggering once
+        }
+      },
+      { 
+        threshold: 0.2, // Trigger when 20% of section is visible
+        rootMargin: '0px 0px -50px 0px' // Trigger slightly before section fully enters viewport
+      }
+    );
+
+    observer.observe(metricsSection);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMetricsVisible]);
+
+  // Counter animation for metrics - Dynamic from JSON
+  useEffect(() => {
+    if (!isMetricsVisible) return;
+
+    // Build targets from metricsData
+    const targets = metricsData.reduce((acc, metric) => {
+      acc[metric.id] = metric.value;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const duration = 2000;
+    const startTime = performance.now();
+    
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Update all counters dynamically
+      const newCounters = metricsData.reduce((acc, metric) => {
+        acc[metric.id] = Math.floor(metric.value * progress);
+        return acc;
+      }, {} as Record<string, number>);
+      
+      setCounters(newCounters);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCounters(targets);
+      }
+    };
+
+    const frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [isMetricsVisible]);
+
+  // Auto-scroll carousel - moves one card at a time with ultra-smooth transitions
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    
+    // Don't auto-scroll if: hovered, user is scrolling, or dragging
+    if (isHovered || isUserScrolling || isDragging) return;
+
+    // Card width (340px) + gap (24px for gap-6)
+    const cardWidth = 340;
+    const gap = 24;
+    const scrollDistance = cardWidth + gap;
+    const scrollDuration = 1500; // Smooth animation duration
+    const pauseBetweenScrolls = 3000; // 3 second pause between scrolls for better viewing
+
+    // Calculate single set width for infinite loop (half of total since we duplicate)
+    const totalWidth = container.scrollWidth;
+    const singleSetWidth = totalWidth / 2;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const performScroll = () => {
+      if (!container || isHovered || isUserScrolling || isDragging || isAnimatingRef.current) {
+        // Retry after pause if conditions not met
+        timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
+        return;
+      }
+
+      const currentScroll = container.scrollLeft;
+      
+      // If we've scrolled past the first set, reset to beginning seamlessly
+      if (currentScroll >= singleSetWidth - scrollDistance) {
+        // Reset position instantly but smoothly continue the visual flow
+        container.scrollLeft = currentScroll - singleSetWidth;
+        // Schedule next scroll after the reset
+        timeoutId = setTimeout(performScroll, 100);
+      } else {
+        // Scroll one card width smoothly using custom animation
+        const nextScroll = currentScroll + scrollDistance;
+        smoothScrollTo(container, nextScroll, scrollDuration, () => {
+          // Schedule next scroll after animation completes + pause
+          timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
+        });
+      }
+    };
+
+    // Start the scroll cycle after initial delay
+    timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [isHovered, isUserScrolling, isDragging]);
+
+  // Use Cases continuous ultra-smooth auto-scroll effect
+  useEffect(() => {
+    if (!useCasesScrollRef.current) return;
+    
+    const container = useCasesScrollRef.current;
+    const speed = 0.8; // pixels per frame
+    
+    let animationFrameId: number;
+    let currentPosition = container.scrollLeft;
+    
+    const animate = () => {
+      if (isUseCasesHovered) {
+        // Pause but keep the animation loop running
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+      
+      // Smooth increment
+      currentPosition += speed;
+      
+      // Handle infinite loop - reset seamlessly
+      const totalWidth = container.scrollWidth;
+      const singleSetWidth = totalWidth / 2;
+      
+      if (currentPosition >= singleSetWidth) {
+        currentPosition = currentPosition - singleSetWidth;
+      }
+      
+      // Apply smooth scrolling with sub-pixel precision
+      container.scrollLeft = currentPosition;
+      
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    
+    // Sync initial position
+    currentPosition = container.scrollLeft;
+    animationFrameId = requestAnimationFrame(animate);
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isUseCasesHovered]);
+
+  // Scroll animation observer - animate sections on scroll
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -100px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with animate-on-scroll class
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    animatedElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      animatedElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
+  // Track active carousel card based on scroll position
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleCarouselScroll = () => {
+      const cardWidth = 340 + 24; // card width + gap
+      const scrollPosition = container.scrollLeft;
+      const activeIndex = Math.round(scrollPosition / cardWidth) % 9; // 9 cards
+      setActiveCarouselIndex(activeIndex);
+    };
+
+    container.addEventListener('scroll', handleCarouselScroll);
+    return () => container.removeEventListener('scroll', handleCarouselScroll);
+  }, []);
+
+  // HubSpot Form Integration
+  useEffect(() => {
+    // Inject HubSpot form styles - Minimalist & Clean Design
+    const styleId = 'hubspot-form-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        /* Base container - override HubSpot default max-width */
+        .hubspot-form-wrapper {
+          width: 100% !important;
+        }
+        .hubspot-form-wrapper * {
+          max-width: 100% !important;
+        }
+        #hubspot-form-container {
+          padding: 0 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        #hubspot-form-container *:not(input[type="submit"]):not(.hs-button):not(button) {
+          max-width: 100% !important;
+        }
+        #hubspot-form-container form,
+        #hubspot-form-container .hs-form,
+        #hubspot-form-container .hs-form-private {
+          font-family: 'Poppins', sans-serif !important;
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        #hubspot-form-container .hs-form fieldset,
+        #hubspot-form-container fieldset,
+        #hubspot-form-container .hs-form fieldset.form-columns-1,
+        #hubspot-form-container .hs-form fieldset.form-columns-2,
+        [class*="hs-form-"] fieldset {
+          width: 100% !important;
+          max-width: 100% !important;
+          border: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        #hubspot-form-container .hs-form fieldset.form-columns-1 .hs-form-field,
+        #hubspot-form-container .hs-form fieldset.form-columns-1 .input {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        
+        /* Show labels */
+        #hubspot-form-container .hs-form-field > label {
+          display: block !important;
+          font-family: 'Poppins', sans-serif !important;
+          font-size: 14px !important;
+          font-weight: 500 !important;
+          color: #374151 !important;
+          margin-bottom: 8px !important;
+        }
+        #hubspot-form-container .hs-form-field > label .hs-form-required {
+          color: #005CCC !important;
+          margin-left: 2px !important;
+        }
+        
+        /* Field containers */
+        #hubspot-form-container .hs-form-field {
+          margin-bottom: 20px !important;
+        }
+        #hubspot-form-container .hs_submit {
+          margin-top: 24px !important;
+          clear: both !important;
+        }
+        #hubspot-form-container .hs_submit .actions {
+          text-align: right !important;
+        }
+        
+        /* All input types */
+        #hubspot-form-container input[type="text"],
+        #hubspot-form-container input[type="email"],
+        #hubspot-form-container input[type="tel"],
+        #hubspot-form-container input[type="number"],
+        #hubspot-form-container input[type="password"],
+        #hubspot-form-container select,
+        #hubspot-form-container textarea,
+        #hubspot-form-container .hs-input {
+          width: 100% !important;
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+          padding: 12px 16px !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
+          font-size: 15px !important;
+          font-family: 'Poppins', sans-serif !important;
+          transition: all 0.15s ease !important;
+          background-color: #fff !important;
+          color: #1f2937 !important;
+          box-sizing: border-box !important;
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          appearance: none !important;
+        }
+        
+        /* Hover state */
+        #hubspot-form-container input[type="text"]:hover,
+        #hubspot-form-container input[type="email"]:hover,
+        #hubspot-form-container input[type="tel"]:hover,
+        #hubspot-form-container select:hover,
+        #hubspot-form-container textarea:hover,
+        #hubspot-form-container .hs-input:hover {
+          border-color: #d1d5db !important;
+        }
+        
+        /* Focus state */
+        #hubspot-form-container input[type="text"]:focus,
+        #hubspot-form-container input[type="email"]:focus,
+        #hubspot-form-container input[type="tel"]:focus,
+        #hubspot-form-container select:focus,
+        #hubspot-form-container textarea:focus,
+        #hubspot-form-container .hs-input:focus {
+          outline: none !important;
+          border-color: #005CCC !important;
+          box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08) !important;
+        }
+        
+        /* Placeholder */
+        #hubspot-form-container input::placeholder,
+        #hubspot-form-container textarea::placeholder,
+        #hubspot-form-container .hs-input::placeholder {
+          color: #9ca3af !important;
+          opacity: 1 !important;
+        }
+        
+        /* Textarea */
+        #hubspot-form-container textarea,
+        #hubspot-form-container textarea.hs-input {
+          min-height: 100px !important;
+          resize: vertical !important;
+          line-height: 1.5 !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        
+        /* Select dropdown */
+        #hubspot-form-container select,
+        #hubspot-form-container select.hs-input {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: right 12px center !important;
+          background-size: 16px !important;
+          padding-right: 40px !important;
+          cursor: pointer !important;
+        }
+        
+        /* Submit button - Brand Guidelines: 51px height, orange hover */
+        #hubspot-form-container input[type="submit"],
+        #hubspot-form-container .hs-button,
+        #hubspot-form-container button[type="submit"] {
+          width: auto !important;
+          min-width: 140px !important;
+          height: 51px !important;
+          padding: 0 32px !important;
+          background: #005ccc !important;
+          color: #fff !important;
+          border: none !important;
+          border-radius: 10px !important;
+          font-size: 15px !important;
+          font-weight: 600 !important;
+          cursor: pointer !important;
+          transition: all 0.2s ease !important;
+          float: right !important;
+        }
+        
+        #hubspot-form-container input[type="submit"]:hover,
+        #hubspot-form-container .hs-button:hover,
+        #hubspot-form-container button[type="submit"]:hover {
+          background: #004ba3 !important;
+          transform: translateY(-1px) !important;
+        }
+        
+        /* Mobile - Full width submit button */
+        @media (max-width: 639px) {
+          #hubspot-form-container input[type="submit"],
+          #hubspot-form-container .hs-button,
+          #hubspot-form-container button[type="submit"] {
+            width: 100% !important;
+            float: none !important;
+          }
+          #hubspot-form-container .hs_submit .actions {
+            text-align: center !important;
+          }
+        }
+        
+        /* Error messages */
+        #hubspot-form-container .hs-error-msgs,
+        #hubspot-form-container .hs-error-msg {
+          color: #dc2626 !important;
+          font-size: 13px !important;
+          margin-top: 6px !important;
+          font-family: 'Poppins', sans-serif !important;
+        }
+        #hubspot-form-container .hs-error-msgs label {
+          position: static !important;
+          width: auto !important;
+          height: auto !important;
+          clip: auto !important;
+          overflow: visible !important;
+          color: #dc2626 !important;
+          font-size: 13px !important;
+        }
+        
+        /* Two column for names - Desktop */
+        @media (min-width: 640px) {
+          #hubspot-form-container .hs_firstname,
+          #hubspot-form-container .hs_lastname {
+            display: inline-block !important;
+            width: calc(50% - 8px) !important;
+            vertical-align: top !important;
+          }
+          #hubspot-form-container .hs_firstname {
+            margin-right: 16px !important;
+          }
+        }
+        
+        /* Phone field layout - all phone-related fields on same line */
+        #hubspot-form-container .hs-fieldtype-phonenumber,
+        #hubspot-form-container .hs_phone,
+        #hubspot-form-container [class*="hs_phone"] {
+          width: 100% !important;
+        }
+        #hubspot-form-container .hs-fieldtype-phonenumber .input,
+        #hubspot-form-container .hs_phone .input,
+        #hubspot-form-container [class*="hs_phone"] .input {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: nowrap !important;
+          gap: 12px !important;
+          align-items: flex-start !important;
+          width: 100% !important;
+        }
+        #hubspot-form-container .hs-fieldtype-phonenumber .input > *,
+        #hubspot-form-container .hs_phone .input > *,
+        #hubspot-form-container [class*="hs_phone"] .input > * {
+          display: inline-block !important;
+          vertical-align: top !important;
+        }
+        #hubspot-form-container .hs-fieldtype-phonenumber select,
+        #hubspot-form-container .hs_phone select,
+        #hubspot-form-container [class*="hs_phone"] select {
+          width: 180px !important;
+          min-width: 180px !important;
+          max-width: 180px !important;
+          flex-shrink: 0 !important;
+          display: inline-block !important;
+        }
+        #hubspot-form-container .hs-fieldtype-phonenumber input[type="tel"],
+        #hubspot-form-container .hs-fieldtype-phonenumber input[type="text"],
+        #hubspot-form-container .hs_phone input[type="tel"],
+        #hubspot-form-container .hs_phone input[type="text"],
+        #hubspot-form-container [class*="hs_phone"] input[type="tel"],
+        #hubspot-form-container [class*="hs_phone"] input[type="text"] {
+          flex: 1 !important;
+          min-width: 0 !important;
+          display: inline-block !important;
+        }
+        /* Force phone fieldset to be inline */
+        #hubspot-form-container fieldset:has(.hs_phone),
+        #hubspot-form-container fieldset:has([class*="phone"]) {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: nowrap !important;
+          gap: 12px !important;
+          align-items: flex-end !important;
+        }
+        #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field,
+        #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field {
+          flex: 1 !important;
+          margin-bottom: 0 !important;
+        }
+        #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field:first-child,
+        #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field:first-child {
+          flex: 0 0 180px !important;
+          max-width: 180px !important;
+        }
+        
+        /* Two-column field layouts - Desktop */
+        @media (min-width: 640px) {
+          #hubspot-form-container .form-columns-2,
+          #hubspot-form-container .form-columns-3 {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 16px !important;
+            width: 100% !important;
+          }
+          #hubspot-form-container .form-columns-2 > .hs-form-field,
+          #hubspot-form-container .form-columns-3 > .hs-form-field {
+            flex: 1 !important;
+            width: auto !important;
+            max-width: none !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+          }
+          #hubspot-form-container .form-columns-2 > .hs-form-field .input,
+          #hubspot-form-container .form-columns-3 > .hs-form-field .input {
+            width: 100% !important;
+          }
+        }
+        
+        /* Mobile - Stack all fields */
+        @media (max-width: 639px) {
+          #hubspot-form-container .form-columns-2,
+          #hubspot-form-container .form-columns-3 {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0 !important;
+            width: 100% !important;
+          }
+          #hubspot-form-container .form-columns-2 > .hs-form-field,
+          #hubspot-form-container .form-columns-3 > .hs-form-field {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 20px !important;
+          }
+          #hubspot-form-container .hs_firstname,
+          #hubspot-form-container .hs_lastname {
+            display: block !important;
+            width: 100% !important;
+            margin-right: 0 !important;
+          }
+          /* Phone fields stack on mobile */
+          #hubspot-form-container .hs-fieldtype-phonenumber .input,
+          #hubspot-form-container .hs_phone .input,
+          #hubspot-form-container [class*="hs_phone"] .input {
+            flex-direction: column !important;
+            gap: 12px !important;
+          }
+          #hubspot-form-container .hs-fieldtype-phonenumber select,
+          #hubspot-form-container .hs_phone select,
+          #hubspot-form-container [class*="hs_phone"] select {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+          }
+          #hubspot-form-container fieldset:has(.hs_phone),
+          #hubspot-form-container fieldset:has([class*="phone"]) {
+            flex-direction: column !important;
+            gap: 0 !important;
+          }
+          #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field,
+          #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 20px !important;
+          }
+          #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field:first-child,
+          #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field:first-child {
+            flex: none !important;
+            max-width: 100% !important;
+          }
+        }
+        
+        /* Privacy text */
+        #hubspot-form-container .hs-richtext {
+          font-size: 13px !important;
+          color: #6b7280 !important;
+          line-height: 1.5 !important;
+          margin-bottom: 16px !important;
+        }
+        #hubspot-form-container .hs-richtext p {
+          margin: 0 !important;
+        }
+        
+        /* reCAPTCHA */
+        #hubspot-form-container .hs_recaptcha {
+          margin: 20px 0 !important;
+        }
+        
+        /* Remove default HubSpot margins and ensure full width */
+        #hubspot-form-container .input {
+          margin-right: 0 !important;
+          width: 100% !important;
+        }
+        #hubspot-form-container .hs-form-field > .input {
+          margin-right: 0 !important;
+          width: 100% !important;
+        }
+        #hubspot-form-container .hs-form-field {
+          width: 100% !important;
+        }
+        #hubspot-form-container .field {
+          margin-bottom: 0 !important;
+          width: 100% !important;
+        }
+        #hubspot-form-container .form-columns-2 {
+          width: 100% !important;
+        }
+        #hubspot-form-container .form-columns-2 .hs-form-field {
+          width: calc(50% - 6px) !important;
+        }
+        #hubspot-form-container ul.inputs-list {
+          list-style: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        #hubspot-form-container .hs-form-booleancheckbox {
+          margin-bottom: 8px !important;
+        }
+        #hubspot-form-container .hs-form-booleancheckbox label {
+          position: static !important;
+          width: auto !important;
+          height: auto !important;
+          clip: auto !important;
+          display: flex !important;
+          align-items: flex-start !important;
+          gap: 10px !important;
+          font-size: 13px !important;
+          color: #64748b !important;
+          cursor: pointer !important;
+        }
+        #hubspot-form-container .hs-form-booleancheckbox input[type="checkbox"] {
+          width: 18px !important;
+          height: 18px !important;
+          margin: 0 !important;
+          flex-shrink: 0 !important;
+          accent-color: #005CCC !important;
+          cursor: pointer !important;
+        }
+        #hubspot-form-container .legal-consent-container {
+          margin-top: 16px !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Function to create HubSpot form
+    const createHubSpotForm = () => {
+      const container = document.getElementById('hubspot-form-container');
+      if (container && (window as any).hbspt) {
+        // Clear any existing form
+        container.innerHTML = '';
+        (window as any).hbspt.forms.create({
+          portalId: "6926702",
+          formId: "57530c31-b16f-40c9-947f-baeac0891a2f",
+          target: "#hubspot-form-container"
+        });
+      }
+    };
+
+    // Load HubSpot script
+    const scriptId = 'hubspot-forms-script';
+    const existingScript = document.getElementById(scriptId);
+    
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://js.hsforms.net/forms/v2.js';
+      script.charset = 'utf-8';
+      script.async = true;
+      script.onload = () => {
+        // Small delay to ensure DOM is ready
+        setTimeout(createHubSpotForm, 100);
+      };
+      document.head.appendChild(script);
+    } else if ((window as any).hbspt) {
+      // Script already loaded, create form with delay
+      setTimeout(createHubSpotForm, 100);
+    } else {
+      // Script exists but hbspt not ready, wait for it
+      existingScript.addEventListener('load', () => {
+        setTimeout(createHubSpotForm, 100);
+      });
+    }
+
+    // Cleanup
+    return () => {
+      const container = document.getElementById('hubspot-form-container');
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
+  }, []);
+
+  return (
+    <>
+      {/* Hero Section - Matching Design */}
+      <section 
+        id="product-hero-section"
+        className="product-hero-section py-10 sm:py-12 lg:py-16 flex items-center relative min-h-[600px] sm:min-h-[700px]"
+        style={{
+          backgroundImage: "url('/images/product-hero-background.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="absolute inset-0 z-0"></div>
+        <div className="product-hero-container section-container grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 lg:gap-16 items-center relative z-10">
+          <div className="product-hero-content pr-0 lg:pr-10">
+            {/* Small Heading */}
+            <div className="text-[#005CCC] uppercase font-semibold text-sm sm:text-base mb-4 sm:mb-6 tracking-wide">
+              ASTERA REPORTMINER
+            </div>
+            
+            {/* Main Heading */}
+            <h1 className="font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
+              From Unstructured Data to Insights with <span className="text-[#005CCC]">AI-Driven Processing</span>
+            </h1>
+            
+            {/* Paragraph */}
+            <p className="text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 mb-6 sm:mb-8 lg:mb-10 max-w-[600px] text-left">
+              Ingest, extract, process and load data to your destinations using an AI-powered unstructured data management tool.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <a 
+                href="https://www.astera.com/astera-reportminer-demo/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-primary w-full sm:w-auto text-center"
+              >
+                View Demo
+              </a>
+              <a 
+                href="https://www.astera.com/astera-reportminer-trial/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-secondary w-full sm:w-auto text-center"
+              >
+                Try for Free
+              </a>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="trust-badges mt-8">
+              <div className="trust-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>Trusted by 500+ Companies</span>
+              </div>
+              <div className="trust-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                <span>4.8/5 Customer Rating</span>
+              </div>
+              <div className="trust-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+                <span>Enterprise-Grade Security</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Right Side - Media */}
+          <div className="product-hero-visual">
+            <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] flex items-center justify-center">
+              {/* Image - Hidden when video is playing */}
+              <div className={`absolute inset-0 transition-opacity duration-0 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                <img 
+                  src="/images/product-hero-image.png"
+                  alt="AI-Driven Data Processing"
+                  className="w-full h-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {/* Play Icon Overlay - Just the icon, no button background */}
+                <button
+                  onClick={() => setIsVideoPlaying(true)}
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer group"
+                  aria-label="Play video"
+                >
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-[#005CCC] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300 group-hover:bg-[#004ba3] z-10">
+                    <svg 
+                      className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white ml-1" 
+                      fill="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+              
+              {/* Video - Preloaded and ready, shown instantly */}
+              <div className={`absolute inset-0 w-full flex items-center justify-center transition-opacity duration-0 ${isVideoPlaying ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className="w-full max-w-full" style={{ aspectRatio: '16/9', maxHeight: '100%' }}>
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={isVideoPlaying ? "https://www.youtube.com/embed/L618pQIydC0?autoplay=1&rel=0&mute=0&loop=0&controls=1&playsinline=0&cc_load_policy=0" : "https://www.youtube.com/embed/L618pQIydC0?rel=0&mute=0&loop=0&controls=1&playsinline=0&cc_load_policy=0"}
+                    title="Astera ReportMiner Demo"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full rounded-lg"
+                    style={{ aspectRatio: '16/9' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Astera ReportMiner Section - Full Width Modern Carousel */}
+      <section id="why-astera-reportminer" className="why-astera-section bg-white" style={{ overflowX: 'visible', overflowY: 'visible', paddingTop: '3rem', paddingBottom: '3rem' }}>
+        <div className="w-full" style={{ overflowX: 'visible', overflowY: 'visible' }}>
+          <div className="section-container mb-8 sm:mb-10">
+            <h2 className="section-title">
+              Why <span className="highlight">Astera ReportMiner</span>?
+            </h2>
+          </div>
+          
+          {/* Modern Full Width Auto-Scrolling Carousel */}
+          <div 
+            ref={scrollContainerRef}
+            className={`w-full overflow-x-auto pb-6 pt-4 ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              userSelect: isDragging ? 'none' : 'auto',
+              WebkitUserSelect: isDragging ? 'none' : 'auto',
+              overflowX: 'auto',
+              overflowY: 'visible',
+              paddingTop: '16px'
+            }}
+            onMouseEnter={(e) => {
+              if (!isDragging) {
+                setIsHovered(true);
+                // Prevent page scroll when hovering over carousel
+                e.currentTarget.style.overflowY = 'hidden';
+              }
+            }}
+            onMouseLeave={handleMouseLeave}
+            onMouseDown={handleMouseDown}
+            onScroll={handleScroll}
+            onTouchStart={(e) => {
+              setIsUserScrolling(true);
+              if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+              }
+            }}
+            onTouchMove={handleScroll}
+            onTouchEnd={() => {
+              scrollTimeoutRef.current = setTimeout(() => {
+                setIsUserScrolling(false);
+              }, 2000);
+            }}
+          >
+            <style jsx>{`
+              div::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
+            <div className="flex gap-6 sm:gap-8 px-6 sm:px-8 lg:px-12 py-4 items-start" style={{ minWidth: 'max-content', alignItems: 'flex-start' }}>
+              {/* Render cards from JSON data - First Set for Infinite Loop */}
+              {whyAsteraCards.map((card) => (
+                <div
+                  key={card.id}
+                  className={`rounded-3xl p-8 sm:p-10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-3 flex-shrink-0 group card-glow ${
+                    card.backgroundColor === '#005CCC' 
+                      ? 'border border-[#005CCC]/20 hover:border-[#005CCC]/40' 
+                      : 'border border-gray-100 hover:border-[#005CCC]/20'
+                  }`}
+                  style={{
+                    backgroundColor: card.backgroundColor,
+                    width: '340px',
+                    minHeight: '320px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transform: card.position === 'up' ? 'translateY(-12px)' : 'translateY(12px)'
+                  }}
+                >
+                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden mb-6 sm:mb-8 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                    <img 
+                      src={card.iconImage} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base leading-relaxed flex-grow font-medium" 
+                    style={{ 
+                      fontSize: 'clamp(14px, 1.5vw, 16px)',
+                      color: card.textColor
+                    }}
+                  >
+                    {card.text}
+                  </p>
+                </div>
+              ))}
+
+              {/* Second Set of Cards - Duplicated for Infinite Loop */}
+              {whyAsteraCards.map((card) => (
+                <div
+                  key={`duplicate-${card.id}`}
+                  className={`rounded-3xl p-8 sm:p-10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-3 flex-shrink-0 group card-glow ${
+                    card.backgroundColor === '#005CCC' 
+                      ? 'border border-[#005CCC]/20 hover:border-[#005CCC]/40' 
+                      : 'border border-gray-100 hover:border-[#005CCC]/20'
+                  }`}
+                  style={{
+                    backgroundColor: card.backgroundColor,
+                    width: '340px',
+                    minHeight: '320px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transform: card.position === 'up' ? 'translateY(-12px)' : 'translateY(12px)'
+                  }}
+                >
+                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden mb-6 sm:mb-8 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                    <img 
+                      src={card.iconImage} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base leading-relaxed flex-grow font-medium" 
+                    style={{ 
+                      fontSize: 'clamp(14px, 1.5vw, 16px)',
+                      color: card.textColor
+                    }}
+                  >
+                    {card.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Carousel Navigation Dots */}
+          <div className="carousel-dots">
+            {whyAsteraCards.map((_, index) => (
+              <button
+                key={index}
+                className={`carousel-dot ${activeCarouselIndex === index ? 'active' : ''}`}
+                onClick={() => {
+                  if (scrollContainerRef.current) {
+                    const cardWidth = 340 + 24;
+                    scrollContainerRef.current.scrollTo({
+                      left: cardWidth * index,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Wave Divider */}
+      <div className="wave-divider bg-white">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+          <path fill="#EFF5FF" d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z"/>
+        </svg>
+      </div>
+
+      {/* Metrics Section - Clean Simple Design */}
+      <section id="product-metrics" className="product-metrics-section py-10 sm:py-12 lg:py-16 bg-[#EFF5FF] animate-on-scroll">
+        <div className="section-container">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-16">
+            {metricsData.map((metric, index) => (
+              <div key={metric.id} className="flex items-center gap-8 sm:gap-12 lg:gap-16">
+                {/* Metric */}
+                <div className="flex-1 text-center">
+                  <div className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#005CCC] mb-2 transition-all duration-300">
+                    {counters[metric.id] || 0}{metric.unit}
+                  </div>
+                  <div className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed">
+                    {metric.title.toLowerCase()}
+                  </div>
+                </div>
+
+                {/* Vertical Dotted Separator - show after all except last */}
+                {index < metricsData.length - 1 && (
+                  <div className="hidden sm:block w-px h-16 bg-gray-300" style={{
+                    backgroundImage: 'repeating-linear-gradient(to bottom, transparent, transparent 4px, #d1d5db 4px, #d1d5db 8px)',
+                    backgroundSize: '1px 8px'
+                  }}></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Wave Divider */}
+      <div className="wave-divider wave-divider-top bg-[#EFF5FF]">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+          <path fill="white" d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z"/>
+        </svg>
+      </div>
+
+      {/* Powerful Features Accordion Section */}
+      <section id="powerful-features" className="powerful-features-section py-10 sm:py-12 lg:py-16 bg-white animate-on-scroll">
+        <div className="section-container">
+          {/* Section Header */}
+          <div className="bg-gradient-to-r from-[#005CCC] to-[#0070F3] rounded-t-2xl py-5 px-8 shadow-lg shadow-blue-500/20">
+            <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-semibold text-center tracking-tight">
+              Powerful Features Designed for Your Needs
+            </h2>
+          </div>
+
+          {/* Accordion */}
+          <div className="bg-[#F8FAFF] rounded-b-2xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+            {powerfulFeaturesData.map((feature, index) => (
+              <div 
+                key={feature.id}
+                className={`transition-all duration-500 border-b border-slate-200/80 last:border-b-0 ${
+                  activeFeatureTab === index ? 'bg-white' : 'bg-[#F8FAFF] hover:bg-[#E8F0FE]'
+                }`}
+              >
+                {/* Accordion Header */}
+                <button
+                  onClick={() => setActiveFeatureTab(activeFeatureTab === index ? index : index)}
+                  className="w-full flex items-center justify-between py-6 sm:py-7 px-6 sm:px-10 text-left transition-all duration-300 group"
+                >
+                  <span 
+                    className={`transition-colors duration-300 ${
+                      activeFeatureTab === index ? 'text-[#005CCC]' : 'text-[#1a1a1a] group-hover:text-[#005CCC]'
+                    }`}
+                    style={{
+                      fontSize: '28px',
+                      fontWeight: 500,
+                      lineHeight: '1.3'
+                    }}
+                  >
+                    {feature.title}
+                  </span>
+                  <span className={`ml-4 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
+                    activeFeatureTab === index 
+                      ? 'bg-[#005CCC] rotate-180' 
+                      : 'bg-slate-100 group-hover:bg-[#005CCC]/10'
+                  }`}>
+                    <svg 
+                      className={`w-5 h-5 transition-colors duration-300 ${
+                        activeFeatureTab === index ? 'text-white' : 'text-slate-500 group-hover:text-[#005CCC]'
+                      }`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor" 
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+                </button>
+
+                {/* Accordion Content - Smooth expand/collapse */}
+                <div 
+                  className={`grid transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                    activeFeatureTab === index ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-6 sm:px-10 pb-8 pt-2">
+                      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                        {/* Left Content */}
+                        <div className="flex-1" style={{ fontSize: '18px', fontWeight: 400, lineHeight: '31px', color: '#303030' }}>
+                          <p className="mb-5">
+                            {feature.description}
+                          </p>
+                          <p className="mb-5">
+                            {feature.subDescription}
+                          </p>
+                          <ul className="space-y-3 mb-6">
+                            {feature.bulletPoints.map((point, idx) => (
+                              <li key={idx} className="flex items-start group/item">
+                                <span className="w-6 h-6 rounded-full bg-[#005CCC]/10 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                  <svg className="w-3.5 h-3.5 text-[#005CCC]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </span>
+                                <span>
+                                  <strong className="text-[#1a1a1a]" style={{ fontWeight: 600 }}>{point.label}</strong>
+                                  <span className="text-slate-600"> {point.text}</span>
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                          <p className="mb-6 text-slate-600">
+                            {feature.footer}
+                          </p>
+                          <a 
+                            href={feature.linkUrl}
+                            className="inline-flex items-center gap-2 bg-[#005CCC] text-white px-6 py-3 rounded-full font-medium text-base hover:bg-[#004ba3] hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5"
+                          >
+                            {feature.linkText}
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </a>
+                        </div>
+                        {/* Right Image */}
+                        <div className="lg:w-[50%] flex-shrink-0">
+                          <div className="relative group/image">
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#005CCC]/20 to-[#0070F3]/20 rounded-2xl blur-xl opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"></div>
+                            <div className="relative bg-white rounded-2xl p-3 shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                              <img 
+                                src={feature.image} 
+                                alt={feature.title}
+                                className="w-full h-auto rounded-xl transition-transform duration-500 group-hover/image:scale-[1.02]"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Slider Section */}
+      <section id="testimonials" className="testimonials-section py-10 sm:py-12 lg:py-16 bg-[#F8FAFF] animate-on-scroll">
+        <div className="section-container">
+          {/* Section Header */}
+          <h2 className="section-title mb-8 sm:mb-10">
+              Real <span className="highlight">Stories</span>. Real <span className="highlight">Impact</span>.
+          </h2>
+
+          {/* Testimonial Slider */}
+          <div className="relative max-w-5xl mx-auto">
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setActiveTestimonial(prev => prev === 0 ? testimonialsData.length - 1 : prev - 1)}
+              className="absolute left-0 sm:-left-4 lg:-left-16 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border-2 border-[#005CCC] flex items-center justify-center text-[#005CCC] hover:bg-[#005CCC] hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
+              aria-label="Previous testimonial"
+            >
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button
+              onClick={() => setActiveTestimonial(prev => prev === testimonialsData.length - 1 ? 0 : prev + 1)}
+              className="absolute right-0 sm:-right-4 lg:-right-16 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border-2 border-[#005CCC] flex items-center justify-center text-[#005CCC] hover:bg-[#005CCC] hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
+              aria-label="Next testimonial"
+            >
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            {/* Testimonial Card */}
+            <div className="overflow-hidden px-8 sm:px-16 lg:px-0">
+              <div 
+                className="flex transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                style={{ transform: `translateX(-${activeTestimonial * 100}%)` }}
+              >
+                {testimonialsData.map((testimonial) => (
+                  <div key={testimonial.id} className="w-full flex-shrink-0 px-2">
+                    <div className="bg-[#F8FAFF] rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-slate-100">
+                      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-center">
+                        {/* Image */}
+                        <div className="w-full lg:w-[280px] flex-shrink-0">
+                          <div className="relative rounded-2xl overflow-hidden shadow-lg">
+                            <img 
+                              src={testimonial.image} 
+                              alt={`${testimonial.company} testimonial`}
+                              className="w-full h-auto object-cover"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 text-center lg:text-left">
+                          {/* Quote */}
+                          <blockquote 
+                            className="text-[#303030] mb-6"
+                            style={{ 
+                              fontSize: 'clamp(16px, 2vw, 20px)', 
+                              fontWeight: 400, 
+                              lineHeight: '1.7'
+                            }}
+                          >
+                            &ldquo;{testimonial.quote}&rdquo;
+                          </blockquote>
+
+                          {/* Attribution */}
+                          <div className="mb-6">
+                            <p 
+                              className="text-[#1a1a1a] font-semibold"
+                              style={{ 
+                                fontSize: '18px',
+                                fontWeight: 600
+                              }}
+                            >
+                              {testimonial.author}, {testimonial.title}
+                            </p>
+                            <p 
+                              className="text-[#005CCC]"
+                              style={{ 
+                                fontSize: '16px',
+                                fontWeight: 500
+                              }}
+                            >
+                              at {testimonial.company}
+                            </p>
+                          </div>
+
+                          {/* CTA Link */}
+                          <a 
+                            href={testimonial.caseStudyUrl}
+                            className="inline-flex items-center gap-2 text-[#005CCC] font-medium hover:gap-3 transition-all duration-300 group"
+                            style={{ 
+                              fontSize: '16px',
+                              fontWeight: 500
+                            }}
+                          >
+                            <span className="border-b-2 border-[#005CCC]">Read the full case study here</span>
+                            <svg 
+                              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
+                              fill="none" 
+                              viewBox="0 0 24 24" 
+                              stroke="currentColor" 
+                              strokeWidth={2}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center gap-2 mt-8">
+              {testimonialsData.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    activeTestimonial === index 
+                      ? 'bg-[#005CCC] w-8' 
+                      : 'bg-slate-300 hover:bg-[#005CCC]/50'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases Section - Carousel with Flip Cards */}
+      <section id="use-cases" className="use-cases-section py-10 sm:py-12 lg:py-16 bg-white overflow-hidden animate-on-scroll">
+        <div className="section-container mb-12">
+          {/* Section Header */}
+          <h2 className="section-title mb-4">
+              Browse Our <span className="highlight">Use Cases</span>
+          </h2>
+          <p className="section-desc">
+            Explore how our solution can make a difference at your company.
+          </p>
+        </div>
+
+        {/* Carousel Container */}
+        <div 
+          ref={useCasesScrollRef}
+          className="w-full overflow-x-auto cursor-grab active:cursor-grabbing"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            willChange: 'scroll-position',
+            WebkitOverflowScrolling: 'touch'
+          }}
+          onMouseEnter={() => setIsUseCasesHovered(true)}
+          onMouseLeave={() => {
+            setIsUseCasesHovered(false);
+            setHoveredUseCaseId(null);
+          }}
+        >
+          <style jsx>{`
+            div::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+          <div className="flex gap-6 px-6 sm:px-8 lg:px-12 py-4" style={{ minWidth: 'max-content', transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}>
+            {/* First Set of Cards */}
+            {useCasesData.map((useCase) => (
+              <div
+                key={useCase.id}
+                className="relative flex-shrink-0 cursor-pointer group"
+                style={{ width: '280px', height: '380px', perspective: '1000px' }}
+                onMouseEnter={() => setHoveredUseCaseId(useCase.id)}
+                onMouseLeave={() => setHoveredUseCaseId(null)}
+              >
+                {/* Card Inner - Flips on Hover */}
+                <div 
+                  className="relative w-full h-full transition-transform duration-500 ease-out"
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                    transform: hoveredUseCaseId === useCase.id ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                  }}
+                >
+                  {/* Front Face - Image with Title */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg"
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    <img 
+                      src={useCase.image} 
+                      alt={useCase.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    {/* Title on Front */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <h3 
+                        className="text-white font-semibold"
+                        style={{  fontSize: '20px', lineHeight: '1.3' }}
+                      >
+                        {useCase.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Back Face - Content */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl bg-white border-2 border-[#005CCC] shadow-xl p-6 flex flex-col"
+                    style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  >
+                    <h3 
+                      className="text-[#005CCC] font-semibold mb-4"
+                      style={{  fontSize: '22px', lineHeight: '1.3' }}
+                    >
+                      {useCase.title}
+                    </h3>
+                    <p 
+                      className="text-gray-600 flex-grow mb-4"
+                      style={{  fontSize: '15px', lineHeight: '1.6' }}
+                    >
+                      {useCase.description}
+                    </p>
+                    <a 
+                      href={useCase.linkUrl}
+                      className="inline-flex items-center text-[#005CCC] font-medium hover:gap-2 transition-all duration-300 group/link"
+                      style={{  fontSize: '15px' }}
+                    >
+                      Learn more
+                      <svg 
+                        className="w-4 h-4 ml-1 transition-transform duration-300 group-hover/link:translate-x-1" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Duplicate Set for Infinite Loop */}
+            {useCasesData.map((useCase) => (
+              <div
+                key={`dup-${useCase.id}`}
+                className="relative flex-shrink-0 cursor-pointer group"
+                style={{ width: '280px', height: '380px', perspective: '1000px' }}
+                onMouseEnter={() => setHoveredUseCaseId(useCase.id + 100)}
+                onMouseLeave={() => setHoveredUseCaseId(null)}
+              >
+                <div 
+                  className="relative w-full h-full transition-transform duration-500 ease-out"
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                    transform: hoveredUseCaseId === useCase.id + 100 ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                  }}
+                >
+                  {/* Front Face */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg"
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    <img 
+                      src={useCase.image} 
+                      alt={useCase.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <h3 
+                        className="text-white font-semibold"
+                        style={{  fontSize: '20px', lineHeight: '1.3' }}
+                      >
+                        {useCase.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Back Face */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl bg-white border-2 border-[#005CCC] shadow-xl p-6 flex flex-col"
+                    style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  >
+                    <h3 
+                      className="text-[#005CCC] font-semibold mb-4"
+                      style={{  fontSize: '22px', lineHeight: '1.3' }}
+                    >
+                      {useCase.title}
+                    </h3>
+                    <p 
+                      className="text-gray-600 flex-grow mb-4"
+                      style={{  fontSize: '15px', lineHeight: '1.6' }}
+                    >
+                      {useCase.description}
+                    </p>
+                    <a 
+                      href={useCase.linkUrl}
+                      className="inline-flex items-center text-[#005CCC] font-medium hover:gap-2 transition-all duration-300 group/link"
+                      style={{  fontSize: '15px' }}
+                    >
+                      Learn more
+                      <svg 
+                        className="w-4 h-4 ml-1 transition-transform duration-300 group-hover/link:translate-x-1" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Integrations Section - 3 Row Carousel */}
+      <section id="integrations" className="integrations-section py-10 sm:py-12 lg:py-16 bg-[#F8FAFF] overflow-hidden">
+        <div className="section-container mb-10">
+          {/* Section Header */}
+          <h2 className="section-title mb-4">
+              Build an Integrated <span className="highlight">Data Ecosystem</span>
+          </h2>
+          <p className="section-desc" style={{ maxWidth: '800px' }}>
+            Establish code-free connectivity with your enterprise applications, databases, and cloud applications to integrate all your data points and create a holistic view of your data.
+          </p>
+          <div className="text-center">
+            <a 
+              href="#"
+              className="inline-flex items-center text-[#005CCC] font-medium hover:gap-3 transition-all duration-300 group border-b-2 border-[#005CCC]"
+              style={{  fontSize: '16px', fontWeight: 500 }}
+            >
+              View All Integrations
+              <svg 
+                className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {/* Integration Logos Grid - 3 Rows of Carousels */}
+        <div className="relative">
+          {/* Large centered Astera "A" logo - z-index 999 in front */}
+          <div 
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            style={{ zIndex: 999 }}
+          >
+            <img 
+              src="https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Group-110.png"
+              alt="Astera"
+              className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 object-contain drop-shadow-2xl"
+            />
+          </div>
+
+          {/* Row 1 - Right to Left */}
+          <div className="mb-4 overflow-hidden" style={{ zIndex: 1 }}>
+            <div 
+              className="flex gap-4"
+              style={{ 
+                width: 'max-content',
+                animation: 'scrollLeft 30s linear infinite'
+              }}
+            >
+              {[...Array(3)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-4">
+                  {[
+                    { alt: 'Group-61', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-61-1-1.png' },
+                    { alt: 'Mask-group-18', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-18-3.png' },
+                    { alt: 'Group-63', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-63-1-1.png' },
+                    { alt: 'Group-64', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-64-1-1.png' },
+                    { alt: 'Group-65', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-65-2.png' },
+                    { alt: 'Group-66', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-66-2.png' },
+                    { alt: 'Group-67', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-67-2.png' },
+                    { alt: 'Mask-group-19', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-19-1.png' },
+                    { alt: 'Group-70', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-70-1.png' },
+                    { alt: 'Group-71', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-71-1.png' },
+                    { alt: 'Group-72', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-72-1.png' },
+                    { alt: 'Group-73', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-73-1.png' },
+                    { alt: 'Group-75', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-75-2.png' }
+                  ].map((img, i) => (
+                    <div 
+                      key={`r1-${setIndex}-${i}`}
+                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
+                    >
+                      <img 
+                        src={img.url}
+                        alt={img.alt}
+                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Row 2 - Left to Right (Reverse) */}
+          <div className="mb-4 overflow-hidden" style={{ zIndex: 1 }}>
+            <div 
+              className="flex gap-4"
+              style={{ 
+                width: 'max-content',
+                animation: 'scrollRight 35s linear infinite'
+              }}
+            >
+              {[...Array(3)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-4">
+                  {[
+                    { alt: 'Group-76', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-76-1.png' },
+                    { alt: 'Group-77', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-77-1.png' },
+                    { alt: 'Group-78', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-78.png' },
+                    { alt: 'Group-79', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-79-1.png' },
+                    { alt: 'Mask-group-20', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-20-1.png' },
+                    { alt: 'Group-81', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-81.png' },
+                    { alt: 'Group-82', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-82.png' },
+                    { alt: 'Group-83', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-83.png' },
+                    { alt: 'Group-87', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-87.png' },
+                    { alt: 'Group-88', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-88.png' },
+                    { alt: 'Group-89', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-89.png' }
+                  ].map((img, i) => (
+                    <div 
+                      key={`r2-${setIndex}-${i}`}
+                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
+                    >
+                      <img 
+                        src={img.url}
+                        alt={img.alt}
+                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Row 3 - Right to Left */}
+          <div className="overflow-hidden" style={{ zIndex: 1 }}>
+            <div 
+              className="flex gap-4"
+              style={{ 
+                width: 'max-content',
+                animation: 'scrollLeft 40s linear infinite'
+              }}
+            >
+              {[...Array(3)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-4">
+                  {[
+                    { alt: 'Group-91', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-91.png' },
+                    { alt: 'Group-91-1', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-91-1.png' },
+                    { alt: 'Group-92', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-92.png' },
+                    { alt: 'Group-93', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-93.png' },
+                    { alt: 'Group-95', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-95.png' },
+                    { alt: 'Group-96', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-96.png' },
+                    { alt: 'Group-98', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-98.png' },
+                    { alt: 'Group-99', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-99.png' },
+                    { alt: 'Group-101', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-101.png' },
+                    { alt: 'Group-102', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-102.png' },
+                    { alt: 'Group-103', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-103.png' },
+                    { alt: 'Group-104', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-104.png' },
+                    { alt: 'Group-105', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-105.png' }
+                  ].map((img, i) => (
+                    <div 
+                      key={`r3-${setIndex}-${i}`}
+                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
+                    >
+                      <img 
+                        src={img.url}
+                        alt={img.alt}
+                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* CSS Animations */}
+        <style jsx>{`
+          @keyframes scrollLeft {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          @keyframes scrollRight {
+            0% {
+              transform: translateX(-50%);
+            }
+            100% {
+              transform: translateX(0);
+            }
+          }
+        `}</style>
+      </section>
+
+      {/* Awards Section - Global Component */}
+      <Awards />
+
+      {/* FAQ Section */}
+      <section id="faqs" className="py-10 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-[#f8fafc] animate-on-scroll">
+        <div className="section-container max-w-4xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-8 sm:mb-10">
+            <span 
+              className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-4"
+              style={{ 
+                backgroundColor: 'var(--icon-blue-3)', 
+                color: 'var(--azure-blue)'
+              }}
+            >
+              Got Questions?
+            </span>
+            <h2 className="section-title">
+              Frequently Asked <span className="highlight">Questions</span>
+            </h2>
+            <p className="section-desc mt-4">
+              Everything you need to know about ReportMiner and how it can transform your data extraction workflow.
+            </p>
+          </div>
+
+          {/* FAQ Accordion */}
+          <div className="space-y-3">
+            {[
+              {
+                id: 'faq-1',
+                question: 'What file types can I extract using ReportMiner?',
+                answer: 'With our AI-powered extraction, you can handle virtually any type of data. This includes PDF, TXT, CSV, XLS, XLSX, DOC, DOCX, JPEG, and scanned images — all converted into structured, usable data in seconds with zero manual effort.'
+              },
+              {
+                id: 'faq-2',
+                question: 'What company documents can ReportMiner help me extract?',
+                answer: 'ReportMiner can extract data from invoices, purchase orders, contracts, bank statements, insurance claims, medical records, shipping documents, utility bills, and virtually any structured or unstructured business document.'
+              },
+              {
+                id: 'faq-3',
+                question: 'How does AI fit into ReportMiner?',
+                answer: 'AI powers ReportMiner\'s intelligent document processing capabilities. Our Auto-Generate Layout (AGL) handles recurring formats, while LLM-Generate processes documents with varying structures. Built-in OCR accurately converts scanned files into machine-readable text.'
+              },
+              {
+                id: 'faq-4',
+                question: 'Can I use a single ReportMiner license for multiple users at my company?',
+                answer: 'Yes, ReportMiner offers flexible licensing options including multi-user licenses for teams and enterprise-wide deployments. Contact our sales team to discuss the best licensing option for your organization\'s needs.'
+              },
+              {
+                id: 'faq-5',
+                question: 'Do I need to know coding to use ReportMiner?',
+                answer: 'No coding is required. ReportMiner features a completely no-code visual interface that allows anyone to design, build, and deploy data extraction workflows without writing a single line of code.'
+              },
+              {
+                id: 'faq-6',
+                question: 'How does Astera handle security?',
+                answer: 'Astera takes security seriously with enterprise-grade encryption, secure data handling, role-based access controls, and compliance with industry standards. Your data remains protected throughout the entire extraction and processing workflow.'
+              }
+            ].map((faq, index) => {
+              const isActive = activeFaqIndex === index;
+              return (
+                <div 
+                  key={faq.id}
+                  className={`faq-item rounded-2xl overflow-hidden transition-all duration-300 ease-out ${
+                    isActive 
+                      ? 'bg-white shadow-lg shadow-blue-100/50 ring-1 ring-blue-100' 
+                      : 'bg-[#EFF5FF] hover:bg-[#E8F2FF] hover:shadow-md'
+                  }`}
+                  style={{ 
+                    transform: isActive ? 'scale(1.01)' : 'scale(1)',
+                  }}
+                >
+                  <button
+                    className="w-full flex items-center gap-4 p-5 sm:p-6 text-left group"
+                    onClick={() => setActiveFaqIndex(isActive ? null : index)}
+                  >
+                    {/* Question Number */}
+                    <span 
+                      className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-[#005CCC] text-white' 
+                          : 'bg-white/70 text-[#005CCC] group-hover:bg-white'
+                      }`}
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    
+                    {/* Question Text */}
+                    <span 
+                      className="flex-1 pr-2 transition-colors duration-300"
+                      style={{ 
+                        fontSize: 'clamp(15px, 2vw, 17px)',
+                        fontWeight: 600,
+                        color: isActive ? '#005CCC' : '#1a1a1a'
+                      }}
+                    >
+                      {faq.question}
+                    </span>
+                    
+                    {/* Toggle Icon */}
+                    <div 
+                      className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-[#005CCC] rotate-180' 
+                          : 'bg-white/70 rotate-0 group-hover:bg-white group-hover:shadow-sm'
+                      }`}
+                    >
+                      <svg 
+                        className="w-5 h-5 transition-colors duration-300" 
+                        fill="none" 
+                        stroke={isActive ? 'white' : '#005CCC'}
+                        strokeWidth="2.5"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+                  
+                  {/* Answer */}
+                  <div 
+                    className={`overflow-hidden transition-all duration-500 ease-out ${
+                      isActive ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{ 
+                      maxHeight: isActive ? '400px' : '0px',
+                    }}
+                  >
+                    <div className="px-5 sm:px-6 pb-6 pt-0">
+                      <div className="pl-12 border-l-2 border-[#005CCC]/20">
+                        <p
+                          style={{
+                            fontSize: '15px',
+                            fontWeight: 400,
+                            lineHeight: '26px',
+                            color: '#4b5563'
+                          }}
+                        >
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Explore Our Resources Section */}
+      <section id="resources" className="resources-section py-10 sm:py-12 lg:py-16 bg-white animate-on-scroll">
+        <div className="resources-container section-container">
+          <h2 className="section-title mb-6 sm:mb-8 lg:mb-10">
+            Explore Our <span className="highlight">Resources</span>
+          </h2>
+          <div className="resources-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { 
+                type: 'WEBINAR', 
+                title: 'Mastering Unstructured Data Extraction with ReportMiner',
+                image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop',
+                link: 'https://www.astera.com/type/webinars/'
+              },
+              { 
+                type: 'CASE STUDY', 
+                title: 'How CoWorx Staffing Automated Their Data Processing Workflow',
+                image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
+                link: 'https://www.astera.com/type/case-studies/'
+              },
+              { 
+                type: 'BLOG', 
+                title: 'AI-Powered Document Processing: A Complete Guide for 2025',
+                image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=600&fit=crop',
+                link: 'https://www.astera.com/type/blog/'
+              },
+              { 
+                type: 'WHITEPAPER', 
+                title: 'Introduction to Generative AI and its Role in Unstructured Data Extraction',
+                image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop',
+                link: 'https://www.astera.com/type/whitepaper/generative-ai-and-data-extraction-automation/'
+              }
+              
+            ].map((resource, index) => (
+              <a 
+                key={index} 
+                href={resource.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="resource-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
+              >
+                {/* Top Section - Image */}
+                <div className="resource-image-container relative h-56 bg-gradient-to-br from-[#005CCC] to-[#004ba3] overflow-hidden flex items-center justify-center">
+                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#005CCC]/30"></div>
+                  <img 
+                    src={resource.image} 
+                    alt={resource.title}
+                    className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                </div>
+                {/* Bottom Section - Content */}
+                <div className="resource-content p-6">
+                  <div className="resource-type inline-block px-3 py-1 sm:px-4 sm:py-1.5 bg-[#005CCC] text-white rounded-full text-xs font-medium sm:font-semibold mb-3 sm:mb-4">
+                    {resource.type}
+                  </div>
+                  <h3 className="resource-title text-sm sm:text-base font-semibold text-[#000] leading-relaxed line-clamp-3 group-hover:text-[#005CCC] transition-colors">
+                    {resource.title}
+                  </h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section with HubSpot */}
+      <section id="contact-form" className="py-10 sm:py-12 lg:py-16 bg-[#f8fafc]">
+        <div className="section-container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+            {/* Left Column - Content */}
+            <div className="lg:sticky lg:top-8">
+              <h2 className="section-title-left mb-4">
+                Looking To Automate Your Unstructured Data Management with <span className="highlight">AI</span>?
+              </h2>
+              
+              <h3 className="text-xl sm:text-2xl lg:text-[28px] font-semibold text-[#005CCC] mb-6">
+                Let&apos;s Make it Happen!
+              </h3>
+              
+              <p className="section-desc-left mb-7">
+                Astera ReportMiner lets you extract, cleanse, transform, and validate data from a variety of unstructured sources.
+              </p>
+              
+              <p className="text-[15px] font-semibold text-gray-900 mb-4">
+                But why pick Astera?
+              </p>
+              
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
+                  <span className="card-desc">
+                    Our <strong className="text-gray-900">AI-powered extraction features</strong> deliver unmatched accuracy and efficiency when extracting your data.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
+                  <span className="card-desc">
+                    Our <strong className="text-gray-900">visual drag-and-drop interface</strong> lets users manage their unstructured data without any coding knowledge.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
+                  <span className="card-desc">
+                    Our <strong className="text-gray-900">automation features</strong> ensure that workflows run with minimal oversight to save time and effort.
+                  </span>
+                </li>
+              </ul>
+              
+              <p className="text-sm text-gray-500">
+                Fill out the form to speak with an expert.
+              </p>
+            </div>
+            
+            {/* Right Column - HubSpot Form */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-gray-100 w-full">
+              <div 
+                id="hubspot-form-container"
+                className="hubspot-form-wrapper w-full"
+              >
+                {/* HubSpot form will be injected here */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* CTA Section - Enhanced with Gradient */}
+      <section id="product-cta" className="product-cta-section py-16 sm:py-20 lg:py-24 gradient-cta relative overflow-hidden animate-on-scroll">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+        </div>
+        
+        <div className="product-cta-container section-container relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">
+              {content.ctaSectionTitle || 'Ready to Transform Your Data Workflow?'}
+            </h2>
+            <p className="text-white/90 text-base sm:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
+              {content.ctaSectionDescription || 'Join thousands of businesses leveraging AI for data success. Start your free trial today.'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="inline-flex items-center justify-center h-[51px] px-8 bg-white text-[#005CCC] font-semibold rounded-lg transition-all duration-200 hover:bg-gray-100 hover:scale-105 shadow-lg">
+                {content.ctaSectionPrimaryCta || 'Start Free Trial'}
+              </button>
+              <button className="inline-flex items-center justify-center h-[51px] px-8 bg-transparent text-white font-semibold rounded-lg border-2 border-white transition-all duration-200 hover:bg-white/10">
+                {content.ctaSectionSecondaryCta || 'Schedule Demo'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+

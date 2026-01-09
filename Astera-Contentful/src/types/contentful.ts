@@ -47,11 +47,22 @@ export interface Step {
 }
 
 /**
- * Use Case card interface
+ * Use Case card interface (for home page)
  */
 export interface UseCase {
   title: string;
   description: string;
+}
+
+/**
+ * Product Use Case card interface (for product page carousel)
+ */
+export interface ProductUseCase {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  linkUrl: string;
 }
 
 /**
@@ -70,6 +81,56 @@ export interface Product {
 export interface ProductFeature {
   title: string;
   description: string;
+}
+
+/**
+ * Why Astera Card interface (for product page carousel)
+ */
+export interface WhyAsteraCard {
+  id: number;
+  text: string;
+  backgroundColor: string;
+  textColor: string;
+  iconImage: string;
+  position: 'up' | 'down';
+}
+
+/**
+ * Testimonial interface (for product page)
+ */
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author: string;
+  title: string;
+  company: string;
+  image: string;
+  caseStudyUrl: string;
+}
+
+/**
+ * Powerful Feature interface (for product page accordion)
+ */
+export interface PowerfulFeature {
+  id: string;
+  title: string;
+  description: string;
+  subDescription: string;
+  bulletPoints: { label: string; text: string }[];
+  footer: string;
+  linkText: string;
+  linkUrl: string;
+  image: string;
+}
+
+/**
+ * Metric interface (for product page counters)
+ */
+export interface Metric {
+  id: string;
+  value: number;
+  unit: string;
+  title: string;
 }
 
 /**
@@ -215,6 +276,21 @@ export interface ProductPageContent {
   productFeaturesSectionTitle: string;
   productFeaturesSectionDescription: string;
   productFeatures: ProductFeature[];
+  
+  // Why Astera Cards Section (Carousel)
+  whyAsteraCards?: WhyAsteraCard[];
+  
+  // Testimonials Section
+  testimonials?: Testimonial[];
+  
+  // Powerful Features Section (Accordion)
+  powerfulFeatures?: PowerfulFeature[];
+  
+  // Metrics Section (Counters)
+  metrics?: Metric[];
+  
+  // Use Cases Section (Carousel)
+  useCases?: ProductUseCase[];
   
   // CTA Section
   ctaSectionTitle: string;

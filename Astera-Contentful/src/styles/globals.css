@@ -2,11 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Astera Brand Colors 2025 */
+:root {
+  --azure-blue: #005ccc;
+  --azure-blue-hover: #004ba3;
+  --light-grey: #ebebeb;
+  --orange: #ff983d;
+  --powder-blue: #bbd5ff;
+  --icon-blue-1: #9dc9fc;
+  --icon-blue-2: #89c3ff;
+  --icon-blue-3: #d3e7ff;
+  --text-dark: #1a1a1a;
+  --text-body: #4b5563;
+  --text-muted: #6b7280;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   html,
@@ -21,6 +40,18 @@
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: var(--text-body);
+  }
+
+  h1, h3, h4, h5, h6 {
+    color: var(--text-dark);
+  }
+
+  h2 {
+    color: var(--text-dark);
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    line-height: 1.2;
   }
 
   a {
@@ -58,24 +89,279 @@
     }
   }
 
-  /* Consistent Section Heading */
-  .section-heading {
-    @apply font-semibold text-[#000] tracking-tight text-center;
-    font-size: clamp(24px, 5vw, 40px);
+  /* ========================================
+     TYPOGRAPHY SYSTEM - Consistent across all pages
+     ======================================== */
+
+  /* Section Title (h2) - centered by default */
+  .section-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
     line-height: 1.2;
+    color: var(--text-dark);
+    text-align: center;
+    font-style: normal;
+  }
+  .section-title .highlight {
+    color: var(--azure-blue);
+    font-weight: 700;
   }
 
-  /* Consistent Section Description/Paragraph */
+  /* Section Title - left aligned variant */
+  .section-title-left {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-dark);
+    font-style: normal;
+  }
+  .section-title-left .highlight {
+    color: var(--azure-blue);
+    font-weight: 700;
+  }
+
+  /* Section Description (p) - centered by default */
+  .section-desc {
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.7;
+    color: var(--text-body);
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    font-style: normal;
+  }
+
+  /* Section Description - left aligned variant */
+  .section-desc-left {
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.7;
+    color: var(--text-body);
+    max-width: 600px;
+    font-style: normal;
+  }
+
+  /* Card Title */
+  .card-title {
+    font-size: clamp(16px, 2vw, 18px);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-dark);
+    font-style: normal;
+  }
+
+  /* Card Description */
+  .card-desc {
+    font-size: clamp(14px, 1.5vw, 15px);
+    line-height: 1.6;
+    color: var(--text-body);
+    font-style: normal;
+  }
+
+  /* Small label/badge text */
+  .label-text {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--azure-blue);
+    font-style: normal;
+  }
+
+  /* Legacy support - maps to new classes */
+  .section-heading {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-dark);
+    text-align: center;
+    font-style: normal;
+  }
+  .section-heading .text-blue,
+  .section-heading span[class*="text-[#005"] {
+    font-weight: 700;
+  }
+
   .section-description {
-    @apply leading-relaxed text-gray-600 text-center;
-    font-size: clamp(14px, 2vw, 18px);
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.7;
+    color: var(--text-body);
+    text-align: center;
+    font-style: normal;
   }
 
-  /* Consistent Section Subheading (for smaller headings) */
   .section-subheading {
-    @apply font-semibold text-[#000] tracking-tight;
     font-size: clamp(20px, 4vw, 35px);
+    font-weight: 600;
     line-height: 1.3;
+    color: var(--text-dark);
+    font-style: normal;
+  }
+
+  /* Brand CTAs - 51px height as per guidelines */
+  .btn-primary {
+    @apply inline-flex items-center justify-center font-semibold transition-all duration-200;
+    height: 51px;
+    padding: 0 28px;
+    background: var(--azure-blue);
+    color: white;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+  .btn-primary:hover {
+    background: var(--azure-blue-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center font-semibold transition-all duration-200;
+    height: 51px;
+    padding: 0 28px;
+    background: transparent;
+    color: var(--azure-blue);
+    border: 2px solid var(--azure-blue);
+    border-radius: 10px;
+    font-size: 15px;
+  }
+  .btn-secondary:hover {
+    background: var(--azure-blue);
+    border-color: var(--azure-blue);
+    color: white;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .why-astera-section ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .why-astera-section * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ========================================
+     SCROLL ANIMATIONS - Fade in on scroll
+     ======================================== */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger animation delays for children */
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+  .stagger-5 { transition-delay: 0.5s; }
+  .stagger-6 { transition-delay: 0.6s; }
+
+  /* ========================================
+     CARD HOVER EFFECTS - Glow on hover
+     ======================================== */
+  .card-glow {
+    transition: all 0.3s ease;
+  }
+  .card-glow:hover {
+    box-shadow: 0 0 30px rgba(0, 92, 204, 0.15), 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ========================================
+     SECTION DIVIDERS - Wave shapes
+     ======================================== */
+  .wave-divider {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+  }
+
+  .wave-divider svg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .wave-divider-top svg {
+    transform: rotate(180deg);
+  }
+
+  /* ========================================
+     GRADIENT BACKGROUNDS
+     ======================================== */
+  .gradient-cta {
+    background: linear-gradient(135deg, #005CCC 0%, #0070F3 50%, #005CCC 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ========================================
+     CAROUSEL NAVIGATION DOTS
+     ======================================== */
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-dot:hover {
+    background: #9ca3af;
+  }
+
+  .carousel-dot.active {
+    background: var(--azure-blue);
+    width: 28px;
+    border-radius: 5px;
+  }
+
+  /* ========================================
+     TRUST BADGES
+     ======================================== */
+  .trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(0, 92, 204, 0.1);
+    margin-top: 2rem;
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .trust-badge svg {
+    color: var(--azure-blue);
   }
 }
 

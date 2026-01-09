@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import dynamic from 'next/dynamic';
 import type { HomePageContent } from '@/types/contentful';
+import { Awards } from '@/components/ui/Awards';
 
 // Lazy load Lottie to improve initial page load
 const Lottie = dynamic(
@@ -219,10 +220,10 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       {/* AI-Driven Data Stack Section */}
       <section id="ai-driven-data-stack" className="ai-driven-data-stack-section py-12 sm:py-16 lg:py-20 bg-gradient-to-br  to-white">
         <div className="ai-driven-data-stack-container section-container">
-          <h2 className="ai-driven-data-stack-heading text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-center leading-tight">
-            An AI-Driven Data Stack That <br className="hidden sm:block" />Simplifies How You <span className="text-[#005CCC]">Manage Data</span>
+          <h2 className="section-title mb-4 sm:mb-6">
+            An AI-Driven Data Stack That <br className="hidden sm:block" />Simplifies How You <span className="highlight">Manage Data</span>
           </h2>
-          <p className="ai-driven-data-stack-description text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 max-w-[600px] mx-auto mb-6 sm:mb-8 lg:mb-10 text-center">
+          <p className="section-desc mb-6 sm:mb-8 lg:mb-10">
             Move from raw data to insights with simple prompts and agentic workflows.
           </p>
           <div className="ai-driven-data-stack-video-container max-w-[900px] mx-auto">
@@ -243,8 +244,8 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       {/* Feature Tabs Section */}
       <section id="simplifying-data-management" className="feature-tabs-section simplifying-data-management-section py-12 sm:py-16 lg:py-20" style={{ backgroundColor: '#EFF5FF' }}>
         <div className="feature-tabs-container section-container bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-12 shadow-sm">
-          <h2 className="feature-tabs-heading text-xl sm:text-2xl lg:text-3xl font-semibold text-[#000] mb-6 sm:mb-8 tracking-tight text-center leading-tight">
-            Simplifying <span className="text-[#005CCC]">Data Management</span> with Astera
+          <h2 className="section-title mb-6 sm:mb-8">
+            Simplifying <span className="highlight">Data Management</span> with Astera
           </h2>
           <div className="feature-tabs-nav flex justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 lg:mb-16 flex-wrap w-full overflow-x-auto pb-2">
             {tabs.map((tab, index) => (
@@ -303,8 +304,8 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       {/* Metrics Section */}
       <section id="achieve-more" className="metrics-section achieve-more-section py-12 sm:py-16 lg:py-20">
         <div className="metrics-container section-container">
-          <h2 className="metrics-heading text-xl sm:text-2xl lg:text-3xl font-semibold text-[#000] mb-8 sm:mb-10 lg:mb-12 tracking-tight text-center leading-tight">
-            Achieve More in Less Time and Effort with Astera AI
+          <h2 className="section-title mb-8 sm:mb-10 lg:mb-12">
+            Achieve More in Less Time and Effort with <span className="highlight">Astera AI</span>
           </h2>
           <div className="metrics-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div id="metric-operational-efficiency" className="metric-card rounded-xl p-8 text-center transition-all duration-300 hover:bg-[#E8F0FF] hover:shadow-md hover:-translate-y-1 cursor-pointer" style={{ backgroundColor: '#EFF5FF' }}>
@@ -346,8 +347,8 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       {/* Product Offerings Section */}
       <section id="transform-integrate-scale" className="product-offerings-section transform-integrate-scale-section py-12 sm:py-16 lg:py-24 bg-white">
         <div className="product-offerings-container section-container">
-          <h2 className="product-offerings-heading text-xl sm:text-2xl lg:text-3xl font-semibold text-[#000] mb-8 sm:mb-12 lg:mb-16 tracking-tight text-center leading-tight">
-            <span className="text-[#005CCC]">Transform, Integrate, and</span> <span className="text-[#005CCC]">Scale</span> <span className="text-[#000]">Your Data Effortlessly</span>
+          <h2 className="section-title mb-8 sm:mb-12 lg:mb-16">
+            <span className="highlight">Transform, Integrate, and Scale</span> Your Data Effortlessly
           </h2>
           <div className="product-offerings-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {[
@@ -408,40 +409,13 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
         </div>
       </section>
 
-      {/* Awards Section */}
-      <section id="awards" className="awards-section py-12 sm:py-16 lg:py-28 bg-white">
-        <div className="awards-container section-container">
-          <h2 className="awards-heading text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#000] mb-8 sm:mb-12 lg:mb-16 tracking-tight text-center leading-tight">Honored for Delivering Results for You</h2>
-          
-          <div className="awards-grid flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-center gap-4 sm:gap-6 w-full overflow-x-auto">
-            {[
-              { image: '/images/awards/best-support.png', alt: 'DataMapping_BestSupport_QualityOfSupport' },
-              { image: '/images/awards/momentum-leader.png', alt: 'DataMapping_MomentumLeader_Leader' },
-              { image: '/images/awards/stevie-award.png', alt: 'Horatio_Silver_STEVIE_AWARD_winner' },
-              { image: '/images/awards/top-performer-2024.png', alt: 'Top-performer-2024' },
-              { image: '/images/awards/top-rated-2023.png', alt: 'top-rated-2023-flat' },
-              { image: '/images/awards/big-innovation-2023.png', alt: '2023_BIG_Innovation_Award' }
-            ].map((award, index) => (
-              <div 
-                key={index} 
-                className="award-card flex justify-center items-center flex-1"
-              >
-                  <img 
-                  src={award.image} 
-                  alt={award.alt}
-                  className="h-16 sm:h-20 lg:h-24 w-auto object-contain max-w-full"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Awards Section - Global Component */}
+      <Awards />
 
       {/* Resources Section */}
       <section id="resources" className="resources-section py-12 sm:py-16 lg:py-28 bg-gradient-to-br from-primary-50 to-white">
         <div className="resources-container section-container">
-          <h2 className="resources-heading text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#000] mb-8 sm:mb-12 lg:mb-16 tracking-tight text-center leading-tight">Explore Our Resources</h2>
+          <h2 className="section-title mb-8 sm:mb-12 lg:mb-16">Explore Our <span className="highlight">Resources</span></h2>
           <div className="resources-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { 
@@ -506,10 +480,10 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       {/* Final CTA Section */}
       <section id="final-cta" className="final-cta-section py-12 sm:py-16 lg:py-28" style={{ backgroundColor: 'transparent', backgroundImage: 'linear-gradient(180deg, #EFF5FF 0%, #FFFFFF 100%)' }}>
         <div className="final-cta-container section-container">
-          <h2 className="final-cta-heading text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-center leading-tight">
-            Leverage the Power of <span className="text-[#005CCC]">Data + Agentic AI</span> Today!
+          <h2 className="section-title mb-4 sm:mb-6">
+            Leverage the Power of <span className="highlight">Data + Agentic AI</span> Today!
           </h2>
-          <p className="final-cta-description text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 mb-8 sm:mb-12 lg:mb-16 max-w-[700px] mx-auto text-center">
+          <p className="section-desc mb-8 sm:mb-12 lg:mb-16">
             Join the ranks of forward-thinking businesses leveraging AI to drive success with data.
           </p>
           <div className="final-cta-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
