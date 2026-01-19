@@ -1,0 +1,535 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
+
+import { useEffect, useMemo, useState, useRef } from 'react';
+import type { BlogPost } from '@/types/contentful';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { BLOCKS } from '@contentful/rich-text-types';
+import './BlogPostScreen.css';
+
+type Props = {
+  post: BlogPost;
+};
+
+type TocItem = { id: string; text: string };
+
+const FALLBACK_COVER =
+  'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1400&q=80';
+
+function formatDate(value?: string) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Normalize content structure to match Contentful's expected format
+function normalizeContent(content: any): any {
+  if (!content || typeof content !== 'object') return null;
+  
+  if (!content.nodeType) return null;
+  
+  // Ensure data property exists
+  const normalized: any = {
+    nodeType: content.nodeType,
+    data: content.data || {},
+  };
+  
+  // Handle content array
+  if (content.content) {
+    if (!Array.isArray(content.content)) {
+      return normalized;
+    }
+    
+    normalized.content = content.content
+      .filter((node: any) => node && typeof node === 'object')
+      .map((node: any) => {
+        if (node.nodeType === 'text') {
+          return {
+            nodeType: 'text',
+            value: node.value || '',
+            marks: node.marks || [],
+            data: node.data || {},
+          };
+        }
+        // Recursively normalize nested nodes
+        return normalizeContent(node) || node;
+      })
+      .filter((node: any) => node !== null);
+  }
+  
+  return normalized;
+}
+
+function extractHeadings(content: any): TocItem[] {
+  if (!content?.content || !Array.isArray(content.content)) return [];
+  try {
+    return content.content
+      .filter((node: any) => node && node.nodeType === BLOCKS.HEADING_2)
+      .map((node: any, idx: number) => {
+        if (!node.content || !Array.isArray(node.content)) {
+          return { id: `section-${idx + 1}`, text: `Section ${idx + 1}` };
+        }
+        const text = node.content
+          .filter((c: any) => c && c.value)
+          .map((c: any) => c.value || '')
+          .join(' ')
+          .trim() || `section-${idx + 1}`;
+        return { id: slugify(text), text };
+      });
+  } catch (error) {
+    console.error('Error extracting headings:', error);
+    return [];
+  }
+}
+
+function handleImageError(e: React.SyntheticEvent<HTMLImageElement, Event>) {
+  const target = e.currentTarget;
+  if (target.src !== FALLBACK_COVER) {
+    target.src = FALLBACK_COVER;
+  }
+}
+
+
+// Icon grid for promotional section
+const PromoIcons = () => {
+  const icons = [
+    // Row 1: API, Database, Analytics, Cloud
+    <svg key="api" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M4 9h16M4 15h16M12 3v18" />
+    </svg>,
+    <svg key="db" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" />
+    </svg>,
+    <svg key="chart" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="22 6 13.5 14.5 8.5 9.5 2 18" />
+      <polyline points="16 6 22 6 22 12" />
+    </svg>,
+    <svg key="cloud" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+    </svg>,
+    // Row 2: Funnel, Gear, Integration, Pipeline
+    <svg key="funnel" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>,
+    <svg key="gear" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
+    </svg>,
+    <svg key="integration" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 12h8M12 8v8" />
+    </svg>,
+    <svg key="pipeline" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M2 12h20M6 6h12M6 18h12" />
+    </svg>,
+    // Row 3: Transform, Validate, Export, Monitor
+    <svg key="transform" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 3l3 3-3 3M6 21l-3-3 3-3M3 6v12M21 6v12" />
+    </svg>,
+    <svg key="validate" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>,
+    <svg key="export" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+    </svg>,
+    <svg key="monitor" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+    </svg>,
+  ];
+
+  return (
+    <div className="promo-icon-grid">
+      {icons.map((icon, i) => (
+        <div key={i} className="promo-icon-circle">
+          {icon}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export function BlogPostScreen({ post }: Props) {
+  const cover = post.coverImage || (post as any).featuredImage || FALLBACK_COVER;
+  const authorName = post.authorName || post.author?.name || 'Astera Team';
+  const authorRole = (post as any).authorRole || 'Product Marketing Specialist';
+  
+  // Normalize content to ensure it matches Contentful's expected format
+  const rawContent = post.content as any;
+  const contentData = rawContent ? normalizeContent(rawContent) : null;
+  
+  // Debug: Log content structure
+  if (process.env.NODE_ENV === 'development') {
+    console.log('BlogPostScreen - Post slug:', post.slug);
+    console.log('BlogPostScreen - Has content:', !!contentData);
+    console.log('BlogPostScreen - Content nodeType:', contentData?.nodeType);
+    console.log('BlogPostScreen - Content array length:', contentData?.content?.length);
+  }
+  
+  const hasRichText = 
+    contentData && 
+    contentData.nodeType === 'document' && 
+    Array.isArray(contentData.content) && 
+    contentData.content.length > 0;
+  
+  const [activeTocId, setActiveTocId] = useState<string>('');
+  const sidebarRef = useRef<HTMLElement>(null);
+
+  // Add class to aside when scrolling and maintain horizontal position
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let initialLeft: number | null = null;
+    let isFixed = false;
+    let thresholdScroll = 0;
+
+    const updatePosition = (): number | null => {
+      const sidebar = sidebarRef.current;
+      if (!sidebar) return null;
+
+      // Get the grid container to calculate proper position
+      const gridContainer = sidebar.closest('.section-container.grid');
+      if (!gridContainer) return null;
+
+      const gridRect = gridContainer.getBoundingClientRect();
+      const sidebarRect = sidebar.getBoundingClientRect();
+      
+      // Calculate left position relative to viewport
+      // The sidebar is in the second column of the grid
+      const gridLeft = gridRect.left;
+      const gridWidth = gridRect.width;
+      // Sidebar is in the right column, so calculate its position
+      const sidebarLeft = gridLeft + (gridWidth - sidebarRect.width - 40); // 40px for gap
+      
+      return sidebarLeft;
+    };
+
+    const calculateThreshold = (): number => {
+      const sidebar = sidebarRef.current;
+      if (!sidebar) return 0;
+
+      // Get the TOC container inside the sidebar
+      const tocContainer = sidebar.querySelector('.blog-toc-container');
+      if (!tocContainer) {
+        // Fallback: use sidebar's own position
+        const rect = sidebar.getBoundingClientRect();
+        return Math.max(0, rect.top + window.scrollY - 100); // 100px for header height
+      }
+
+      // Calculate when header (100px from top) would touch the TOC
+      const tocRect = tocContainer.getBoundingClientRect();
+      const tocTop = tocRect.top + window.scrollY;
+      // When TOC top reaches 100px from viewport top (header position)
+      // This is the scroll position where header will touch TOC
+      return Math.max(0, tocTop - 100);
+    };
+
+    const handleScroll = () => {
+      const sidebar = sidebarRef.current;
+      if (!sidebar) return;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Calculate threshold on first scroll or if not set
+      if (thresholdScroll === 0) {
+        thresholdScroll = calculateThreshold();
+      }
+      
+      // Add 'is-fixed' class when header touches TOC
+      if (scrollTop > thresholdScroll) {
+        if (!isFixed) {
+          // Capture position before adding class
+          const leftPos = updatePosition();
+          if (leftPos !== null) {
+            initialLeft = leftPos;
+            
+            sidebar.classList.add('is-fixed');
+            
+            // Set position with smooth transition
+            sidebar.style.setProperty('left', `${initialLeft}px`, 'important');
+            sidebar.style.setProperty('top', '100px', 'important');
+            sidebar.style.setProperty('position', 'fixed', 'important');
+            sidebar.style.setProperty('right', 'auto', 'important');
+            
+            isFixed = true;
+          }
+        } else {
+          // Update position if already fixed (for resize or scroll)
+          const leftPos = updatePosition();
+          if (leftPos !== null && initialLeft !== leftPos) {
+            initialLeft = leftPos;
+            sidebar.style.setProperty('left', `${initialLeft}px`, 'important');
+          }
+        }
+      } else {
+        if (isFixed) {
+          sidebar.classList.remove('is-fixed');
+          sidebar.style.removeProperty('left');
+          sidebar.style.removeProperty('top');
+          sidebar.style.removeProperty('position');
+          sidebar.style.removeProperty('right');
+          initialLeft = null;
+          isFixed = false;
+          thresholdScroll = 0; // Reset to recalculate on next scroll
+        }
+      }
+    };
+
+    // Throttle scroll events for better performance
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    
+    const handleResize = () => {
+      // Recalculate position on resize
+      if (isFixed && sidebarRef.current) {
+        const leftPos = updatePosition();
+        if (leftPos !== null) {
+          initialLeft = leftPos;
+          sidebarRef.current.style.setProperty('left', `${initialLeft}px`, 'important');
+        }
+      }
+    };
+    
+    window.addEventListener('resize', handleResize, { passive: true });
+    handleScroll(); // Check initial state
+    
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const toc = useMemo(() => {
+    if (!contentData) return [];
+    return extractHeadings(contentData);
+  }, [contentData]);
+
+
+  // Track active TOC section on scroll
+  useEffect(() => {
+    if (toc.length === 0) return;
+
+    const observerOptions = {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0,
+    };
+
+    const observers = toc.map((item) => {
+      const element = document.getElementById(item.id);
+      if (!element) return null;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveTocId(item.id);
+            }
+          });
+        },
+        observerOptions
+      );
+
+      observer.observe(element);
+      return { observer, element };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) {
+          obs.observer.disconnect();
+        }
+      });
+    };
+  }, [toc]);
+
+  // Handle smooth scroll to heading when TOC is clicked
+  const handleTocClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100; // Account for sticky header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const renderOptions = {
+    renderNode: {
+      [BLOCKS.HEADING_2]: (node: any, children: any) => {
+        const rawText =
+          (node.content || [])
+            .map((c: any) => c.value || '')
+            .join(' ')
+            .trim() || 'section';
+        const id = slugify(rawText);
+        return (
+          <h2 id={id} className="blog-post-h2">
+            {children}
+          </h2>
+        );
+      },
+    },
+  };
+
+  // Key takeaways - can be extracted from post metadata later
+  const keyTakeaways = [
+    'AI data preparation transforms raw data into precise inputs for machine learning algorithms.',
+    'Automated tools streamline the five essential stages: ingestion, cleaning, transformation, validation, and delivery.',
+  ];
+
+  return (
+    <article className="bg-white">
+      {/* Hero Image - Full width at top */}
+      <div className="blog-hero-image-container">
+        <img
+          src={cover}
+          alt={post.title}
+          onError={handleImageError}
+          className="blog-hero-image"
+          loading="eager"
+          decoding="async"
+        />
+        <div className="blog-hero-overlay" />
+      </div>
+
+      <div
+        className="py-12 sm:py-14 lg:py-16"
+        style={{
+          background: 'linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%)',
+        }}
+      >
+        <div className="section-container grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
+          {/* Main Content */}
+          <div className="flex flex-col gap-8">
+            {/* Author Section */}
+        
+
+            {/* Title */}
+            <h1 className="blog-post-title">{post.title}</h1>
+            <div className="blog-author-section">
+              <div className="blog-author-avatar">
+                {(authorName || 'A').slice(0, 1).toUpperCase()}
+              </div>
+              <div className="blog-author-info">
+                <div className="blog-author-name">{authorName}</div>
+                <div className="blog-author-role">{authorRole}</div>
+              </div>
+              <div className="blog-author-date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>{formatDate(post.publishedAt)}</span>
+              </div>
+            </div>
+            {/* Key Takeaways */}
+            <div className="blog-key-takeaways">
+              <h3 className="blog-key-takeaways-title">Key Takeaways</h3>
+              <ul className="blog-key-takeaways-list">
+                {keyTakeaways.map((takeaway, idx) => (
+                  <li key={idx}>{takeaway}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Content */}
+            <div className="blog-post-content">
+              {hasRichText ? (
+                <div>
+                  {(() => {
+                    try {
+                      return documentToReactComponents(contentData, renderOptions);
+                    } catch (error) {
+                      console.error('Error rendering rich text content:', error, contentData);
+                      return <div className="text-red-500">Error rendering content. Check console.</div>;
+                    }
+                  })()}
+                </div>
+              ) : (
+                <div>
+                  <p className="text-gray-500 mb-4">Content preview:</p>
+                  <p>{post.excerpt || 'Content coming soon.'}</p>
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                      <p className="text-sm text-yellow-800">
+                        <strong>Debug:</strong> hasRichText = {String(hasRichText)}, 
+                        contentData exists = {String(!!contentData)},
+                        nodeType = {contentData?.nodeType || 'undefined'},
+                        content length = {contentData?.content?.length || 0}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside ref={sidebarRef} className="hidden lg:block space-y-6 blog-sidebar">
+            {/* Table of Contents */}
+            <div className="blog-toc-container">
+              <h3 className="blog-toc-title">Table of Content</h3>
+              <ul className="blog-toc-list">
+                {toc.length === 0 && <li className="blog-toc-item">No sections yet</li>}
+                {toc.map((item) => (
+                  <li key={item.id} className="blog-toc-item">
+                    <a
+                      href={`#${item.id}`}
+                      onClick={(e) => handleTocClick(e, item.id)}
+                      className={`blog-toc-link ${activeTocId === item.id ? 'blog-toc-link-active' : ''}`}
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Promotional Section */}
+            <div className="blog-promo-container">
+              <PromoIcons />
+              <h3 className="blog-promo-title">The Automated, No-Code Data Stack</h3>
+              <p className="blog-promo-description">
+                Learn how Astera Data Stack can simplify and streamline your enterprise&apos;s data management.
+              </p>
+              <a href="/product" className="blog-promo-button">
+                Start Your Free Trial
+              </a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default BlogPostScreen;

@@ -4,7 +4,7 @@ import type {
   PageContent, 
   HomePageContentSkeleton, 
   HomePageContent,
-  ProductPageContent 
+  ProductPageContent
 } from '@/types/contentful';
 
 /**
@@ -217,4 +217,3 @@ export async function getProductPageContent(slug: string = 'product'): Promise<P
     throw new Error(`Failed to fetch product page content from Contentful: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-

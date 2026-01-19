@@ -12,7 +12,7 @@ export function HomeScreenNewClient() {
 
   useEffect(() => {
     async function fetchContent() {
-      try {
+      try { 
         setLoading(true);
         setError(null);
         

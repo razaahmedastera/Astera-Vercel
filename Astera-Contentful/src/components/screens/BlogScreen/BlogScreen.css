@@ -1,0 +1,99 @@
+/* ========================================
+   BLOG LISTING PAGE STYLES
+   ======================================== */
+
+/* HubSpot Form (AsteraBytes - Blog Sidebar) */
+#hubspot-asterabytes-form {
+  width: 100%;
+}
+
+#hubspot-asterabytes-form .hs-form {
+  width: 100%;
+}
+
+/* Remove HubSpot default spacing constraints */
+#hubspot-asterabytes-form .hs-form fieldset {
+  max-width: none !important;
+}
+
+/* Hide labels (design relies on placeholders) */
+#hubspot-asterabytes-form .hs-form label {
+  display: none !important;
+}
+
+/* Inputs */
+#hubspot-asterabytes-form .hs-form input[type='text'],
+#hubspot-asterabytes-form .hs-form input[type='email'],
+#hubspot-asterabytes-form .hs-form input[type='tel'],
+#hubspot-asterabytes-form .hs-form input[type='number'],
+#hubspot-asterabytes-form .hs-form textarea,
+#hubspot-asterabytes-form .hs-form select {
+  width: 100% !important;
+  height: 52px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-size: 14px;
+  outline: none;
+}
+
+#hubspot-asterabytes-form .hs-form textarea {
+  height: auto;
+  padding: 12px 14px;
+  min-height: 110px;
+}
+
+#hubspot-asterabytes-form .hs-form input::placeholder,
+#hubspot-asterabytes-form .hs-form textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Field spacing */
+#hubspot-asterabytes-form .hs-form .hs-form-field {
+  margin-bottom: 14px !important;
+}
+
+/* Submit */
+#hubspot-asterabytes-form .hs-form .hs-submit {
+  margin-top: 10px;
+  text-align: left;
+}
+
+#hubspot-asterabytes-form .hs-form input[type='submit'],
+#hubspot-asterabytes-form .hs-form .hs-button.primary,
+#hubspot-asterabytes-form .hs-form .hs-button {
+  appearance: none;
+  border: none !important;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: var(--orange) !important;
+  color: #ffffff !important;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#hubspot-asterabytes-form .hs-form input[type='submit']:hover,
+#hubspot-asterabytes-form .hs-form .hs-button.primary:hover,
+#hubspot-asterabytes-form .hs-form .hs-button:hover {
+  background: var(--azure-blue-hover) !important;
+  transform: translateY(-1px);
+}
+
+/* Validation messages */
+#hubspot-asterabytes-form .hs-error-msgs,
+#hubspot-asterabytes-form .hs-error-msg {
+  color: #fee2e2 !important;
+  font-size: 12px !important;
+  margin: 6px 0 0 !important;
+}
+
+/* Success message */
+#hubspot-asterabytes-form .submitted-message {
+  color: #fff !important;
+  text-decoration: underline;
+}

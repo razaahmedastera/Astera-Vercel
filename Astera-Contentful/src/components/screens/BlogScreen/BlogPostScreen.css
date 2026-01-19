@@ -1,0 +1,465 @@
+/* ========================================
+   BLOG POST PAGE STYLES
+   ======================================== */
+
+/* Hero Image Section */
+.blog-hero-image-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #005CCC 0%, #003d8f 100%);
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23EFF5FF" width="100" height="100"/><text x="50" y="50" font-size="20" fill="%23005CCC" text-anchor="middle" dominant-baseline="middle">AI</text></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 80px 80px;
+}
+
+.blog-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.blog-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 92, 204, 0.3) 0%, rgba(0, 61, 143, 0.5) 100%);
+}
+
+/* Author Section */
+.blog-author-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.blog-author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e8f1ff;
+  color: #005CCC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.blog-author-info {
+  flex: 1;
+}
+
+.blog-author-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.blog-author-role {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.blog-author-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+.blog-author-date svg {
+  color: #9ca3af;
+}
+
+/* Blog Post Title */
+.blog-post-title {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Key Takeaways Section */
+.blog-key-takeaways {
+  background: #EFF5FF;
+  border: 1px solid #005CCC;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.blog-key-takeaways-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #005CCC;
+  margin: 0 0 1rem 0;
+}
+
+.blog-key-takeaways-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.blog-key-takeaways-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+.blog-key-takeaways-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #005CCC;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Blog Post Content */
+.blog-post-content {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  max-width: none;
+}
+
+.blog-post-content p {
+  margin-bottom: 1.5rem;
+}
+
+.blog-post-content h2 {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  color: #005CCC;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.blog-post-h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #005CCC;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+  scroll-margin-top: 100px; /* Proper spacing when scrolling to heading */
+}
+
+/* Heading hierarchy for future use */
+.blog-post-content h3 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #005CCC;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.blog-post-content h4 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #005CCC;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.blog-post-content h5 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #005CCC;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+/* Sidebar - Sticky on scroll (becomes fixed when scrolling down) */
+@media (min-width: 1024px) {
+  /* Ensure ALL parent containers don't block sticky */
+  article.bg-white {
+    overflow: visible !important;
+  }
+
+  article > div {
+    overflow: visible !important;
+    position: relative;
+  }
+
+  /* Ensure the wrapper div with background gradient doesn't block sticky */
+  article > div[style*="background"] {
+    overflow: visible !important;
+    position: relative;
+  }
+
+  /* Ensure grid allows sticky positioning */
+  .section-container.grid {
+    align-items: start !important;
+    overflow: visible !important;
+    position: relative;
+    min-height: 100vh; /* Ensure container has enough height */
+  }
+
+  /* Sticky positioning - fixes when scrolling down */
+  aside.blog-sidebar,
+  .blog-sidebar,
+  .section-container > aside.blog-sidebar,
+  .section-container.grid > aside.blog-sidebar,
+  .section-container aside,
+  article aside.blog-sidebar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 20px !important; /* Sticks when scrolling down */
+    align-self: start !important;
+    height: fit-content !important;
+    max-height: calc(100vh - 40px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
+  }
+
+  /* When is-fixed class is added via JavaScript - use higher specificity */
+  article.bg-white > div > div.section-container.grid > aside.blog-sidebar.is-fixed,
+  article > div > div.section-container.grid > aside.blog-sidebar.is-fixed,
+  .section-container.grid > aside.blog-sidebar.is-fixed,
+  aside.blog-sidebar.is-fixed,
+  .blog-sidebar.is-fixed {
+    position: fixed !important;
+    top: 100px !important;
+    /* Horizontal position will be set via inline style (JavaScript) */
+    width: 360px !important;
+    z-index: 10 !important;
+    /* Ensure these styles override everything */
+    left: auto !important;
+    right: auto !important;
+    /* Smooth transition */
+    transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
+  }
+
+
+  /* Custom scrollbar for sticky sidebar */
+  .blog-sidebar::-webkit-scrollbar,
+  .section-container > aside::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .blog-sidebar::-webkit-scrollbar-track,
+  .section-container > aside::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .blog-sidebar::-webkit-scrollbar-thumb,
+  .section-container > aside::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  .blog-sidebar::-webkit-scrollbar-thumb:hover,
+  .section-container > aside::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* Table of Contents */
+.blog-toc-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-right: 4px solid #005CCC;
+}
+
+.blog-toc-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.blog-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.blog-toc-item {
+  margin: 0;
+}
+
+.blog-toc-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 14px;
+  color: #4b5563;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+}
+
+.blog-toc-link:hover {
+  color: #005CCC;
+  background: #f3f6ff;
+}
+
+.blog-toc-link-active {
+  background: #EFF5FF;
+  color: #005CCC;
+  font-weight: 600;
+}
+
+/* Promotional Section */
+.blog-promo-container {
+  background: #005CCC;
+  border-radius: 12px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 92, 204, 0.25);
+}
+
+.promo-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.promo-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.promo-icon-circle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.blog-promo-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+}
+
+.blog-promo-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 1.5rem 0;
+}
+
+.blog-promo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  background: #ff983d;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.blog-promo-button:hover {
+  background: #ff8a1f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 152, 61, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .blog-hero-image-container {
+    height: 250px;
+  }
+
+  .blog-author-section {
+    flex-wrap: wrap;
+  }
+
+  .blog-author-date {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .blog-hero-image-container {
+    height: 250px;
+  }
+
+  .blog-post-title {
+    font-size: 32px;
+  }
+
+  .blog-post-h2 {
+    font-size: 28px;
+  }
+
+  .blog-post-content h3 {
+    font-size: 24px;
+  }
+
+  .blog-post-content h4 {
+    font-size: 20px;
+  }
+
+  .blog-post-content h5 {
+    font-size: 18px;
+  }
+
+  .blog-key-takeaways {
+    padding: 1.25rem;
+  }
+
+  .promo-icon-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .promo-icon-circle {
+    width: 40px;
+    height: 40px;
+  }
+}
+.blog-sidebar.is-fixed {
+    position: fixed;
+    top: 100px;
+    width: 360px; /* MUST match grid column */}

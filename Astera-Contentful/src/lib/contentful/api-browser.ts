@@ -5,7 +5,7 @@
 import { getContentfulClientBrowser } from './client-browser';
 import type { 
   HomePageContent,
-  ProductPageContent 
+  ProductPageContent
 } from '@/types/contentful';
 
 /**
@@ -134,4 +134,3 @@ export async function getProductPageContentBrowser(slug: string = 'product'): Pr
     throw new Error(`Failed to fetch product page content from Contentful: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
