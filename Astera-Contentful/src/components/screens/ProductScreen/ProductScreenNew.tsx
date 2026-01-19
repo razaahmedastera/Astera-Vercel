@@ -11,16 +11,12 @@ interface ProductScreenNewProps {
 
 export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
   const [activeFeatureTab, setActiveFeatureTab] = useState(0); // First tab always open
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [hoveredUseCaseId, setHoveredUseCaseId] = useState<number | null>(null);
   const [isUseCasesHovered, setIsUseCasesHovered] = useState(false);
   const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0); // First FAQ open by default
-  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0); // For carousel navigation dots
   const useCasesScrollRef = useRef<HTMLDivElement>(null);
   
   // Testimonials Data - Contentful-ready structure
@@ -227,11 +223,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   }, {} as Record<string, number>);
   
   const [counters, setCounters] = useState(initialCounters);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const dragStartX = useRef(0);
-  const scrollStartX = useRef(0);
-  const isAnimatingRef = useRef(false);
 
   // Media assets for carousel
   const mediaAssets = [
@@ -267,266 +258,56 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
     }
   ];
 
-  // Why Astera ReportMiner Cards Data - Contentful-ready structure
-  // In Contentful: Create "Why Astera Card" content type with fields: text, backgroundColor, textColor, iconImage, position
-  const whyAsteraCards = content.whyAsteraCards || [
+  // Why Astera ReportMiner Cards Data - Contentful-friendly structure
+  // In Contentful: Create "Why Astera Card" with fields: text, iconImage (or iconUrl), and an optional short title if you prefer splitting text.
+  const whyAsteraCardsFallback = [
     {
       id: 1,
       text: "Export extracted data to structured destination, including databases and Excel, for streamlined data analysis and reporting.",
-      backgroundColor: '#EFF5FF',
-      textColor: '#000',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2906/2906274.png',
-      position: 'up'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2906/2906274.png'
     },
     {
       id: 2,
       text: "Extract data from multiple file formats, including PDFs, Excel, and Word, for easy integration across platforms.",
-      backgroundColor: '#005CCC',
-      textColor: 'white',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337946.png',
-      position: 'down'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337946.png'
     },
     {
       id: 3,
       text: "Leverage AI to accurately extract data from documents with varying layouts and formats.",
-      backgroundColor: '#EFF5FF',
-      textColor: '#000',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2920/2920349.png',
-      position: 'up'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2920/2920349.png'
     },
     {
       id: 4,
       text: "Easily handle hierarchical and scanned PDFs with advanced features like OCR and hierarchical data export.",
-      backgroundColor: '#005CCC',
-      textColor: 'white',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337932.png',
-      position: 'down'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337932.png'
     },
     {
       id: 5,
       text: "AI-driven intelligent data extraction that learns and adapts to your document patterns for improved accuracy.",
-      backgroundColor: '#EFF5FF',
-      textColor: '#000',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2103/2103633.png',
-      position: 'up'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2103/2103633.png'
     },
     {
       id: 6,
       text: "Seamless cloud integration with popular platforms for real-time data synchronization and collaboration.",
-      backgroundColor: '#005CCC',
-      textColor: 'white',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2885/2885417.png',
-      position: 'down'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/2885/2885417.png'
     },
     {
       id: 7,
       text: "Built-in data validation and quality checks ensure accuracy and reliability of extracted information.",
-      backgroundColor: '#EFF5FF',
-      textColor: '#000',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/5610/5610944.png',
-      position: 'up'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/5610/5610944.png'
     },
     {
       id: 8,
       text: "Automated workflow scheduling and batch processing to handle large volumes of documents efficiently.",
-      backgroundColor: '#005CCC',
-      textColor: 'white',
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/1828/1828817.png',
-      position: 'down'
+      iconImage: 'https://cdn-icons-png.flaticon.com/128/1828/1828817.png'
     }
   ];
 
-  // Handle manual scroll - reset auto-scroll timer and handle infinite loop
-  const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
-    
-    if (!isDragging) {
-      setIsUserScrolling(true);
-      
-      const container = scrollContainerRef.current;
-      const totalWidth = container.scrollWidth;
-      const singleSetWidth = totalWidth / 2;
-      const currentScroll = container.scrollLeft;
-      
-      // If scrolled past first set, reset to beginning seamlessly
-      if (currentScroll >= singleSetWidth - 50) {
-        container.scrollLeft = currentScroll - singleSetWidth;
-      }
-      
-      // Clear existing timeout
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-      
-      // Set new timeout - auto-scroll after 2 seconds of inactivity
-      scrollTimeoutRef.current = setTimeout(() => {
-        setIsUserScrolling(false);
-      }, 2000);
-    }
-  };
-
-  // Handle mouse wheel - convert vertical scroll to horizontal with smooth scrolling
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (!scrollContainerRef.current) return;
-    
-    // Prevent default vertical scrolling on page
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Stop any ongoing animation for immediate response
-    isAnimatingRef.current = false;
-    
-    // Convert vertical wheel delta to horizontal scroll
-    // Multiply by 0.8 for smoother, more controlled scrolling
-    const delta = (e.deltaY || e.deltaX) * 0.8;
-    const container = scrollContainerRef.current;
-    
-    // Apply scroll directly with smooth CSS behavior
-    container.scrollLeft += delta;
-    
-    // Handle infinite loop
-    const totalWidth = container.scrollWidth;
-    const singleSetWidth = totalWidth / 2;
-    if (container.scrollLeft >= singleSetWidth - 50) {
-      container.scrollLeft = container.scrollLeft - singleSetWidth;
-    } else if (container.scrollLeft < 0) {
-      container.scrollLeft = singleSetWidth + container.scrollLeft;
-    }
-    
-    // Update user scrolling state
-    setIsUserScrolling(true);
-    
-    // Clear existing timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    // Set new timeout - auto-scroll after 2 seconds of inactivity
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsUserScrolling(false);
-    }, 2000);
-  };
-
-  // Drag to scroll handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!scrollContainerRef.current) return;
-    setIsDragging(true);
-    setIsUserScrolling(true);
-    dragStartX.current = e.clientX;
-    scrollStartX.current = scrollContainerRef.current.scrollLeft;
-    
-    // Clear auto-scroll timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !scrollContainerRef.current) return;
-    e.preventDefault();
-    const container = scrollContainerRef.current;
-    const deltaX = dragStartX.current - e.clientX;
-    const newScroll = scrollStartX.current + deltaX;
-    container.scrollLeft = newScroll;
-    
-    // Handle infinite loop
-    const totalWidth = container.scrollWidth;
-    const singleSetWidth = totalWidth / 2;
-    if (container.scrollLeft >= singleSetWidth - 50) {
-      container.scrollLeft = container.scrollLeft - singleSetWidth;
-      scrollStartX.current = container.scrollLeft;
-      dragStartX.current = e.clientX;
-    } else if (container.scrollLeft < 0) {
-      container.scrollLeft = singleSetWidth + container.scrollLeft;
-      scrollStartX.current = container.scrollLeft;
-      dragStartX.current = e.clientX;
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    // Resume auto-scroll after 2 seconds
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsUserScrolling(false);
-    }, 2000);
-  };
-
-  // Global mouse move and up listeners for drag functionality
-  useEffect(() => {
-    if (isDragging) {
-      const handleGlobalMouseMove = (e: MouseEvent) => {
-        handleMouseMove(e);
-      };
-      const handleGlobalMouseUp = () => {
-        handleMouseUp();
-      };
-
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-
-      return () => {
-        document.removeEventListener('mousemove', handleGlobalMouseMove);
-        document.removeEventListener('mouseup', handleGlobalMouseUp);
-      };
-    }
-  }, [isDragging]);
-
-  const handleMouseLeave = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setIsHovered(false);
-      // Resume auto-scroll after 2 seconds
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-      scrollTimeoutRef.current = setTimeout(() => {
-        setIsUserScrolling(false);
-      }, 2000);
-    } else {
-      setIsHovered(false);
-    }
-  };
-
-  // Smooth scroll function using requestAnimationFrame with ultra-smooth easing
-  const smoothScrollTo = (element: HTMLDivElement, target: number, duration: number, onComplete?: () => void) => {
-    if (isAnimatingRef.current) return; // Prevent overlapping animations
-    
-    isAnimatingRef.current = true;
-    const start = element.scrollLeft;
-    const distance = target - start;
-    const startTime = performance.now();
-
-    const animateScroll = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Custom smooth easing - slow start, smooth middle, slow end
-      const smoothEase = (t: number): number => {
-        // Using sine-based easing for buttery smooth transitions
-        return t < 0.5
-          ? (1 - Math.cos(t * Math.PI)) / 2
-          : (1 + Math.sin((t - 0.5) * Math.PI)) / 2;
-      };
-      
-      // Apply easing
-      const easedProgress = smoothEase(progress);
-      element.scrollLeft = start + distance * easedProgress;
-
-      if (progress < 1) {
-        requestAnimationFrame(animateScroll);
-      } else {
-        // Ensure we end exactly at target
-        element.scrollLeft = target;
-        isAnimatingRef.current = false;
-        if (onComplete) onComplete();
-      }
-    };
-
-    requestAnimationFrame(animateScroll);
-  };
+  // Defensive: Contentful sometimes returns unexpected shapes if the field is misconfigured.
+  // Ensure we only use it when it's actually an array.
+  const whyAsteraCards = Array.isArray(content.whyAsteraCards)
+    ? content.whyAsteraCards
+    : whyAsteraCardsFallback;
 
   // Intersection Observer for metrics section - triggers counter when section is visible
   useEffect(() => {
@@ -588,64 +369,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
     const frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
   }, [isMetricsVisible]);
-
-  // Auto-scroll carousel - moves one card at a time with ultra-smooth transitions
-  useEffect(() => {
-    if (!scrollContainerRef.current) return;
-
-    const container = scrollContainerRef.current;
-    
-    // Don't auto-scroll if: hovered, user is scrolling, or dragging
-    if (isHovered || isUserScrolling || isDragging) return;
-
-    // Card width (340px) + gap (24px for gap-6)
-    const cardWidth = 340;
-    const gap = 24;
-    const scrollDistance = cardWidth + gap;
-    const scrollDuration = 1500; // Smooth animation duration
-    const pauseBetweenScrolls = 3000; // 3 second pause between scrolls for better viewing
-
-    // Calculate single set width for infinite loop (half of total since we duplicate)
-    const totalWidth = container.scrollWidth;
-    const singleSetWidth = totalWidth / 2;
-
-    let timeoutId: NodeJS.Timeout;
-
-    const performScroll = () => {
-      if (!container || isHovered || isUserScrolling || isDragging || isAnimatingRef.current) {
-        // Retry after pause if conditions not met
-        timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
-        return;
-      }
-
-      const currentScroll = container.scrollLeft;
-      
-      // If we've scrolled past the first set, reset to beginning seamlessly
-      if (currentScroll >= singleSetWidth - scrollDistance) {
-        // Reset position instantly but smoothly continue the visual flow
-        container.scrollLeft = currentScroll - singleSetWidth;
-        // Schedule next scroll after the reset
-        timeoutId = setTimeout(performScroll, 100);
-      } else {
-        // Scroll one card width smoothly using custom animation
-        const nextScroll = currentScroll + scrollDistance;
-        smoothScrollTo(container, nextScroll, scrollDuration, () => {
-          // Schedule next scroll after animation completes + pause
-          timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
-        });
-      }
-    };
-
-    // Start the scroll cycle after initial delay
-    timeoutId = setTimeout(performScroll, pauseBetweenScrolls);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, [isHovered, isUserScrolling, isDragging]);
 
   // Use Cases continuous ultra-smooth auto-scroll effect
   useEffect(() => {
@@ -713,22 +436,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
     return () => {
       animatedElements.forEach((el) => observer.unobserve(el));
     };
-  }, []);
-
-  // Track active carousel card based on scroll position
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const handleCarouselScroll = () => {
-      const cardWidth = 340 + 24; // card width + gap
-      const scrollPosition = container.scrollLeft;
-      const activeIndex = Math.round(scrollPosition / cardWidth) % 9; // 9 cards
-      setActiveCarouselIndex(activeIndex);
-    };
-
-    container.addEventListener('scroll', handleCarouselScroll);
-    return () => container.removeEventListener('scroll', handleCarouselScroll);
   }, []);
 
   // HubSpot Form Integration
@@ -1334,150 +1041,69 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         </div>
       </section>
 
-      {/* Why Astera ReportMiner Section - Full Width Modern Carousel */}
-      <section id="why-astera-reportminer" className="why-astera-section bg-white" style={{ overflowX: 'visible', overflowY: 'visible', paddingTop: '3rem', paddingBottom: '3rem' }}>
-        <div className="w-full" style={{ overflowX: 'visible', overflowY: 'visible' }}>
-          <div className="section-container mb-8 sm:mb-10">
-            <h2 className="section-title">
+      {/* Why Astera ReportMiner Section - Modern SaaS Grid (6 cards) */}
+      <section
+        id="why-astera-reportminer"
+        className="why-astera-section py-16 sm:py-20 lg:py-24"
+        style={{
+          background: 'linear-gradient(180deg, #f3f6ff 0%, #f9fbff 45%, #ffffff 100%)'
+        }}
+      >
+        <div className="section-container">
+          {/* Section Header */}
+          <div className="text-center mb-12 sm:mb-16 lg:mb-18">
+            <h2 className="section-title mb-3">
               Why <span className="highlight">Astera ReportMiner</span>?
             </h2>
-          </div>
-          
-          {/* Modern Full Width Auto-Scrolling Carousel */}
-          <div 
-            ref={scrollContainerRef}
-            className={`w-full overflow-x-auto pb-6 pt-4 ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
-            style={{ 
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              userSelect: isDragging ? 'none' : 'auto',
-              WebkitUserSelect: isDragging ? 'none' : 'auto',
-              overflowX: 'auto',
-              overflowY: 'visible',
-              paddingTop: '16px'
-            }}
-            onMouseEnter={(e) => {
-              if (!isDragging) {
-                setIsHovered(true);
-                // Prevent page scroll when hovering over carousel
-                e.currentTarget.style.overflowY = 'hidden';
-              }
-            }}
-            onMouseLeave={handleMouseLeave}
-            onMouseDown={handleMouseDown}
-            onScroll={handleScroll}
-            onTouchStart={(e) => {
-              setIsUserScrolling(true);
-              if (scrollTimeoutRef.current) {
-                clearTimeout(scrollTimeoutRef.current);
-              }
-            }}
-            onTouchMove={handleScroll}
-            onTouchEnd={() => {
-              scrollTimeoutRef.current = setTimeout(() => {
-                setIsUserScrolling(false);
-              }, 2000);
-            }}
-          >
-            <style jsx>{`
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            <div className="flex gap-6 sm:gap-8 px-6 sm:px-8 lg:px-12 py-4 items-start" style={{ minWidth: 'max-content', alignItems: 'flex-start' }}>
-              {/* Render cards from JSON data - First Set for Infinite Loop */}
-              {whyAsteraCards.map((card) => (
-                <div
-                  key={card.id}
-                  className={`rounded-3xl p-8 sm:p-10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-3 flex-shrink-0 group card-glow ${
-                    card.backgroundColor === '#005CCC' 
-                      ? 'border border-[#005CCC]/20 hover:border-[#005CCC]/40' 
-                      : 'border border-gray-100 hover:border-[#005CCC]/20'
-                  }`}
-                  style={{
-                    backgroundColor: card.backgroundColor,
-                    width: '340px',
-                    minHeight: '320px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transform: card.position === 'up' ? 'translateY(-12px)' : 'translateY(12px)'
-                  }}
-                >
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden mb-6 sm:mb-8 group-hover:scale-110 transition-transform duration-500 shadow-lg">
-                    <img 
-                      src={card.iconImage} 
-                      alt="" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base leading-relaxed flex-grow font-medium" 
-                    style={{ 
-                      fontSize: 'clamp(14px, 1.5vw, 16px)',
-                      color: card.textColor
-                    }}
-                  >
-                    {card.text}
-                  </p>
-                </div>
-              ))}
-
-              {/* Second Set of Cards - Duplicated for Infinite Loop */}
-              {whyAsteraCards.map((card) => (
-                <div
-                  key={`duplicate-${card.id}`}
-                  className={`rounded-3xl p-8 sm:p-10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-3 flex-shrink-0 group card-glow ${
-                    card.backgroundColor === '#005CCC' 
-                      ? 'border border-[#005CCC]/20 hover:border-[#005CCC]/40' 
-                      : 'border border-gray-100 hover:border-[#005CCC]/20'
-                  }`}
-                  style={{
-                    backgroundColor: card.backgroundColor,
-                    width: '340px',
-                    minHeight: '320px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transform: card.position === 'up' ? 'translateY(-12px)' : 'translateY(12px)'
-                  }}
-                >
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden mb-6 sm:mb-8 group-hover:scale-110 transition-transform duration-500 shadow-lg">
-                    <img 
-                      src={card.iconImage} 
-                      alt="" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base leading-relaxed flex-grow font-medium" 
-                    style={{ 
-                      fontSize: 'clamp(14px, 1.5vw, 16px)',
-                      color: card.textColor
-                    }}
-                  >
-                    {card.text}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+              Streamlined benefits your teams feel immediately—accurate extraction, faster delivery, and simpler workflows.
+            </p>
           </div>
 
-          {/* Carousel Navigation Dots */}
-          <div className="carousel-dots">
-            {whyAsteraCards.map((_, index) => (
-              <button
-                key={index}
-                className={`carousel-dot ${activeCarouselIndex === index ? 'active' : ''}`}
-                onClick={() => {
-                  if (scrollContainerRef.current) {
-                    const cardWidth = 340 + 24;
-                    scrollContainerRef.current.scrollTo({
-                      left: cardWidth * index,
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-                aria-label={`Go to slide ${index + 1}`}
-              />
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+            {whyAsteraCards.slice(0, 6).map((card, index) => (
+              <div
+                key={card.id}
+                className="group relative rounded-2xl p-7 bg-white shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1.5"
+                style={{ animationDelay: `${index * 80}ms` }}
+              >
+                <div className="flex flex-col h-full">
+                  {/* Icon */}
+                  <div className="mb-5">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#e8f1ff] text-[#005CCC] shadow-inner">
+                      <img
+                        src={card.iconImage}
+                        alt=""
+                        className="w-6 h-6 object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Text */}
+                  <h3 className="text-[15px] sm:text-base font-semibold text-slate-800 leading-snug mb-3">
+                    {card.text.split('. ')[0]}
+                  </h3>
+                  <p className="text-sm text-slate-600 leading-relaxed flex-grow">
+                    {card.text.includes('. ')
+                      ? card.text.substring(card.text.indexOf('. ') + 2)
+                      : card.text}
+                  </p>
+
+                  {/* CTA */}
+                  <div className="mt-5">
+                    <button className="inline-flex items-center gap-2 text-[#005CCC] text-sm font-semibold transition-all duration-200 group-hover:gap-3">
+                      Read details
+                      <span className="inline-block">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14"></path>
+                          <path d="M13 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1520,11 +1146,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
       </section>
 
       {/* Wave Divider */}
-      <div className="wave-divider wave-divider-top bg-[#EFF5FF]">
-        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
-          <path fill="white" d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z"/>
-        </svg>
-      </div>
+      <div></div>
 
       {/* Powerful Features Accordion Section */}
       <section id="powerful-features" className="powerful-features-section py-10 sm:py-12 lg:py-16 bg-white animate-on-scroll">
@@ -1555,7 +1177,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                       activeFeatureTab === index ? 'text-[#005CCC]' : 'text-[#1a1a1a] group-hover:text-[#005CCC]'
                     }`}
                     style={{
-                      fontSize: '28px',
+                      fontSize: '24px',
                       fontWeight: 500,
                       lineHeight: '1.3'
                     }}

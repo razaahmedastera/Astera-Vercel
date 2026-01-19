@@ -229,6 +229,7 @@
     color: white;
   }
 
+
   /* Hide scrollbar but keep functionality */
   .why-astera-section ::-webkit-scrollbar {
     display: none;

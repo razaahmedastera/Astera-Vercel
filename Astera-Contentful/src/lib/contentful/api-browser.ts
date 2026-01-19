@@ -5,7 +5,7 @@
 import { getContentfulClientBrowser } from './client-browser';
 import type { 
   HomePageContent,
-  ProductPageContent 
+  ProductPageContent
 } from '@/types/contentful';
 
 /**
@@ -125,4 +125,3 @@ export async function getProductPageContentBrowser(): Promise<ProductPageContent
     throw new Error('Failed to fetch product page content from Contentful');
   }
 }
-

@@ -4,6 +4,6 @@ export {
   getPageContentById,
   getHomePageContent,
   getProductPageContent,
-  getAllPages 
+  getAllPages
 } from './api';
 

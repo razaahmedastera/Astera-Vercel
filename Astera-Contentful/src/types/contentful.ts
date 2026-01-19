@@ -302,3 +302,92 @@ export interface ProductPageContent {
   updatedAt: string;
 }
 
+/**
+ * =============================================
+ * BLOG CONTENT TYPES
+ * =============================================
+ */
+
+/**
+ * Blog Category interface
+ */
+export interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  title?: string;
+}
+
+/**
+ * Blog Author interface
+ */
+export interface BlogAuthor {
+  id: string;
+  name: string;
+  role?: string;
+  bio?: string;
+  avatar?: string;
+}
+
+/**
+ * Blog Post interface
+ */
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  coverImage?: string;
+  content: Document;
+  featuredImage?: string;
+  category: BlogCategory;
+  author?: BlogAuthor;
+  authorName?: string;
+  tags?: string[];
+  body?: string;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Contentful Blog Category Skeleton
+ */
+export interface BlogCategorySkeleton extends EntrySkeletonType {
+  contentTypeId: 'blogCategory';
+  fields: {
+    name: string;
+    slug: string;
+    description?: string;
+  };
+}
+
+/**
+ * Contentful Blog Author Skeleton
+ */
+export interface BlogAuthorSkeleton extends EntrySkeletonType {
+  contentTypeId: 'blogAuthor';
+  fields: {
+    name: string;
+    role?: string;
+    bio?: string;
+    avatar?: { fields: { file: { url: string } } };
+  };
+}/**
+ * Contentful Blog Post Skeleton
+ */
+export interface BlogPostSkeleton extends EntrySkeletonType {
+  contentTypeId: 'blogPost';
+  fields: {
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: Document;
+    featuredImage?: { fields: { file: { url: string } } };
+    category: Entry<BlogCategorySkeleton>;
+    author?: Entry<BlogAuthorSkeleton>;
+    tags?: string[];
+    publishedAt: string;
+  };
+}
