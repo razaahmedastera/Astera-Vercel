@@ -16,13 +16,6 @@ export function ProductScreenNewClient() {
         setLoading(true);
         setError(null);
         
-        const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-        const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
-        
-        if (!spaceId || !accessToken) {
-          throw new Error('Contentful credentials not found. Please rebuild with NEXT_PUBLIC_CONTENTFUL_* environment variables.');
-        }
-        
         const data = await getProductPageContentBrowser();
         setContent(data);
       } catch (err: any) {

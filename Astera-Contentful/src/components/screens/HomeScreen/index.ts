@@ -1,2 +1,3 @@
-export { HomeScreen } from './HomeScreen';
+export { HomeScreenNew } from './HomeScreenNew';
+export { HomeScreenNewClient } from './HomeScreenNewClient';
 

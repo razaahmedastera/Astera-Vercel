@@ -30,28 +30,54 @@ export interface PageContent {
 }
 
 /**
- * Feature card interface
+ * Feature Tab interface (for home page tabs)
  */
-export interface Feature {
+export interface FeatureTab {
+  tabName: string;
+  title: string;
+  description: string;
+  features: string[];
+  image: string;
+  learnMoreUrl: string;
+}
+
+/**
+ * Metric interface (for home page metrics)
+ */
+export interface HomeMetric {
+  id: string;
+  value: number;
+  unit: string;
   title: string;
   description: string;
 }
 
 /**
- * Step interface (How It Works)
+ * Product Offering interface (for home page)
  */
-export interface Step {
-  stepNumber: number;
+export interface ProductOffering {
   title: string;
   description: string;
+  learnMoreUrl: string;
 }
 
 /**
- * Use Case card interface (for home page)
+ * Resource interface (for home page)
  */
-export interface UseCase {
+export interface Resource {
+  type: 'WEBINAR' | 'EBOOK' | 'BLOG' | 'WHITEPAPER';
+  title: string;
+  linkUrl: string;
+}
+
+/**
+ * Final CTA Card interface (for home page)
+ */
+export interface FinalCtaCard {
   title: string;
   description: string;
+  buttonText: string;
+  buttonUrl: string;
 }
 
 /**
@@ -149,27 +175,34 @@ export interface HomePageContentSkeleton extends EntrySkeletonType {
     heroSectionPrimaryCta: string;
     heroSectionSecondaryCta: string;
     
-    // Features Section
-    featuresSectionTitle: string;
-    featuresSectionDescription: string;
-    features: Feature[];
+    // AI Stack Section
+    aiStackSectionTitle: string;
+    aiStackSectionDescription: string;
+    aiStackVideoUrl: string;
     
-    // Steps Section
-    stepsSectionTitle: string;
-    stepsSectionDescription: string;
-    steps: Step[];
+    // Feature Tabs Section
+    featureTabsSectionTitle: string;
+    featureTabs: FeatureTab[];
     
-    // Use Cases Section
-    useCasesSectionTitle: string;
-    useCasesSectionDescription: string;
-    useCases: UseCase[];
+    // Metrics Section
+    metricsSectionTitle: string;
+    metrics: HomeMetric[];
     
-    // CTA Section
-    ctaSectionTitle: string;
-    ctaSectionDescription: string;
-    ctaSectionPrimaryCta: string;
-    ctaSectionSecondaryCta: string;
-    ctaSectionNote: string;
+    // Product Offerings Section
+    productOfferingsSectionTitle: string;
+    productOfferings: ProductOffering[];
+    
+    // Awards Section
+    awardsSectionTitle: string;
+    
+    // Resources Section
+    resourcesSectionTitle: string;
+    resources: Resource[];
+    
+    // Final CTA Section
+    finalCtaSectionTitle: string;
+    finalCtaSectionDescription: string;
+    finalCtaCards: FinalCtaCard[];
   };
 }
 
@@ -190,27 +223,34 @@ export interface HomePageContent {
   heroSectionPrimaryCta: string;
   heroSectionSecondaryCta: string;
   
-  // Features Section
-  featuresSectionTitle: string;
-  featuresSectionDescription: string;
-  features: Feature[];
+  // AI Stack Section
+  aiStackSectionTitle: string;
+  aiStackSectionDescription: string;
+  aiStackVideoUrl: string;
   
-  // Steps Section
-  stepsSectionTitle: string;
-  stepsSectionDescription: string;
-  steps: Step[];
+  // Feature Tabs Section
+  featureTabsSectionTitle: string;
+  featureTabs: FeatureTab[];
   
-  // Use Cases Section
-  useCasesSectionTitle: string;
-  useCasesSectionDescription: string;
-  useCases: UseCase[];
+  // Metrics Section
+  metricsSectionTitle: string;
+  metrics: HomeMetric[];
   
-  // CTA Section
-  ctaSectionTitle: string;
-  ctaSectionDescription: string;
-  ctaSectionPrimaryCta: string;
-  ctaSectionSecondaryCta: string;
-  ctaSectionNote: string;
+  // Product Offerings Section
+  productOfferingsSectionTitle: string;
+  productOfferings: ProductOffering[];
+  
+  // Awards Section
+  awardsSectionTitle: string;
+  
+  // Resources Section
+  resourcesSectionTitle: string;
+  resources: Resource[];
+  
+  // Final CTA Section
+  finalCtaSectionTitle: string;
+  finalCtaSectionDescription: string;
+  finalCtaCards: FinalCtaCard[];
   
   createdAt: string;
   updatedAt: string;

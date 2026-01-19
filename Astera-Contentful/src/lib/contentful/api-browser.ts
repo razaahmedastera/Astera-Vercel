@@ -9,19 +9,20 @@ import type {
 } from '@/types/contentful';
 
 /**
- * Fetch home page content from browser (real-time)
+ * Fetch home page content from browser (real-time) by slug
+ * @param slug - The page slug (default: 'home')
  */
-export async function getHomePageContentBrowser(): Promise<HomePageContent> {
+export async function getHomePageContentBrowser(slug: string = 'home'): Promise<HomePageContent> {
   try {
     const client = getContentfulClientBrowser();
     const response = await client.getEntries({
       content_type: 'homePage',
-      'fields.slug': 'home',
+      'fields.slug': slug,
       limit: 1,
     }) as any;
 
     if (response.items.length === 0) {
-      throw new Error('Home page content not found');
+      throw new Error(`Home page content with slug "${slug}" not found`);
     }
 
     const entry = response.items[0];
@@ -39,51 +40,59 @@ export async function getHomePageContentBrowser(): Promise<HomePageContent> {
       heroSectionPrimaryCta: fields.heroSectionPrimaryCta,
       heroSectionSecondaryCta: fields.heroSectionSecondaryCta,
       
-      // Features Section
-      featuresSectionTitle: fields.featuresSectionTitle,
-      featuresSectionDescription: fields.featuresSectionDescription,
-      features: fields.features || [],
+      // AI Stack Section
+      aiStackSectionTitle: fields.aiStackSectionTitle,
+      aiStackSectionDescription: fields.aiStackSectionDescription,
+      aiStackVideoUrl: fields.aiStackVideoUrl,
       
-      // Steps Section
-      stepsSectionTitle: fields.stepsSectionTitle,
-      stepsSectionDescription: fields.stepsSectionDescription,
-      steps: fields.steps || [],
+      // Feature Tabs Section
+      featureTabsSectionTitle: fields.featureTabsSectionTitle,
+      featureTabs: fields.featureTabs,
       
-      // Use Cases Section
-      useCasesSectionTitle: fields.useCasesSectionTitle,
-      useCasesSectionDescription: fields.useCasesSectionDescription,
-      useCases: fields.useCases || [],
+      // Metrics Section
+      metricsSectionTitle: fields.metricsSectionTitle,
+      metrics: fields.metrics,
       
-      // CTA Section
-      ctaSectionTitle: fields.ctaSectionTitle,
-      ctaSectionDescription: fields.ctaSectionDescription,
-      ctaSectionPrimaryCta: fields.ctaSectionPrimaryCta,
-      ctaSectionSecondaryCta: fields.ctaSectionSecondaryCta,
-      ctaSectionNote: fields.ctaSectionNote,
+      // Product Offerings Section
+      productOfferingsSectionTitle: fields.productOfferingsSectionTitle,
+      productOfferings: fields.productOfferings,
+      
+      // Awards Section
+      awardsSectionTitle: fields.awardsSectionTitle,
+      
+      // Resources Section
+      resourcesSectionTitle: fields.resourcesSectionTitle,
+      resources: fields.resources,
+      
+      // Final CTA Section
+      finalCtaSectionTitle: fields.finalCtaSectionTitle,
+      finalCtaSectionDescription: fields.finalCtaSectionDescription,
+      finalCtaCards: fields.finalCtaCards,
       
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,
     };
   } catch (error) {
     console.error('Error fetching home page content from Contentful:', error);
-    throw new Error('Failed to fetch home page content from Contentful');
+    throw new Error(`Failed to fetch home page content from Contentful: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
 /**
- * Fetch product page content from browser (real-time)
+ * Fetch product page content from browser (real-time) by slug
+ * @param slug - The page slug (default: 'product')
  */
-export async function getProductPageContentBrowser(): Promise<ProductPageContent> {
+export async function getProductPageContentBrowser(slug: string = 'product'): Promise<ProductPageContent> {
   try {
     const client = getContentfulClientBrowser();
     const response = await client.getEntries({
       content_type: 'productPage',
-      'fields.slug': 'product',
+      'fields.slug': slug,
       limit: 1,
     }) as any;
 
     if (response.items.length === 0) {
-      throw new Error('Product page content not found');
+      throw new Error(`Product page content with slug "${slug}" not found`);
     }
 
     const entry = response.items[0];
@@ -104,12 +113,12 @@ export async function getProductPageContentBrowser(): Promise<ProductPageContent
       // Products Section
       productsSectionTitle: fields.productsSectionTitle,
       productsSectionDescription: fields.productsSectionDescription,
-      products: fields.products || [],
+      products: fields.products,
       
       // Product Features Section
       productFeaturesSectionTitle: fields.productFeaturesSectionTitle,
       productFeaturesSectionDescription: fields.productFeaturesSectionDescription,
-      productFeatures: fields.productFeatures || [],
+      productFeatures: fields.productFeatures,
       
       // CTA Section
       ctaSectionTitle: fields.ctaSectionTitle,
@@ -122,7 +131,7 @@ export async function getProductPageContentBrowser(): Promise<ProductPageContent
     };
   } catch (error) {
     console.error('Error fetching product page content from Contentful:', error);
-    throw new Error('Failed to fetch product page content from Contentful');
+    throw new Error(`Failed to fetch product page content from Contentful: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

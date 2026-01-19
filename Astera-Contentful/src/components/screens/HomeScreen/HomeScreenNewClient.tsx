@@ -16,24 +16,7 @@ export function HomeScreenNewClient() {
         setLoading(true);
         setError(null);
         
-        const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-        const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
-        
-        console.log('Fetching content...', { spaceId: spaceId ? 'Set' : 'Missing', accessToken: accessToken ? 'Set' : 'Missing' });
-        
-        if (!spaceId || !accessToken) {
-          throw new Error('Contentful credentials not found. Please rebuild with NEXT_PUBLIC_CONTENTFUL_* environment variables.');
-        }
-        
-        // Add timeout
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000)
-        );
-        
-        const dataPromise = getHomePageContentBrowser();
-        const data = await Promise.race([dataPromise, timeoutPromise]) as any;
-        
-        console.log('Content fetched successfully:', data);
+        const data = await getHomePageContentBrowser();
         setContent(data);
       } catch (err: any) {
         console.error('Failed to fetch content:', err);

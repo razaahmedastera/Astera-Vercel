@@ -17,9 +17,10 @@ export const getContentfulClientBrowser = () => {
   }
 
   // Get env vars at runtime (available in browser)
-  const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-  const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
-  const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master';
+  // Next.js requires NEXT_PUBLIC_ prefix for browser-accessible env vars
+  const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || process.env.CONTENTFUL_SPACE_ID;
+  const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || process.env.CONTENTFUL_ACCESS_TOKEN;
+  const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || process.env.CONTENTFUL_ENVIRONMENT || 'master';
 
   if (!spaceId || !accessToken) {
     throw new Error(
