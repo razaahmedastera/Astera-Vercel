@@ -1,9 +1,10 @@
 export { contentfulClient } from './client';
 export { 
-  getPageContentBySlug, 
-  getPageContentById,
   getHomePageContent,
   getProductPageContent,
-  getAllPages
+  getAllProductPages
 } from './api';
+export {
+  getAllProductPagesBrowser
+} from './api-browser';
 

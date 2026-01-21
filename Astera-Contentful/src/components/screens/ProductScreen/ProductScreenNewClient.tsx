@@ -1,14 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ProductScreenNew } from './ProductScreenNew';
 import { getProductPageContentBrowser } from '@/lib/contentful/api-browser';
 import type { ProductPageContent } from '@/types/contentful';
 
 export function ProductScreenNewClient() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [content, setContent] = useState<ProductPageContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Get slug from URL query param, default to 'reportminer'
+  const slug = searchParams.get('slug') || 'reportminer';
 
   useEffect(() => {
     async function fetchContent() {
@@ -16,7 +22,7 @@ export function ProductScreenNewClient() {
         setLoading(true);
         setError(null);
         
-        const data = await getProductPageContentBrowser();
+        const data = await getProductPageContentBrowser(slug);
         setContent(data);
       } catch (err: any) {
         console.error('Failed to fetch content:', err);
@@ -27,7 +33,7 @@ export function ProductScreenNewClient() {
       }
     }
     fetchContent();
-  }, []);
+  }, [slug]);
 
   if (loading) {
     return (

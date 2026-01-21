@@ -5,7 +5,8 @@
 import { getContentfulClientBrowser } from './client-browser';
 import type { 
   HomePageContent,
-  ProductPageContent
+  ProductPageContent,
+  ProductPageSummary
 } from '@/types/contentful';
 
 /**
@@ -79,10 +80,34 @@ export async function getHomePageContentBrowser(slug: string = 'home'): Promise<
 }
 
 /**
- * Fetch product page content from browser (real-time) by slug
- * @param slug - The page slug (default: 'product')
+ * Fetch all product pages summary (name and slug only) from browser
+ * @returns Array of product page summaries
  */
-export async function getProductPageContentBrowser(slug: string = 'product'): Promise<ProductPageContent> {
+export async function getAllProductPagesBrowser(): Promise<ProductPageSummary[]> {
+  try {
+    const client = getContentfulClientBrowser();
+    const response = await client.getEntries({
+      content_type: 'productPage',
+      select: ['sys.id', 'fields.productName', 'fields.slug'],
+      order: ['fields.productName'],
+    }) as any;
+
+    return response.items.map((entry: any) => ({
+      id: entry.sys.id,
+      productName: entry.fields.productName || entry.fields.entryTitle || 'Untitled Product',
+      slug: entry.fields.slug,
+    }));
+  } catch (error) {
+    console.error('Error fetching all product pages:', error);
+    throw new Error(`Failed to fetch product pages: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Fetch product page content from browser (real-time) by slug
+ * @param slug - The page slug (default: 'reportminer')
+ */
+export async function getProductPageContentBrowser(slug: string = 'reportminer'): Promise<ProductPageContent> {
   try {
     const client = getContentfulClientBrowser();
     const response = await client.getEntries({
@@ -101,6 +126,7 @@ export async function getProductPageContentBrowser(slug: string = 'product'): Pr
     return {
       id: entry.sys.id,
       entryTitle: fields.entryTitle,
+      productName: fields.productName || fields.entryTitle,
       slug: fields.slug,
       
       // Hero Section
@@ -109,22 +135,49 @@ export async function getProductPageContentBrowser(slug: string = 'product'): Pr
       heroSectionDescription: fields.heroSectionDescription,
       heroSectionPrimaryCta: fields.heroSectionPrimaryCta,
       heroSectionSecondaryCta: fields.heroSectionSecondaryCta,
+      heroSectionVideoUrl: fields.heroSectionVideoUrl,
+      heroSectionTrustBadges: fields.heroSectionTrustBadges,
       
-      // Products Section
-      productsSectionTitle: fields.productsSectionTitle,
-      productsSectionDescription: fields.productsSectionDescription,
-      products: fields.products,
+      // Why This Product Section
+      whyThisProductSectionTitle: fields.whyThisProductSectionTitle,
+      whyThisProductSectionDescription: fields.whyThisProductSectionDescription,
+      whyThisProductSectionCards: fields.whyThisProductSectionCards,
       
-      // Product Features Section
-      productFeaturesSectionTitle: fields.productFeaturesSectionTitle,
-      productFeaturesSectionDescription: fields.productFeaturesSectionDescription,
-      productFeatures: fields.productFeatures,
+      // Metrics Section
+      metrics: fields.metrics,
+      
+      // Powerful Features Section
+      powerfulFeaturesSectionTitle: fields.powerfulFeaturesSectionTitle,
+      powerfulFeatures: fields.powerfulFeatures,
+      
+      // Testimonials Section
+      testimonialsSectionTitle: fields.testimonialsSectionTitle,
+      testimonials: fields.testimonials,
+      
+      // Use Cases Section
+      useCasesSectionTitle: fields.useCasesSectionTitle,
+      useCasesSectionDescription: fields.useCasesSectionDescription,
+      useCases: fields.useCases,
+      
+      // FAQ Section
+      faqSectionBadge: fields.faqSectionBadge,
+      faqSectionTitle: fields.faqSectionTitle,
+      faqSectionDescription: fields.faqSectionDescription,
+      faqs: fields.faqs,
+      
+      // Contact Form Section
+      contactFormSectionTitle: fields.contactFormSectionTitle,
+      contactFormSectionSubtitle: fields.contactFormSectionSubtitle,
+      contactFormSectionDescription: fields.contactFormSectionDescription,
+      contactFormSectionWhyTitle: fields.contactFormSectionWhyTitle,
+      contactFormSectionBenefits: fields.contactFormSectionBenefits,
+      contactFormSectionFooterText: fields.contactFormSectionFooterText,
       
       // CTA Section
       ctaSectionTitle: fields.ctaSectionTitle,
       ctaSectionDescription: fields.ctaSectionDescription,
-      ctaSectionPrimaryCta: fields.ctaSectionPrimaryCta,
-      ctaSectionSecondaryCta: fields.ctaSectionSecondaryCta,
+      ctaSectionPrimaryText: fields.ctaSectionPrimaryText,
+      ctaSectionSecondaryText: fields.ctaSectionSecondaryText,
       
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,

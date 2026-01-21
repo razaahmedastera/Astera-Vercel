@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { ProductPageContent } from '@/types/contentful';
-import { Awards } from '@/components/ui/Awards';
 
 interface ProductScreenNewProps {
   content: ProductPageContent;
@@ -19,202 +18,22 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0); // First FAQ open by default
   const useCasesScrollRef = useRef<HTMLDivElement>(null);
   
-  // Testimonials Data - Contentful-ready structure
-  // In Contentful: Create "Testimonial" content type with fields: quote, author, title, company, image, caseStudyUrl
-  const testimonialsData = content.testimonials || [
-    {
-      id: 'coworx',
-      quote: "Astera has impacted our business in a very positive way. We've been using the product for a year, and still have a lot to learn, but we are always thinking of new ways that Astera can help automate processes for us.",
-      author: 'Robert Jobkar',
-      title: 'Vice President of Technology',
-      company: 'CoWorx Staffing',
-      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
-      caseStudyUrl: '#'
-    },
-    {
-      id: 'testimonial-2',
-      quote: "The AI-powered extraction capabilities have transformed how we handle documents. What used to take hours now takes minutes, with better accuracy.",
-      author: 'Sarah Chen',
-      title: 'Director of Operations',
-      company: 'TechFlow Inc',
-      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
-      caseStudyUrl: '#'
-    },
-    {
-      id: 'testimonial-3',
-      quote: "Implementing Astera was seamless. The no-code interface meant our team could start extracting data from complex documents within days, not months.",
-      author: 'Michael Torres',
-      title: 'CTO',
-      company: 'DataFirst Solutions',
-      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Frame-1-2.png',
-      caseStudyUrl: '#'
-    }
-  ];
-
-  // Use Cases Data - Contentful-ready structure
-  // In Contentful: Create "Use Case" content type with fields: title, description, image, linkUrl
-  const useCasesData = content.useCases || [
-    {
-      id: 1,
-      title: 'Loan Applications',
-      description: 'Streamline loan processing by automatically extracting borrower information, financial data, and supporting documents. Reduce processing time and minimize errors.',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=500&fit=crop',
-      linkUrl: '#'
-    },
-    {
-      id: 2,
-      title: 'Claims Processing',
-      description: 'Extract policyholder details, claim amounts, and supporting document information from claims forms. Use data cleansing to ensure accuracy.',
-      image: 'https://www.astera.com/wp-content/uploads/2025/01/Claims-Processing-1.png',
-      linkUrl: 'https://www.astera.com/type/whitepaper/automating-end-to-end-claims-processing-flow/'
-    },
-    {
-      id: 3,
-      title: 'Invoice Processing',
-      description: 'Extract line-item details from unstructured invoices and validate them against purchase orders. Automate tax calculations and inventory updates.',
-      image: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=400&h=500&fit=crop',
-      linkUrl: '#'
-    },
-    {
-      id: 4,
-      title: 'Shipping and Logistics',
-      description: 'Extract shipment details, tracking numbers, and delivery addresses from bills of lading or packing slips. Validate data against customer orders to ensure accuracy.',
-      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=500&fit=crop',
-      linkUrl: 'https://www.astera.com/by-use-case/shipping-document-processing/'
-    },
-    {
-      id: 5,
-      title: 'Energy Consumption Analytics',
-      description: 'Extract meter readings, billing data, and energy consumption patterns from utility bills. Aggregate data for energy usage analytics and reporting.',
-      image: 'https://www.astera.com/wp-content/uploads/2025/01/energy-comsumption-1-1.png',
-      linkUrl: 'https://www.astera.com/type/blog/unstructured-data-analytics-a-complete-guide/'
-    },
-    {
-      id: 6,
-      title: 'Healthcare Records Management',
-      description: 'Digitize and organize patient records, lab results, and medical documents. Ensure compliance while improving accessibility and care coordination.',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=500&fit=crop',
-      linkUrl: '#'
-    }
-  ];
+  // Placeholder image URLs - Using high-quality placeholder services
+  const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format';
+  const PLACEHOLDER_ICON = 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=128&h=128&fit=crop&auto=format';
+  const PLACEHOLDER_TESTIMONIAL = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format';
+  const PLACEHOLDER_USE_CASE = 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=500&fit=crop&auto=format';
   
-  // Powerful Features Accordion Data - Contentful-ready structure
-  // In Contentful: Create "Powerful Feature" content type with fields: title, description, subDescription, bulletPoints, footer, linkText, linkUrl, image
-  const powerfulFeaturesData = content.powerfulFeatures || [
-    {
-      id: 'extract-data',
-      title: 'Extract Data from Any Document, in Any Format, in Seconds',
-      description: 'Turn PDFs, Excel sheets, Word files, text documents, and even scanned images into structured, usable data in seconds—with zero manual effort.',
-      subDescription: 'Astera\'s AI-powered extraction tools adapt to both consistent and complex document layouts:',
-      bulletPoints: [
-        { label: 'Auto-Generate Layout (AGL)', text: 'handles recurring formats effortlessly' },
-        { label: 'LLM-Generate', text: 'intelligently processes documents with varying structures' },
-        { label: 'Built-in OCR', text: 'ensures accurate conversion of scanned files into machine-readable text' }
-      ],
-      footer: 'Accelerate reporting, reduce errors, and free up your team from time-consuming data entry.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/06/Extract-data-from-any-format-1.png'
-    },
-    {
-      id: 'intuitive-interface',
-      title: 'Intuitive, Point-and-Click Interface',
-      description: 'Design complex data extraction workflows without writing a single line of code. Our visual interface makes it easy for anyone to get started.',
-      subDescription: 'Key interface features include:',
-      bulletPoints: [
-        { label: 'Drag-and-Drop', text: 'build workflows visually' },
-        { label: 'Real-time Preview', text: 'see your results instantly' },
-        { label: 'Template Library', text: 'start with pre-built templates' }
-      ],
-      footer: 'Empower your team to work independently without IT dependency.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
-    },
-    {
-      id: 'instant-preview',
-      title: 'Instant Data Preview',
-      description: 'Preview your extracted data in real-time before processing. Catch errors early and ensure accuracy.',
-      subDescription: 'Preview capabilities include:',
-      bulletPoints: [
-        { label: 'Live Preview', text: 'see data as you configure extraction' },
-        { label: 'Data Validation', text: 'automatic error detection' },
-        { label: 'Format Preview', text: 'view output in your desired format' }
-      ],
-      footer: 'Reduce rework and ensure data quality from the start.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
-    },
-    {
-      id: 'custom-fields',
-      title: 'Custom Field Creation',
-      description: 'Create custom fields to capture exactly the data you need. No limitations on field types or structures.',
-      subDescription: 'Customization options:',
-      bulletPoints: [
-        { label: 'Flexible Fields', text: 'define any field type you need' },
-        { label: 'Conditional Logic', text: 'create dynamic field rules' },
-        { label: 'Validation Rules', text: 'ensure data integrity' }
-      ],
-      footer: 'Tailor your extraction to match your exact business requirements.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
-    },
-    {
-      id: 'data-quality',
-      title: 'Built-in Data Quality and Transformation',
-      description: 'Clean, transform, and validate your data automatically. Ensure consistency across all your documents.',
-      subDescription: 'Data quality features:',
-      bulletPoints: [
-        { label: 'Auto-Cleaning', text: 'remove duplicates and errors' },
-        { label: 'Transformations', text: 'convert formats automatically' },
-        { label: 'Quality Rules', text: 'enforce data standards' }
-      ],
-      footer: 'Deliver clean, reliable data to your downstream systems.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
-    },
-    {
-      id: 'workflow-automation',
-      title: 'Workflow Automation and Scalability',
-      description: 'Automate your entire document processing pipeline. Scale from hundreds to millions of documents.',
-      subDescription: 'Automation capabilities:',
-      bulletPoints: [
-        { label: 'Scheduled Jobs', text: 'run extractions automatically' },
-        { label: 'Event Triggers', text: 'process documents as they arrive' },
-        { label: 'Parallel Processing', text: 'handle large volumes efficiently' }
-      ],
-      footer: 'Build enterprise-grade automation without complexity.',
-      linkText: 'See it in action',
-      linkUrl: '#',
-      image: 'https://placehold.co/400x250/EFF5FF/005CCC/png?text=Coming+Soon'
-    }
-  ];
-
-  // Metrics Data - Contentful-ready structure
-  // In Contentful: Create "Metric" content type with fields: value (number), unit (text), title (text)
-  const metricsData = content.metrics || [
-    {
-      id: 'fasterExtraction',
-      value: 90,
-      unit: '%',
-      title: 'Faster Data Extraction'
-    },
-    {
-      id: 'fasterProcessing',
-      value: 8,
-      unit: 'x',
-      title: 'Faster Processing'
-    },
-    {
-      id: 'timeSaved',
-      value: 80,
-      unit: '%',
-      title: 'Time Saved'
-    }
-  ];
+  // Helper function to get image URL with fallback
+  const getImageUrl = (url: string, placeholder: string = PLACEHOLDER_IMAGE) => {
+    return url && url.trim() !== '' ? url : placeholder;
+  };
+  
+  // Use Contentful data
+  const testimonialsData = content.testimonials || [];
+  const useCasesData = content.useCases || [];
+  const powerfulFeaturesData = content.powerfulFeatures || [];
+  const metricsData = content.metrics || [];
 
   // Initialize counters state dynamically from metricsData
   const initialCounters = metricsData.reduce((acc, metric) => {
@@ -258,56 +77,8 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
     }
   ];
 
-  // Why Astera ReportMiner Cards Data - Contentful-friendly structure
-  // In Contentful: Create "Why Astera Card" with fields: text, iconImage (or iconUrl), and an optional short title if you prefer splitting text.
-  const whyAsteraCardsFallback = [
-    {
-      id: 1,
-      text: "Export extracted data to structured destination, including databases and Excel, for streamlined data analysis and reporting.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2906/2906274.png'
-    },
-    {
-      id: 2,
-      text: "Extract data from multiple file formats, including PDFs, Excel, and Word, for easy integration across platforms.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337946.png'
-    },
-    {
-      id: 3,
-      text: "Leverage AI to accurately extract data from documents with varying layouts and formats.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2920/2920349.png'
-    },
-    {
-      id: 4,
-      text: "Easily handle hierarchical and scanned PDFs with advanced features like OCR and hierarchical data export.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/337/337932.png'
-    },
-    {
-      id: 5,
-      text: "AI-driven intelligent data extraction that learns and adapts to your document patterns for improved accuracy.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2103/2103633.png'
-    },
-    {
-      id: 6,
-      text: "Seamless cloud integration with popular platforms for real-time data synchronization and collaboration.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/2885/2885417.png'
-    },
-    {
-      id: 7,
-      text: "Built-in data validation and quality checks ensure accuracy and reliability of extracted information.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/5610/5610944.png'
-    },
-    {
-      id: 8,
-      text: "Automated workflow scheduling and batch processing to handle large volumes of documents efficiently.",
-      iconImage: 'https://cdn-icons-png.flaticon.com/128/1828/1828817.png'
-    }
-  ];
-
-  // Defensive: Contentful sometimes returns unexpected shapes if the field is misconfigured.
-  // Ensure we only use it when it's actually an array.
-  const whyAsteraCards = Array.isArray(content.whyAsteraCards)
-    ? content.whyAsteraCards
-    : whyAsteraCardsFallback;
+  // Why Astera Cards from Contentful
+  const whyAsteraCards = content.whyThisProductSectionCards || [];
 
   // Intersection Observer for metrics section - triggers counter when section is visible
   useEffect(() => {
@@ -935,17 +706,17 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           <div className="product-hero-content pr-0 lg:pr-10">
             {/* Small Heading */}
             <div className="text-[#005CCC] uppercase font-semibold text-sm sm:text-base mb-4 sm:mb-6 tracking-wide">
-              ASTERA REPORTMINER
+              {content.heroSectionBadge}
             </div>
             
             {/* Main Heading */}
             <h1 className="font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
-              From Unstructured Data to Insights with <span className="text-[#005CCC]">AI-Driven Processing</span>
+              {documentToReactComponents(content.heroSectionHeading)}
             </h1>
             
             {/* Paragraph */}
             <p className="text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 mb-6 sm:mb-8 lg:mb-10 max-w-[600px] text-left">
-              Ingest, extract, process and load data to your destinations using an AI-powered unstructured data management tool.
+              {content.heroSectionDescription}
             </p>
             
             {/* CTA Buttons */}
@@ -956,7 +727,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                 rel="noopener noreferrer"
                 className="btn-primary w-full sm:w-auto text-center"
               >
-                View Demo
+                {content.heroSectionPrimaryCta}
               </a>
               <a 
                 href="https://www.astera.com/astera-reportminer-trial/" 
@@ -964,30 +735,18 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                 rel="noopener noreferrer"
                 className="btn-secondary w-full sm:w-auto text-center"
               >
-                Try for Free
+                {content.heroSectionSecondaryCta}
               </a>
             </div>
 
             {/* Trust Badges */}
             <div className="trust-badges mt-8">
-              <div className="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                <span>Trusted by 500+ Companies</span>
-              </div>
-              <div className="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                </svg>
-                <span>4.8/5 Customer Rating</span>
-              </div>
-              <div className="trust-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                </svg>
-                <span>Enterprise-Grade Security</span>
-              </div>
+              {content.heroSectionTrustBadges.map((badge, index) => (
+                <div key={index} className="trust-badge">
+                  <div dangerouslySetInnerHTML={{ __html: badge.iconSvg }} />
+                  <span>{badge.text}</span>
+                </div>
+              ))}
             </div>
           </div>
           
@@ -1027,7 +786,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                   <iframe
                     width="100%"
                     height="100%"
-                    src={isVideoPlaying ? "https://www.youtube.com/embed/L618pQIydC0?autoplay=1&rel=0&mute=0&loop=0&controls=1&playsinline=0&cc_load_policy=0" : "https://www.youtube.com/embed/L618pQIydC0?rel=0&mute=0&loop=0&controls=1&playsinline=0&cc_load_policy=0"}
+                    src={isVideoPlaying ? content.heroSectionVideoUrl : content.heroSectionVideoUrl.replace('autoplay=1&', '')}
                     title="Astera ReportMiner Demo"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -1053,10 +812,10 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           {/* Section Header */}
           <div className="text-center mb-12 sm:mb-16 lg:mb-18">
             <h2 className="section-title mb-3">
-              Why <span className="highlight">Astera ReportMiner</span>?
+              {documentToReactComponents(content.whyThisProductSectionTitle)}
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-              Streamlined benefits your teams feel immediately—accurate extraction, faster delivery, and simpler workflows.
+              {content.whyThisProductSectionDescription}
             </p>
           </div>
 
@@ -1073,7 +832,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                   <div className="mb-5">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#e8f1ff] text-[#005CCC] shadow-inner">
                       <img
-                        src={card.iconImage}
+                        src={getImageUrl(card.iconImage, PLACEHOLDER_ICON)}
                         alt=""
                         className="w-6 h-6 object-contain"
                       />
@@ -1154,7 +913,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           {/* Section Header */}
           <div className="bg-gradient-to-r from-[#005CCC] to-[#0070F3] rounded-t-2xl py-5 px-8 shadow-lg shadow-blue-500/20">
             <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-semibold text-center tracking-tight">
-              Powerful Features Designed for Your Needs
+              {content.powerfulFeaturesSectionTitle}
             </h2>
           </div>
 
@@ -1254,7 +1013,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                             <div className="absolute inset-0 bg-gradient-to-br from-[#005CCC]/20 to-[#0070F3]/20 rounded-2xl blur-xl opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"></div>
                             <div className="relative bg-white rounded-2xl p-3 shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
                               <img 
-                                src={feature.image} 
+                                src={getImageUrl(feature.image)} 
                                 alt={feature.title}
                                 className="w-full h-auto rounded-xl transition-transform duration-500 group-hover/image:scale-[1.02]"
                               />
@@ -1276,7 +1035,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         <div className="section-container">
           {/* Section Header */}
           <h2 className="section-title mb-8 sm:mb-10">
-              Real <span className="highlight">Stories</span>. Real <span className="highlight">Impact</span>.
+            {documentToReactComponents(content.testimonialsSectionTitle)}
           </h2>
 
           {/* Testimonial Slider */}
@@ -1316,7 +1075,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                         <div className="w-full lg:w-[280px] flex-shrink-0">
                           <div className="relative rounded-2xl overflow-hidden shadow-lg">
                             <img 
-                              src={testimonial.image} 
+                              src={getImageUrl(testimonial.image, PLACEHOLDER_TESTIMONIAL)} 
                               alt={`${testimonial.company} testimonial`}
                               className="w-full h-auto object-cover"
                             />
@@ -1411,10 +1170,10 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         <div className="section-container mb-12">
           {/* Section Header */}
           <h2 className="section-title mb-4">
-              Browse Our <span className="highlight">Use Cases</span>
+            {documentToReactComponents(content.useCasesSectionTitle)}
           </h2>
           <p className="section-desc">
-            Explore how our solution can make a difference at your company.
+            {content.useCasesSectionDescription}
           </p>
         </div>
 
@@ -1463,7 +1222,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                     <img 
-                      src={useCase.image} 
+                      src={getImageUrl(useCase.image, PLACEHOLDER_USE_CASE)} 
                       alt={useCase.title}
                       className="w-full h-full object-cover"
                     />
@@ -1540,7 +1299,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                     <img 
-                      src={useCase.image} 
+                      src={getImageUrl(useCase.image, PLACEHOLDER_USE_CASE)} 
                       alt={useCase.title}
                       className="w-full h-full object-cover"
                     />
@@ -1596,198 +1355,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         </div>
       </section>
 
-      {/* Integrations Section - 3 Row Carousel */}
-      <section id="integrations" className="integrations-section py-10 sm:py-12 lg:py-16 bg-[#F8FAFF] overflow-hidden">
-        <div className="section-container mb-10">
-          {/* Section Header */}
-          <h2 className="section-title mb-4">
-              Build an Integrated <span className="highlight">Data Ecosystem</span>
-          </h2>
-          <p className="section-desc" style={{ maxWidth: '800px' }}>
-            Establish code-free connectivity with your enterprise applications, databases, and cloud applications to integrate all your data points and create a holistic view of your data.
-          </p>
-          <div className="text-center">
-            <a 
-              href="#"
-              className="inline-flex items-center text-[#005CCC] font-medium hover:gap-3 transition-all duration-300 group border-b-2 border-[#005CCC]"
-              style={{  fontSize: '16px', fontWeight: 500 }}
-            >
-              View All Integrations
-              <svg 
-                className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor" 
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        {/* Integration Logos Grid - 3 Rows of Carousels */}
-        <div className="relative">
-          {/* Large centered Astera "A" logo - z-index 999 in front */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            style={{ zIndex: 999 }}
-          >
-            <img 
-              src="https://cdn-ajfbi.nitrocdn.com/GuYcnotRkcKfJXshTEEKnCZTOtUwxDnm/assets/images/optimized/rev-cdc4f02/www.astera.com/wp-content/uploads/2025/01/Group-110.png"
-              alt="Astera"
-              className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 object-contain drop-shadow-2xl"
-            />
-          </div>
-
-          {/* Row 1 - Right to Left */}
-          <div className="mb-4 overflow-hidden" style={{ zIndex: 1 }}>
-            <div 
-              className="flex gap-4"
-              style={{ 
-                width: 'max-content',
-                animation: 'scrollLeft 30s linear infinite'
-              }}
-            >
-              {[...Array(3)].map((_, setIndex) => (
-                <div key={setIndex} className="flex gap-4">
-                  {[
-                    { alt: 'Group-61', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-61-1-1.png' },
-                    { alt: 'Mask-group-18', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-18-3.png' },
-                    { alt: 'Group-63', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-63-1-1.png' },
-                    { alt: 'Group-64', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-64-1-1.png' },
-                    { alt: 'Group-65', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-65-2.png' },
-                    { alt: 'Group-66', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-66-2.png' },
-                    { alt: 'Group-67', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-67-2.png' },
-                    { alt: 'Mask-group-19', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-19-1.png' },
-                    { alt: 'Group-70', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-70-1.png' },
-                    { alt: 'Group-71', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-71-1.png' },
-                    { alt: 'Group-72', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-72-1.png' },
-                    { alt: 'Group-73', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-73-1.png' },
-                    { alt: 'Group-75', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-75-2.png' }
-                  ].map((img, i) => (
-                    <div 
-                      key={`r1-${setIndex}-${i}`}
-                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
-                    >
-                      <img 
-                        src={img.url}
-                        alt={img.alt}
-                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Row 2 - Left to Right (Reverse) */}
-          <div className="mb-4 overflow-hidden" style={{ zIndex: 1 }}>
-            <div 
-              className="flex gap-4"
-              style={{ 
-                width: 'max-content',
-                animation: 'scrollRight 35s linear infinite'
-              }}
-            >
-              {[...Array(3)].map((_, setIndex) => (
-                <div key={setIndex} className="flex gap-4">
-                  {[
-                    { alt: 'Group-76', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-76-1.png' },
-                    { alt: 'Group-77', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-77-1.png' },
-                    { alt: 'Group-78', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-78.png' },
-                    { alt: 'Group-79', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-79-1.png' },
-                    { alt: 'Mask-group-20', url: 'https://www.astera.com/wp-content/uploads/2025/01/Mask-group-20-1.png' },
-                    { alt: 'Group-81', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-81.png' },
-                    { alt: 'Group-82', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-82.png' },
-                    { alt: 'Group-83', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-83.png' },
-                    { alt: 'Group-87', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-87.png' },
-                    { alt: 'Group-88', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-88.png' },
-                    { alt: 'Group-89', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-89.png' }
-                  ].map((img, i) => (
-                    <div 
-                      key={`r2-${setIndex}-${i}`}
-                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
-                    >
-                      <img 
-                        src={img.url}
-                        alt={img.alt}
-                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Row 3 - Right to Left */}
-          <div className="overflow-hidden" style={{ zIndex: 1 }}>
-            <div 
-              className="flex gap-4"
-              style={{ 
-                width: 'max-content',
-                animation: 'scrollLeft 40s linear infinite'
-              }}
-            >
-              {[...Array(3)].map((_, setIndex) => (
-                <div key={setIndex} className="flex gap-4">
-                  {[
-                    { alt: 'Group-91', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-91.png' },
-                    { alt: 'Group-91-1', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-91-1.png' },
-                    { alt: 'Group-92', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-92.png' },
-                    { alt: 'Group-93', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-93.png' },
-                    { alt: 'Group-95', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-95.png' },
-                    { alt: 'Group-96', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-96.png' },
-                    { alt: 'Group-98', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-98.png' },
-                    { alt: 'Group-99', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-99.png' },
-                    { alt: 'Group-101', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-101.png' },
-                    { alt: 'Group-102', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-102.png' },
-                    { alt: 'Group-103', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-103.png' },
-                    { alt: 'Group-104', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-104.png' },
-                    { alt: 'Group-105', url: 'https://www.astera.com/wp-content/uploads/2025/01/Group-105.png' }
-                  ].map((img, i) => (
-                    <div 
-                      key={`r3-${setIndex}-${i}`}
-                      className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-white rounded-2xl shadow-sm flex items-center justify-center flex-shrink-0 hover:shadow-md transition-shadow"
-                    >
-                      <img 
-                        src={img.url}
-                        alt={img.alt}
-                        className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* CSS Animations */}
-        <style jsx>{`
-          @keyframes scrollLeft {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          @keyframes scrollRight {
-            0% {
-              transform: translateX(-50%);
-            }
-            100% {
-              transform: translateX(0);
-            }
-          }
-        `}</style>
-      </section>
-
-      {/* Awards Section - Global Component */}
-      <Awards />
 
       {/* FAQ Section */}
       <section id="faqs" className="py-10 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-[#f8fafc] animate-on-scroll">
@@ -1801,50 +1368,19 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                 color: 'var(--azure-blue)'
               }}
             >
-              Got Questions?
+              {content.faqSectionBadge}
             </span>
             <h2 className="section-title">
-              Frequently Asked <span className="highlight">Questions</span>
+              {documentToReactComponents(content.faqSectionTitle)}
             </h2>
             <p className="section-desc mt-4">
-              Everything you need to know about ReportMiner and how it can transform your data extraction workflow.
+              {content.faqSectionDescription}
             </p>
           </div>
 
           {/* FAQ Accordion */}
           <div className="space-y-3">
-            {[
-              {
-                id: 'faq-1',
-                question: 'What file types can I extract using ReportMiner?',
-                answer: 'With our AI-powered extraction, you can handle virtually any type of data. This includes PDF, TXT, CSV, XLS, XLSX, DOC, DOCX, JPEG, and scanned images — all converted into structured, usable data in seconds with zero manual effort.'
-              },
-              {
-                id: 'faq-2',
-                question: 'What company documents can ReportMiner help me extract?',
-                answer: 'ReportMiner can extract data from invoices, purchase orders, contracts, bank statements, insurance claims, medical records, shipping documents, utility bills, and virtually any structured or unstructured business document.'
-              },
-              {
-                id: 'faq-3',
-                question: 'How does AI fit into ReportMiner?',
-                answer: 'AI powers ReportMiner\'s intelligent document processing capabilities. Our Auto-Generate Layout (AGL) handles recurring formats, while LLM-Generate processes documents with varying structures. Built-in OCR accurately converts scanned files into machine-readable text.'
-              },
-              {
-                id: 'faq-4',
-                question: 'Can I use a single ReportMiner license for multiple users at my company?',
-                answer: 'Yes, ReportMiner offers flexible licensing options including multi-user licenses for teams and enterprise-wide deployments. Contact our sales team to discuss the best licensing option for your organization\'s needs.'
-              },
-              {
-                id: 'faq-5',
-                question: 'Do I need to know coding to use ReportMiner?',
-                answer: 'No coding is required. ReportMiner features a completely no-code visual interface that allows anyone to design, build, and deploy data extraction workflows without writing a single line of code.'
-              },
-              {
-                id: 'faq-6',
-                question: 'How does Astera handle security?',
-                answer: 'Astera takes security seriously with enterprise-grade encryption, secure data handling, role-based access controls, and compliance with industry standards. Your data remains protected throughout the entire extraction and processing workflow.'
-              }
-            ].map((faq, index) => {
+            {content.faqs.map((faq, index) => {
               const isActive = activeFaqIndex === index;
               return (
                 <div 
@@ -1936,73 +1472,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         </div>
       </section>
 
-      {/* Explore Our Resources Section */}
-      <section id="resources" className="resources-section py-10 sm:py-12 lg:py-16 bg-white animate-on-scroll">
-        <div className="resources-container section-container">
-          <h2 className="section-title mb-6 sm:mb-8 lg:mb-10">
-            Explore Our <span className="highlight">Resources</span>
-          </h2>
-          <div className="resources-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { 
-                type: 'WEBINAR', 
-                title: 'Mastering Unstructured Data Extraction with ReportMiner',
-                image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop',
-                link: 'https://www.astera.com/type/webinars/'
-              },
-              { 
-                type: 'CASE STUDY', 
-                title: 'How CoWorx Staffing Automated Their Data Processing Workflow',
-                image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-                link: 'https://www.astera.com/type/case-studies/'
-              },
-              { 
-                type: 'BLOG', 
-                title: 'AI-Powered Document Processing: A Complete Guide for 2025',
-                image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=600&fit=crop',
-                link: 'https://www.astera.com/type/blog/'
-              },
-              { 
-                type: 'WHITEPAPER', 
-                title: 'Introduction to Generative AI and its Role in Unstructured Data Extraction',
-                image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop',
-                link: 'https://www.astera.com/type/whitepaper/generative-ai-and-data-extraction-automation/'
-              }
-              
-            ].map((resource, index) => (
-              <a 
-                key={index} 
-                href={resource.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="resource-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
-              >
-                {/* Top Section - Image */}
-                <div className="resource-image-container relative h-56 bg-gradient-to-br from-[#005CCC] to-[#004ba3] overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#005CCC]/30"></div>
-                  <img 
-                    src={resource.image} 
-                    alt={resource.title}
-                    className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                </div>
-                {/* Bottom Section - Content */}
-                <div className="resource-content p-6">
-                  <div className="resource-type inline-block px-3 py-1 sm:px-4 sm:py-1.5 bg-[#005CCC] text-white rounded-full text-xs font-medium sm:font-semibold mb-3 sm:mb-4">
-                    {resource.type}
-                  </div>
-                  <h3 className="resource-title text-sm sm:text-base font-semibold text-[#000] leading-relaxed line-clamp-3 group-hover:text-[#005CCC] transition-colors">
-                    {resource.title}
-                  </h3>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form Section with HubSpot */}
       <section id="contact-form" className="py-10 sm:py-12 lg:py-16 bg-[#f8fafc]">
         <div className="section-container">
@@ -2010,44 +1479,39 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             {/* Left Column - Content */}
             <div className="lg:sticky lg:top-8">
               <h2 className="section-title-left mb-4">
-                Looking To Automate Your Unstructured Data Management with <span className="highlight">AI</span>?
+                {documentToReactComponents(content.contactFormSectionTitle)}
               </h2>
               
               <h3 className="text-xl sm:text-2xl lg:text-[28px] font-semibold text-[#005CCC] mb-6">
-                Let&apos;s Make it Happen!
+                {content.contactFormSectionSubtitle}
               </h3>
               
               <p className="section-desc-left mb-7">
-                Astera ReportMiner lets you extract, cleanse, transform, and validate data from a variety of unstructured sources.
+                {content.contactFormSectionDescription}
               </p>
               
               <p className="text-[15px] font-semibold text-gray-900 mb-4">
-                But why pick Astera?
+                {content.contactFormSectionWhyTitle}
               </p>
               
               <ul className="space-y-4 mb-8">
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
-                  <span className="card-desc">
-                    Our <strong className="text-gray-900">AI-powered extraction features</strong> deliver unmatched accuracy and efficiency when extracting your data.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
-                  <span className="card-desc">
-                    Our <strong className="text-gray-900">visual drag-and-drop interface</strong> lets users manage their unstructured data without any coding knowledge.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
-                  <span className="card-desc">
-                    Our <strong className="text-gray-900">automation features</strong> ensure that workflows run with minimal oversight to save time and effort.
-                  </span>
-                </li>
+                {content.contactFormSectionBenefits.map((benefit) => (
+                  <li key={benefit.id} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#005CCC] mt-2.5 flex-shrink-0"></div>
+                    <span className="card-desc">
+                      {benefit.text.split(benefit.highlightedText).map((part, idx, arr) => (
+                        <span key={idx}>
+                          {part}
+                          {idx < arr.length - 1 && <strong className="text-gray-900">{benefit.highlightedText}</strong>}
+                        </span>
+                      ))}
+                    </span>
+                  </li>
+                ))}
               </ul>
               
               <p className="text-sm text-gray-500">
-                Fill out the form to speak with an expert.
+                {content.contactFormSectionFooterText}
               </p>
             </div>
             
@@ -2076,17 +1540,17 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         <div className="product-cta-container section-container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">
-              {content.ctaSectionTitle || 'Ready to Transform Your Data Workflow?'}
+              {content.ctaSectionTitle}
             </h2>
             <p className="text-white/90 text-base sm:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
-              {content.ctaSectionDescription || 'Join thousands of businesses leveraging AI for data success. Start your free trial today.'}
+              {content.ctaSectionDescription}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="inline-flex items-center justify-center h-[51px] px-8 bg-white text-[#005CCC] font-semibold rounded-lg transition-all duration-200 hover:bg-gray-100 hover:scale-105 shadow-lg">
-                {content.ctaSectionPrimaryCta || 'Start Free Trial'}
+                {content.ctaSectionPrimaryText}
               </button>
               <button className="inline-flex items-center justify-center h-[51px] px-8 bg-transparent text-white font-semibold rounded-lg border-2 border-white transition-all duration-200 hover:bg-white/10">
-                {content.ctaSectionSecondaryCta || 'Schedule Demo'}
+                {content.ctaSectionSecondaryText}
               </button>
             </div>
           </div>

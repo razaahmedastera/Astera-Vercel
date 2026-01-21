@@ -1,33 +1,6 @@
 import type { Entry, EntrySkeletonType } from 'contentful';
 import type { Document } from '@contentful/rich-text-types';
 
-/**
- * Contentful Page Content Type Skeleton
- */
-export interface PageContentSkeleton extends EntrySkeletonType {
-  contentTypeId: 'pageContent';
-  fields: {
-    title: string;
-    slug: string;
-    body: string;
-    randomText: Document;
-  };
-}
-
-export type PageContentEntry = Entry<PageContentSkeleton, undefined, string>;
-
-/**
- * Parsed/simplified version for components
- */
-export interface PageContent {
-  title: string;
-  slug: string;
-  body: string;
-  randomText: Document;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 /**
  * Feature Tab interface (for home page tabs)
@@ -81,57 +54,30 @@ export interface FinalCtaCard {
 }
 
 /**
- * Product Use Case card interface (for product page carousel)
+ * Trust Badge interface (for product page hero)
  */
-export interface ProductUseCase {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  linkUrl: string;
+export interface TrustBadge {
+  text: string;
+  iconSvg: string;
 }
 
 /**
- * Product card interface
- */
-export interface Product {
-  name: string;
-  description: string;
-  badge: string;
-  highlights: string[];
-}
-
-/**
- * Product feature interface (for product page)
- */
-export interface ProductFeature {
-  title: string;
-  description: string;
-}
-
-/**
- * Why Astera Card interface (for product page carousel)
+ * Why Astera Card interface (for product page)
  */
 export interface WhyAsteraCard {
   id: number;
   text: string;
-  backgroundColor: string;
-  textColor: string;
   iconImage: string;
-  position: 'up' | 'down';
 }
 
 /**
- * Testimonial interface (for product page)
+ * Metric interface (for product page counters)
  */
-export interface Testimonial {
+export interface Metric {
   id: string;
-  quote: string;
-  author: string;
+  value: number;
+  unit: string;
   title: string;
-  company: string;
-  image: string;
-  caseStudyUrl: string;
 }
 
 /**
@@ -150,13 +96,45 @@ export interface PowerfulFeature {
 }
 
 /**
- * Metric interface (for product page counters)
+ * Testimonial interface (for product page)
  */
-export interface Metric {
+export interface Testimonial {
   id: string;
-  value: number;
-  unit: string;
+  quote: string;
+  author: string;
   title: string;
+  company: string;
+  image: string;
+  caseStudyUrl: string;
+}
+
+/**
+ * Use Case interface (for product page carousel)
+ */
+export interface UseCase {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  linkUrl: string;
+}
+
+/**
+ * FAQ interface (for product page)
+ */
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+/**
+ * Contact Form Benefit interface (for product page)
+ */
+export interface ContactFormBenefit {
+  id: string;
+  text: string;
+  highlightedText: string;
 }
 
 /**
@@ -257,12 +235,22 @@ export interface HomePageContent {
 }
 
 /**
+ * Product Page Summary (for listing/dropdown)
+ */
+export interface ProductPageSummary {
+  id: string;
+  productName: string;
+  slug: string;
+}
+
+/**
  * Contentful Product Page Content Type Skeleton
  */
 export interface ProductPageContentSkeleton extends EntrySkeletonType {
   contentTypeId: 'productPage';
   fields: {
     entryTitle: string;
+    productName: string;
     slug: string;
     
     // Hero Section
@@ -271,22 +259,49 @@ export interface ProductPageContentSkeleton extends EntrySkeletonType {
     heroSectionDescription: string;
     heroSectionPrimaryCta: string;
     heroSectionSecondaryCta: string;
+    heroSectionVideoUrl: string;
+    heroSectionTrustBadges: TrustBadge[];
     
-    // Products Section
-    productsSectionTitle: string;
-    productsSectionDescription: string;
-    products: Product[];
+    // Why This Product Section
+    whyThisProductSectionTitle: Document;
+    whyThisProductSectionDescription: string;
+    whyThisProductSectionCards: WhyAsteraCard[];
     
-    // Product Features Section
-    productFeaturesSectionTitle: string;
-    productFeaturesSectionDescription: string;
-    productFeatures: ProductFeature[];
+    // Metrics Section
+    metrics: Metric[];
+    
+    // Powerful Features Section
+    powerfulFeaturesSectionTitle: string;
+    powerfulFeatures: PowerfulFeature[];
+    
+    // Testimonials Section
+    testimonialsSectionTitle: Document;
+    testimonials: Testimonial[];
+    
+    // Use Cases Section
+    useCasesSectionTitle: Document;
+    useCasesSectionDescription: string;
+    useCases: UseCase[];
+    
+    // FAQ Section
+    faqSectionBadge: string;
+    faqSectionTitle: Document;
+    faqSectionDescription: string;
+    faqs: FAQ[];
+    
+    // Contact Form Section
+    contactFormSectionTitle: Document;
+    contactFormSectionSubtitle: string;
+    contactFormSectionDescription: string;
+    contactFormSectionWhyTitle: string;
+    contactFormSectionBenefits: ContactFormBenefit[];
+    contactFormSectionFooterText: string;
     
     // CTA Section
     ctaSectionTitle: string;
     ctaSectionDescription: string;
-    ctaSectionPrimaryCta: string;
-    ctaSectionSecondaryCta: string;
+    ctaSectionPrimaryText: string;
+    ctaSectionSecondaryText: string;
   };
 }
 
@@ -298,6 +313,7 @@ export type ProductPageContentEntry = Entry<ProductPageContentSkeleton, undefine
 export interface ProductPageContent {
   id: string;
   entryTitle: string;
+  productName: string;
   slug: string;
   
   // Hero Section
@@ -306,37 +322,49 @@ export interface ProductPageContent {
   heroSectionDescription: string;
   heroSectionPrimaryCta: string;
   heroSectionSecondaryCta: string;
+  heroSectionVideoUrl: string;
+  heroSectionTrustBadges: TrustBadge[];
   
-  // Products Section
-  productsSectionTitle: string;
-  productsSectionDescription: string;
-  products: Product[];
+  // Why This Product Section
+  whyThisProductSectionTitle: Document;
+  whyThisProductSectionDescription: string;
+  whyThisProductSectionCards: WhyAsteraCard[];
   
-  // Product Features Section
-  productFeaturesSectionTitle: string;
-  productFeaturesSectionDescription: string;
-  productFeatures: ProductFeature[];
+  // Metrics Section
+  metrics: Metric[];
   
-  // Why Astera Cards Section (Carousel)
-  whyAsteraCards?: WhyAsteraCard[];
+  // Powerful Features Section
+  powerfulFeaturesSectionTitle: string;
+  powerfulFeatures: PowerfulFeature[];
   
   // Testimonials Section
-  testimonials?: Testimonial[];
+  testimonialsSectionTitle: Document;
+  testimonials: Testimonial[];
   
-  // Powerful Features Section (Accordion)
-  powerfulFeatures?: PowerfulFeature[];
+  // Use Cases Section
+  useCasesSectionTitle: Document;
+  useCasesSectionDescription: string;
+  useCases: UseCase[];
   
-  // Metrics Section (Counters)
-  metrics?: Metric[];
+  // FAQ Section
+  faqSectionBadge: string;
+  faqSectionTitle: Document;
+  faqSectionDescription: string;
+  faqs: FAQ[];
   
-  // Use Cases Section (Carousel)
-  useCases?: ProductUseCase[];
+  // Contact Form Section
+  contactFormSectionTitle: Document;
+  contactFormSectionSubtitle: string;
+  contactFormSectionDescription: string;
+  contactFormSectionWhyTitle: string;
+  contactFormSectionBenefits: ContactFormBenefit[];
+  contactFormSectionFooterText: string;
   
   // CTA Section
   ctaSectionTitle: string;
   ctaSectionDescription: string;
-  ctaSectionPrimaryCta: string;
-  ctaSectionSecondaryCta: string;
+  ctaSectionPrimaryText: string;
+  ctaSectionSecondaryText: string;
   
   createdAt: string;
   updatedAt: string;
