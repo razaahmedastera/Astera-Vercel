@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+import { Suspense } from 'react';
 import '@/styles/globals.css';
 import { Header } from '@/components/ui/Navigation';
 import { Footer } from '@/components/ui/Footer';
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} className={poppins.className}>
-        <Header />
+        <Suspense fallback={<div style={{ height: '64px' }} />}>
+          <Header />
+        </Suspense>
         <main className="flex-1 pt-12 sm:pt-16">{children}</main>
         <Footer />
       </body>

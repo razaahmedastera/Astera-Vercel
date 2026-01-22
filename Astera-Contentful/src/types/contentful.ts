@@ -442,7 +442,33 @@ export interface BlogAuthorSkeleton extends EntrySkeletonType {
     bio?: string;
     avatar?: { fields: { file: { url: string } } };
   };
-}/**
+}
+
+/**
+ * Blog CTA interface
+ */
+export interface BlogCta {
+  id: string;
+  title: string;
+  description?: Document;
+  text: string;
+  link: string;
+}
+
+/**
+ * Contentful Blog CTA Skeleton
+ */
+export interface BlogCtaSkeleton extends EntrySkeletonType {
+  contentTypeId: 'blogCta';
+  fields: {
+    blogCtaTitle: string;
+    blogCtaDescription?: Document;
+    blogCtaText: string;
+    blogCtaLink: string;
+  };
+}
+
+/** 
  * Contentful Blog Post Skeleton
  */
 export interface BlogPostSkeleton extends EntrySkeletonType {

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import type { BlogPost } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
+import { BlogCtaSection } from './BlogCtaSection';
 import './BlogPostScreen.css';
 
 type Props = {
@@ -394,6 +395,77 @@ export function BlogPostScreen({ post }: Props) {
             {children}
           </h2>
         );
+      },
+      [BLOCKS.EMBEDDED_ENTRY]: (node: any) => {
+        const entry = node.data.target;
+        
+        // Check if it's a blogCta entry
+        if (entry?.sys?.contentType?.sys?.id === 'blogCta') {
+          const fields = entry.fields || {};
+          
+          // Helper function to find field by multiple possible names (case-insensitive search)
+          const findField = (possibleNames: string[]): any => {
+            for (const name of possibleNames) {
+              if (fields[name] !== undefined && fields[name] !== null && fields[name] !== '') {
+                return fields[name];
+              }
+            }
+            // Try case-insensitive match
+            const fieldKeys = Object.keys(fields);
+            for (const key of fieldKeys) {
+              for (const name of possibleNames) {
+                if (key.toLowerCase() === name.toLowerCase()) {
+                  return fields[key];
+                }
+              }
+            }
+            return '';
+          };
+          
+          // Try multiple possible field ID formats
+          // Based on actual Contentful fields:
+          // - "Blog CTA Text" -> ctaButtonText
+          // - "Blog CTA link (url)" -> blogCtaLinkUrl
+          const cta = {
+            id: entry.sys.id,
+            title: findField(['blogCtaTitle', 'title', 'Blog CTA Title']),
+            description: findField(['blogCtaDescription', 'description', 'Blog CTA Description']),
+            text: findField([
+              'ctaButtonText', // Actual field name from Contentful
+              'blogCtaText', 
+              'text', 
+              'Blog CTA Text',
+              'buttonText',
+              'ctaText'
+            ]),
+            link: findField([
+              'blogCtaLinkUrl', // Actual field name from Contentful
+              'blogCtaLink', 
+              'link', 
+              'Blog CTA link',
+              'Blog CTA Link',
+              'blogCtalink',
+              'url',
+              'href',
+              'buttonUrl',
+              'ctaLink'
+            ]),
+          };
+          
+          // Debug: log fields to see what we're getting
+          console.log('[BlogPostScreen] CTA entry fields keys:', Object.keys(fields));
+          console.log('[BlogPostScreen] CTA entry sys:', entry.sys);
+          console.log('[BlogPostScreen] CTA all fields:', JSON.stringify(fields, null, 2));
+          console.log('[BlogPostScreen] Mapped CTA:', cta);
+          
+          // Only render if we have at least title or text
+          if (cta.title || cta.text) {
+            return <BlogCtaSection key={entry.sys.id} cta={cta} />;
+          }
+        }
+        
+        // Fallback for other embedded entries
+        return null;
       },
     },
   };
