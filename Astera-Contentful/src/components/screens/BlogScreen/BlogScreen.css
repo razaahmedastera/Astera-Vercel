@@ -97,3 +97,75 @@
   color: #fff !important;
   text-decoration: underline;
 }
+
+/* ========================================
+   RESPONSIVE STYLES - BLOG LISTING PAGE
+   ======================================== */
+
+/* Hide sidebar on small devices */
+@media (max-width: 1023px) {
+  .blog-astera aside {
+    display: none !important;
+  }
+
+  /* Make grid single column */
+  .blog-astera {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .blog-astera {
+    gap: 2rem;
+  }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Blog cards - stack image and content */
+  .blog-astera > div > a {
+    grid-template-columns: 120px 1fr !important;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .blog-astera > div > a > div:first-child {
+    height: 100px !important;
+  }
+
+  /* Title and text */
+  .blog-astera h3 {
+    font-size: 16px !important;
+  }
+
+  .blog-astera p {
+    font-size: 13px !important;
+  }
+}
+
+/* Small mobile (max-width: 640px) */
+@media (max-width: 640px) {
+  /* Blog cards */
+  .blog-astera > div > a {
+    grid-template-columns: 100px 1fr !important;
+    gap: 0.75rem;
+    padding: 0.875rem;
+  }
+
+  .blog-astera > div > a > div:first-child {
+    height: 90px !important;
+  }
+
+  /* Pagination */
+  .blog-astera + div button {
+    padding: 0.5rem 0.75rem;
+    font-size: 12px;
+  }
+
+  .blog-astera + div button.w-9 {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}

@@ -226,7 +226,7 @@ export async function getAllBlogPostsBrowser(): Promise<BlogPost[]> {
     const response = await client.getEntries({
       content_type: 'blog',
       order: ['-sys.createdAt'],
-      include: 2,
+      include: 10, // Increase to ensure assets are fully resolved
     }) as any;
 
     return response.items.map((entry: any) => {
@@ -267,13 +267,108 @@ export async function getAllBlogPostsBrowser(): Promise<BlogPost[]> {
         excerpt = ensureStringExcerpt(fields.excerpt || fields.summary || '');
       }
 
+      // Get featured image from Contentful field ID "featuredImage"
+      let featuredImageUrl: string | undefined = undefined;
+      
+      // Enhanced debugging
+      console.log('[DEBUG getAllBlogPostsBrowser] Post title:', fields.title);
+      console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Field exists:', !!fields.featuredImage);
+      console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Type:', typeof fields.featuredImage);
+      console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Is Array:', Array.isArray(fields.featuredImage));
+      
+      if (fields.featuredImage) {
+        console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Keys:', Object.keys(fields.featuredImage));
+        if (fields.featuredImage.sys) {
+          console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Sys:', fields.featuredImage.sys);
+        }
+        if (fields.featuredImage.fields) {
+          console.log('[DEBUG getAllBlogPostsBrowser] Featured Image Fields Keys:', Object.keys(fields.featuredImage.fields));
+          if (fields.featuredImage.fields.file) {
+            console.log('[DEBUG getAllBlogPostsBrowser] Featured Image File Keys:', Object.keys(fields.featuredImage.fields.file));
+            console.log('[DEBUG getAllBlogPostsBrowser] Featured Image File URL:', fields.featuredImage.fields.file.url);
+          }
+        }
+        
+        // Case 1: Entry with fields.file.url structure
+        if (fields.featuredImage.fields?.file?.url) {
+          const url = fields.featuredImage.fields.file.url;
+          featuredImageUrl = url.startsWith('//') 
+            ? `https:${url}` 
+            : url.startsWith('http') 
+              ? url 
+              : `https:${url}`;
+          console.log('[DEBUG getAllBlogPostsBrowser] ✅ Found image via Case 1 (fields.file.url):', featuredImageUrl);
+        }
+        // Case 1b: Check if it's a linked entry
+        else if (fields.featuredImage.sys?.linkType === 'Asset' && fields.featuredImage.fields?.file?.url) {
+          const url = fields.featuredImage.fields.file.url;
+          featuredImageUrl = url.startsWith('//') 
+            ? `https:${url}` 
+            : url.startsWith('http') 
+              ? url 
+              : `https:${url}`;
+          console.log('[DEBUG getAllBlogPostsBrowser] ✅ Found image via Case 1b (Asset link):', featuredImageUrl);
+        }
+        // Case 2: Direct URL string
+        else if (typeof fields.featuredImage === 'string') {
+          featuredImageUrl = fields.featuredImage.startsWith('//') 
+            ? `https:${fields.featuredImage}` 
+            : fields.featuredImage.startsWith('http') 
+              ? fields.featuredImage 
+              : `https:${fields.featuredImage}`;
+          console.log('[DEBUG getAllBlogPostsBrowser] ✅ Found image via Case 2 (string):', featuredImageUrl);
+        }
+        // Case 3: Array of assets
+        else if (Array.isArray(fields.featuredImage) && fields.featuredImage.length > 0) {
+          const firstAsset = fields.featuredImage[0];
+          if (firstAsset.fields?.file?.url) {
+            const url = firstAsset.fields.file.url;
+            featuredImageUrl = url.startsWith('//') 
+              ? `https:${url}` 
+              : url.startsWith('http') 
+                ? url 
+                : `https:${url}`;
+            console.log('[DEBUG getAllBlogPostsBrowser] ✅ Found image via Case 3 (array):', featuredImageUrl);
+          }
+        }
+        // Case 4: Direct file object
+        else if (fields.featuredImage.file?.url) {
+          const url = fields.featuredImage.file.url;
+          featuredImageUrl = url.startsWith('//') 
+            ? `https:${url}` 
+            : url.startsWith('http') 
+              ? url 
+              : `https:${url}`;
+          console.log('[DEBUG getAllBlogPostsBrowser] ✅ Found image via Case 4 (file.url):', featuredImageUrl);
+        }
+        // Case 5: Unresolved link
+        else if (fields.featuredImage.sys?.type === 'Link' && fields.featuredImage.sys?.linkType === 'Asset') {
+          console.warn('[DEBUG getAllBlogPostsBrowser] ⚠️ Featured image is an unresolved link');
+          console.log('[DEBUG getAllBlogPostsBrowser] Link details:', fields.featuredImage.sys);
+        }
+        else {
+          console.log('[DEBUG getAllBlogPostsBrowser] ❌ Could not extract URL from featured image');
+          console.log('[DEBUG getAllBlogPostsBrowser] Full featured image object:', JSON.stringify(fields.featuredImage, null, 2));
+        }
+      } else {
+        console.log('[DEBUG getAllBlogPostsBrowser] ❌ Featured image field is null/undefined');
+        console.log('[DEBUG getAllBlogPostsBrowser] All available field keys:', Object.keys(fields));
+      }
+      
+      // Final result logging
+      if (featuredImageUrl) {
+        console.log('[Contentful API Browser] ✅ Featured image found for post:', fields.title, 'URL:', featuredImageUrl);
+      } else {
+        console.log('[Contentful API Browser] ❌ Featured image NOT found for post:', fields.title);
+      }
+
       return {
         id: entry.sys.id,
         title: fields.title || '',
         slug: fields.slug || '',
         excerpt: excerpt,
-        coverImage: fields.featuredImage?.fields?.file?.url || fields.coverImage?.fields?.file?.url || undefined,
-        featuredImage: fields.featuredImage?.fields?.file?.url || undefined,
+        coverImage: featuredImageUrl,
+        featuredImage: featuredImageUrl,
         content: content,
         category: category ? {
           id: category.sys.id,
@@ -295,6 +390,9 @@ export async function getAllBlogPostsBrowser(): Promise<BlogPost[]> {
         } : undefined,
         authorName: author?.fields.name,
         tags: fields.tags || [],
+        keyPoints: Array.isArray(fields.blogKeyPoints) ? fields.blogKeyPoints : 
+                   typeof fields.blogKeyPoints === 'string' ? [fields.blogKeyPoints] : 
+                   undefined,
         publishedAt: fields.publishedAt || entry.sys.createdAt,
         createdAt: entry.sys.createdAt,
         updatedAt: entry.sys.updatedAt,
@@ -322,7 +420,7 @@ export async function getBlogPostBySlugBrowser(slug: string): Promise<BlogPost |
       content_type: 'blog',
       'fields.slug': slug,
       limit: 1,
-      include: 2,
+      include: 10, // Increase to ensure assets are fully resolved
     }) as any;
 
     if (response.items.length === 0) {
@@ -370,13 +468,108 @@ export async function getBlogPostBySlugBrowser(slug: string): Promise<BlogPost |
       excerpt = ensureStringExcerpt(fields.excerpt || fields.summary || '');
     }
 
+    // Get featured image from Contentful field ID "featuredImage"
+    let featuredImageUrl: string | undefined = undefined;
+    
+    // Enhanced debugging
+    console.log('[DEBUG getBlogPostBySlugBrowser] Post title:', fields.title);
+    console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Field exists:', !!fields.featuredImage);
+    console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Type:', typeof fields.featuredImage);
+    console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Is Array:', Array.isArray(fields.featuredImage));
+    
+    if (fields.featuredImage) {
+      console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Keys:', Object.keys(fields.featuredImage));
+      if (fields.featuredImage.sys) {
+        console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Sys:', fields.featuredImage.sys);
+      }
+      if (fields.featuredImage.fields) {
+        console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image Fields Keys:', Object.keys(fields.featuredImage.fields));
+        if (fields.featuredImage.fields.file) {
+          console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image File Keys:', Object.keys(fields.featuredImage.fields.file));
+          console.log('[DEBUG getBlogPostBySlugBrowser] Featured Image File URL:', fields.featuredImage.fields.file.url);
+        }
+      }
+      
+      // Case 1: Entry with fields.file.url structure
+      if (fields.featuredImage.fields?.file?.url) {
+        const url = fields.featuredImage.fields.file.url;
+        featuredImageUrl = url.startsWith('//') 
+          ? `https:${url}` 
+          : url.startsWith('http') 
+            ? url 
+            : `https:${url}`;
+        console.log('[DEBUG getBlogPostBySlugBrowser] ✅ Found image via Case 1 (fields.file.url):', featuredImageUrl);
+      }
+      // Case 1b: Check if it's a linked entry
+      else if (fields.featuredImage.sys?.linkType === 'Asset' && fields.featuredImage.fields?.file?.url) {
+        const url = fields.featuredImage.fields.file.url;
+        featuredImageUrl = url.startsWith('//') 
+          ? `https:${url}` 
+          : url.startsWith('http') 
+            ? url 
+            : `https:${url}`;
+        console.log('[DEBUG getBlogPostBySlugBrowser] ✅ Found image via Case 1b (Asset link):', featuredImageUrl);
+      }
+      // Case 2: Direct URL string
+      else if (typeof fields.featuredImage === 'string') {
+        featuredImageUrl = fields.featuredImage.startsWith('//') 
+          ? `https:${fields.featuredImage}` 
+          : fields.featuredImage.startsWith('http') 
+            ? fields.featuredImage 
+            : `https:${fields.featuredImage}`;
+        console.log('[DEBUG getBlogPostBySlugBrowser] ✅ Found image via Case 2 (string):', featuredImageUrl);
+      }
+      // Case 3: Array of assets
+      else if (Array.isArray(fields.featuredImage) && fields.featuredImage.length > 0) {
+        const firstAsset = fields.featuredImage[0];
+        if (firstAsset.fields?.file?.url) {
+          const url = firstAsset.fields.file.url;
+          featuredImageUrl = url.startsWith('//') 
+            ? `https:${url}` 
+            : url.startsWith('http') 
+              ? url 
+              : `https:${url}`;
+          console.log('[DEBUG getBlogPostBySlugBrowser] ✅ Found image via Case 3 (array):', featuredImageUrl);
+        }
+      }
+      // Case 4: Direct file object
+      else if (fields.featuredImage.file?.url) {
+        const url = fields.featuredImage.file.url;
+        featuredImageUrl = url.startsWith('//') 
+          ? `https:${url}` 
+          : url.startsWith('http') 
+            ? url 
+            : `https:${url}`;
+        console.log('[DEBUG getBlogPostBySlugBrowser] ✅ Found image via Case 4 (file.url):', featuredImageUrl);
+      }
+      // Case 5: Unresolved link
+      else if (fields.featuredImage.sys?.type === 'Link' && fields.featuredImage.sys?.linkType === 'Asset') {
+        console.warn('[DEBUG getBlogPostBySlugBrowser] ⚠️ Featured image is an unresolved link');
+        console.log('[DEBUG getBlogPostBySlugBrowser] Link details:', fields.featuredImage.sys);
+      }
+      else {
+        console.log('[DEBUG getBlogPostBySlugBrowser] ❌ Could not extract URL from featured image');
+        console.log('[DEBUG getBlogPostBySlugBrowser] Full featured image object:', JSON.stringify(fields.featuredImage, null, 2));
+      }
+    } else {
+      console.log('[DEBUG getBlogPostBySlugBrowser] ❌ Featured image field is null/undefined');
+      console.log('[DEBUG getBlogPostBySlugBrowser] All available field keys:', Object.keys(fields));
+    }
+    
+    // Final result logging
+    if (featuredImageUrl) {
+      console.log('[Contentful API Browser] ✅ Featured image found for post:', fields.title, 'URL:', featuredImageUrl);
+    } else {
+      console.log('[Contentful API Browser] ❌ Featured image NOT found for post:', fields.title);
+    }
+
     return {
       id: entry.sys.id,
       title: fields.title || '',
       slug: fields.slug || '',
       excerpt: excerpt,
-      coverImage: fields.featuredImage?.fields?.file?.url || fields.coverImage?.fields?.file?.url || undefined,
-      featuredImage: fields.featuredImage?.fields?.file?.url || undefined,
+      coverImage: featuredImageUrl,
+      featuredImage: featuredImageUrl,
       content: content,
       category: category ? {
         id: category.sys.id,
@@ -398,6 +591,9 @@ export async function getBlogPostBySlugBrowser(slug: string): Promise<BlogPost |
       } : undefined,
       authorName: author?.fields.name,
       tags: fields.tags || [],
+      keyPoints: Array.isArray(fields.blogKeyPoints) ? fields.blogKeyPoints : 
+                 typeof fields.blogKeyPoints === 'string' ? [fields.blogKeyPoints] : 
+                 undefined,
       publishedAt: fields.publishedAt || entry.sys.createdAt,
       createdAt: entry.sys.createdAt,
       updatedAt: entry.sys.updatedAt,

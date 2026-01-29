@@ -91,6 +91,219 @@ function extractHeadings(content: any): TocItem[] {
   }
 }
 
+// Debug function to log all embedded entries in content
+function logAllEmbeddedEntries(content: any) {
+  if (!content?.content || !Array.isArray(content.content)) {
+    console.log('[logAllEmbeddedEntries] No content to traverse');
+    return;
+  }
+  
+  console.log('[logAllEmbeddedEntries] Starting to traverse content...');
+  let entryCount = 0;
+  let assetCount = 0;
+  
+  const traverse = (nodes: any[], depth = 0) => {
+    if (!Array.isArray(nodes)) return;
+    
+    for (const node of nodes) {
+      if (!node) continue;
+      
+      // Check for embedded entry
+      if (node.nodeType === BLOCKS.EMBEDDED_ENTRY) {
+        entryCount++;
+        const entry = node.data?.target;
+        console.log(`[logAllEmbeddedEntries] ✅ Found EMBEDDED_ENTRY #${entryCount}:`, {
+          contentType: entry?.sys?.contentType?.sys?.id,
+          entryId: entry?.sys?.id,
+          fields: Object.keys(entry?.fields || {}),
+          allFields: JSON.stringify(entry?.fields, null, 2)
+        });
+      }
+      
+      // Check for embedded asset
+      if (node.nodeType === BLOCKS.EMBEDDED_ASSET) {
+        assetCount++;
+        const asset = node.data?.target;
+        console.log(`[logAllEmbeddedEntries] ✅ Found EMBEDDED_ASSET #${assetCount}:`, {
+          assetId: asset?.sys?.id,
+          fields: Object.keys(asset?.fields || {}),
+          fileUrl: asset?.fields?.file?.url
+        });
+      }
+      
+      // Recursively traverse nested content
+      if (node.content && Array.isArray(node.content)) {
+        traverse(node.content, depth + 1);
+      }
+    }
+  };
+  
+  traverse(content.content);
+  console.log(`[logAllEmbeddedEntries] Summary: ${entryCount} embedded entries, ${assetCount} embedded assets`);
+}
+
+// Extract blogKeyPoints embedded entries from rich text content
+function extractKeyPoints(content: any): string[] {
+  console.log('[extractKeyPoints] Starting extraction');
+  console.log('[extractKeyPoints] Content structure:', {
+    hasContent: !!content,
+    hasContentArray: !!content?.content,
+    isArray: Array.isArray(content?.content),
+    arrayLength: content?.content?.length
+  });
+  
+  if (!content?.content || !Array.isArray(content.content)) {
+    console.log('[extractKeyPoints] ❌ No valid content array');
+    return [];
+  }
+  
+  const keyPoints: string[] = [];
+  let blogKeyPointsFound = 0;
+  
+  try {
+    // Recursive function to traverse the content tree
+    const traverse = (nodes: any[]) => {
+      if (!Array.isArray(nodes)) return;
+      
+      for (const node of nodes) {
+        if (!node) continue;
+        
+        // Check if this is an embedded entry
+        if (node.nodeType === BLOCKS.EMBEDDED_ENTRY) {
+          const entry = node.data?.target;
+          const contentType = entry?.sys?.contentType?.sys?.id;
+          
+          console.log('[extractKeyPoints] Found embedded entry:', {
+            nodeType: node.nodeType,
+            contentType: contentType,
+            entryId: entry?.sys?.id,
+            fullSys: entry?.sys
+          });
+          
+          // Check if it's a blogKeyPoints entry (case-insensitive, handle variations)
+          const isBlogKeyPoints = contentType && (
+            contentType === 'blogKeyPoints' ||
+            contentType.toLowerCase() === 'blogkeypoints' ||
+            contentType === 'blog-key-points' ||
+            contentType === 'blog_key_points'
+          );
+          
+          if (isBlogKeyPoints) {
+            blogKeyPointsFound++;
+            const fields = entry.fields || {};
+            
+            console.log(`[extractKeyPoints] ✅ blogKeyPoints entry #${blogKeyPointsFound} found!`);
+            console.log('[extractKeyPoints] All field keys:', Object.keys(fields));
+            console.log('[extractKeyPoints] All fields:', JSON.stringify(fields, null, 2));
+            
+            // Try to find the key point text field - check ALL fields
+            const fieldKeys = Object.keys(fields);
+            let keyPoint: any = null;
+            
+            // First, try common field names (including exact Contentful field name)
+            const commonNames = [
+              'Key TakeawaysOne', // Exact field name from Contentful
+              'keyTakeawaysOne',
+              'keyTakeaways',
+              'blogKeyPoint',
+              'keyPoint',
+              'point',
+              'text',
+              'value',
+              'title',
+              'description',
+              'takeaway'
+            ];
+            
+            for (const name of commonNames) {
+              if (fields[name] !== undefined && fields[name] !== null && fields[name] !== '') {
+                keyPoint = fields[name];
+                console.log(`[extractKeyPoints] Found key point in field "${name}":`, keyPoint);
+                break;
+              }
+            }
+            
+            // If not found, try case-insensitive match (handles spaces)
+            if (!keyPoint) {
+              for (const key of fieldKeys) {
+                for (const name of commonNames) {
+                  // Normalize both for comparison (lowercase, remove spaces)
+                  const normalizedKey = key.toLowerCase().replace(/\s+/g, '');
+                  const normalizedName = name.toLowerCase().replace(/\s+/g, '');
+                  if (normalizedKey === normalizedName) {
+                    keyPoint = fields[key];
+                    console.log(`[extractKeyPoints] Found key point in field "${key}" (normalized match):`, keyPoint);
+                    break;
+                  }
+                }
+                if (keyPoint) break;
+              }
+            }
+            
+            // If still not found, try to use ANY string field found
+            if (!keyPoint) {
+              console.warn('[extractKeyPoints] ⚠️ No key point found in common field names. Checking all fields:');
+              for (const key of fieldKeys) {
+                const value = fields[key];
+                console.log(`  - ${key}:`, {
+                  type: typeof value,
+                  value: typeof value === 'string' ? value : JSON.stringify(value),
+                  isArray: Array.isArray(value)
+                });
+                
+                // If this is a string field, use it
+                if (typeof value === 'string' && value.trim()) {
+                  keyPoint = value;
+                  console.log(`[extractKeyPoints] ✅ Using string field: "${key}" = "${value.trim()}"`);
+                  break;
+                }
+                // If it's an array of strings, use the array
+                else if (Array.isArray(value) && value.length > 0) {
+                  const firstItem = value[0];
+                  if (typeof firstItem === 'string' && firstItem.trim()) {
+                    keyPoint = value; // Use the whole array
+                    console.log(`[extractKeyPoints] ✅ Using array field: "${key}" with ${value.length} items`);
+                    break;
+                  }
+                }
+              }
+            }
+            
+            if (keyPoint) {
+              // If it's a string, add it directly
+              if (typeof keyPoint === 'string' && keyPoint.trim()) {
+                keyPoints.push(keyPoint.trim());
+                console.log(`[extractKeyPoints] ✅ Added key point: "${keyPoint.trim()}"`);
+              }
+              // If it's an array, add all string items
+              else if (Array.isArray(keyPoint)) {
+                const validPoints = keyPoint.filter((item: any) => item && typeof item === 'string' && item.trim());
+                keyPoints.push(...validPoints.map((p: string) => p.trim()));
+                console.log(`[extractKeyPoints] ✅ Added ${validPoints.length} key points from array`);
+              }
+            }
+          }
+        }
+        
+        // Recursively traverse nested content
+        if (node.content && Array.isArray(node.content)) {
+          traverse(node.content);
+        }
+      }
+    };
+    
+    traverse(content.content);
+    
+    console.log(`[extractKeyPoints] Summary: Found ${blogKeyPointsFound} blogKeyPoints entries, extracted ${keyPoints.length} key points`);
+    console.log('[extractKeyPoints] Extracted key points:', keyPoints);
+    
+  } catch (error) {
+    console.error('[extractKeyPoints] Error:', error);
+  }
+  
+  return keyPoints;
+}
+
 function handleImageError(e: React.SyntheticEvent<HTMLImageElement, Event>) {
   const target = e.currentTarget;
   if (target.src !== FALLBACK_COVER) {
@@ -163,7 +376,8 @@ const PromoIcons = () => {
 };
 
 export function BlogPostScreen({ post }: Props) {
-  const cover = post.coverImage || (post as any).featuredImage || FALLBACK_COVER;
+  // Use featuredImage from Contentful field ID "featuredImage" for hero image
+  const cover = post.featuredImage || post.coverImage || FALLBACK_COVER;
   const authorName = post.authorName || post.author?.name || 'Astera Team';
   const authorRole = (post as any).authorRole || 'Product Marketing Specialist';
   
@@ -177,6 +391,11 @@ export function BlogPostScreen({ post }: Props) {
     console.log('BlogPostScreen - Has content:', !!contentData);
     console.log('BlogPostScreen - Content nodeType:', contentData?.nodeType);
     console.log('BlogPostScreen - Content array length:', contentData?.content?.length);
+    
+    // Debug: Log all embedded entries
+    if (contentData) {
+      logAllEmbeddedEntries(contentData);
+    }
   }
   
   const hasRichText = 
@@ -264,6 +483,12 @@ export function BlogPostScreen({ post }: Props) {
             sidebar.style.setProperty('position', 'fixed', 'important');
             sidebar.style.setProperty('right', 'auto', 'important');
             
+            // Hide promo container when TOC becomes sticky
+            const promoContainer = sidebar.querySelector('.blog-promo-container');
+            if (promoContainer) {
+              (promoContainer as HTMLElement).style.display = 'none';
+            }
+            
             isFixed = true;
           }
         } else {
@@ -284,6 +509,12 @@ export function BlogPostScreen({ post }: Props) {
           initialLeft = null;
           isFixed = false;
           thresholdScroll = 0; // Reset to recalculate on next scroll
+          
+          // Show promo container when TOC is not sticky
+          const promoContainer = sidebar.querySelector('.blog-promo-container');
+          if (promoContainer) {
+            (promoContainer as HTMLElement).style.display = '';
+          }
         }
       }
     };
@@ -326,6 +557,18 @@ export function BlogPostScreen({ post }: Props) {
     if (!contentData) return [];
     return extractHeadings(contentData);
   }, [contentData]);
+
+  // Extract key points from embedded blogKeyPoints entries in rich text content
+  const keyTakeaways = useMemo(() => {
+    if (post.keyPoints && post.keyPoints.length > 0) {
+      return post.keyPoints;
+    }
+    // Extract from rich text content if not found in post.keyPoints
+    if (contentData) {
+      return extractKeyPoints(contentData);
+    }
+    return [];
+  }, [post.keyPoints, contentData]);
 
 
   // Track active TOC section on scroll
@@ -398,9 +641,88 @@ export function BlogPostScreen({ post }: Props) {
       },
       [BLOCKS.EMBEDDED_ENTRY]: (node: any) => {
         const entry = node.data.target;
+        const contentType = entry?.sys?.contentType?.sys?.id;
+        
+        // Render blogKeyPoints entries inline in the content
+        if (contentType === 'blogKeyPoints') {
+          const fields = entry.fields || {};
+          
+          // Helper function to find field by multiple possible names
+          const findField = (possibleNames: string[]): any => {
+            for (const name of possibleNames) {
+              if (fields[name] !== undefined && fields[name] !== null && fields[name] !== '') {
+                return fields[name];
+              }
+            }
+            // Try case-insensitive match
+            const fieldKeys = Object.keys(fields);
+            for (const key of fieldKeys) {
+              for (const name of possibleNames) {
+                if (key.toLowerCase() === name.toLowerCase()) {
+                  return fields[key];
+                }
+              }
+            }
+            return '';
+          };
+          
+          const heading = findField(['blogKeyHeading', 'heading', 'title', 'blogKeyHeading']);
+          const text = findField(['blogKeyText', 'text', 'blogKeyText', 'description', 'content']);
+          
+          console.log('[BlogPostScreen] Rendering blogKeyPoints inline:', {
+            heading,
+            text,
+            textType: typeof text,
+            isRichText: text?.nodeType === 'document',
+            allFields: Object.keys(fields)
+          });
+          
+          // Helper to render text - handle both string and rich text
+          const renderText = (content: any) => {
+            // Check if it's a rich text document
+            if (content && typeof content === 'object' && content.nodeType === 'document') {
+              // Render rich text content
+              return documentToReactComponents(content, {
+                renderNode: {
+                  [BLOCKS.PARAGRAPH]: (node: any, children: any) => (
+                    <p className="blog-key-point-inline-text">{children}</p>
+                  ),
+                  [BLOCKS.HEADING_1]: (node: any, children: any) => (
+                    <h1 className="blog-key-point-inline-text">{children}</h1>
+                  ),
+                  [BLOCKS.HEADING_2]: (node: any, children: any) => (
+                    <h2 className="blog-key-point-inline-text">{children}</h2>
+                  ),
+                  [BLOCKS.HEADING_3]: (node: any, children: any) => (
+                    <h3 className="blog-key-point-inline-text">{children}</h3>
+                  ),
+                },
+              });
+            }
+            // Plain string
+            if (typeof content === 'string') {
+              return <p className="blog-key-point-inline-text">{content}</p>;
+            }
+            return null;
+          };
+          
+          // Render inline key point with heading and text
+          if (heading || text) {
+            return (
+              <div key={entry.sys.id} className="blog-key-point-inline">
+                {heading && (
+                  <h4 className="blog-key-point-inline-heading">{heading}</h4>
+                )}
+                {text && renderText(text)}
+              </div>
+            );
+          }
+          
+          return null;
+        }
         
         // Check if it's a blogCta entry
-        if (entry?.sys?.contentType?.sys?.id === 'blogCta') {
+        if (contentType === 'blogCta') {
           const fields = entry.fields || {};
           
           // Helper function to find field by multiple possible names (case-insensitive search)
@@ -467,30 +789,47 @@ export function BlogPostScreen({ post }: Props) {
         // Fallback for other embedded entries
         return null;
       },
+      [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
+        const asset = node.data.target;
+        if (asset?.fields?.file?.url) {
+          const url = asset.fields.file.url.startsWith('//') 
+            ? `https:${asset.fields.file.url}` 
+            : asset.fields.file.url.startsWith('http') 
+              ? asset.fields.file.url 
+              : `https:${asset.fields.file.url}`;
+          
+          const alt = asset.fields.title || asset.fields.description || '';
+          
+          console.log('[BlogPostScreen] Embedded image found:', {
+            url,
+            alt,
+            assetFields: Object.keys(asset.fields || {})
+          });
+          
+          return (
+            <figure className="blog-post-embedded-image">
+              <img
+                src={url}
+                alt={alt}
+                className="blog-post-content-image"
+                loading="lazy"
+                decoding="async"
+              />
+              {asset.fields.description && (
+                <figcaption className="blog-post-image-caption">
+                  {asset.fields.description}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        return null;
+      },
     },
   };
 
-  // Key takeaways - can be extracted from post metadata later
-  const keyTakeaways = [
-    'AI data preparation transforms raw data into precise inputs for machine learning algorithms.',
-    'Automated tools streamline the five essential stages: ingestion, cleaning, transformation, validation, and delivery.',
-  ];
-
   return (
     <article className="bg-white">
-      {/* Hero Image - Full width at top */}
-      <div className="blog-hero-image-container">
-        <img
-          src={cover}
-          alt={post.title}
-          onError={handleImageError}
-          className="blog-hero-image"
-          loading="eager"
-          decoding="async"
-        />
-        <div className="blog-hero-overlay" />
-      </div>
-
       <div
         className="py-12 sm:py-14 lg:py-16"
         style={{
@@ -500,12 +839,11 @@ export function BlogPostScreen({ post }: Props) {
         <div className="section-container grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
           {/* Main Content */}
           <div className="flex flex-col gap-8">
-            {/* Author Section */}
-        
-
             {/* Title */}
             <h1 className="blog-post-title">{post.title}</h1>
-            <div className="blog-author-section">
+
+            {/* Author and Date Section - After title in one row */}
+            <div className="blog-author-section-main">
               <div className="blog-author-avatar">
                 {(authorName || 'A').slice(0, 1).toUpperCase()}
               </div>
@@ -523,14 +861,18 @@ export function BlogPostScreen({ post }: Props) {
                 <span>{formatDate(post.publishedAt)}</span>
               </div>
             </div>
-            {/* Key Takeaways */}
-            <div className="blog-key-takeaways">
-              <h3 className="blog-key-takeaways-title">Key Takeaways</h3>
-              <ul className="blog-key-takeaways-list">
-                {keyTakeaways.map((takeaway, idx) => (
-                  <li key={idx}>{takeaway}</li>
-                ))}
-              </ul>
+
+            {/* Hero Image - Moved after title */}
+            <div className="blog-hero-image-container">
+              <img
+                src={cover}
+                alt={post.title}
+                onError={handleImageError}
+                className="blog-hero-image"
+                loading="eager"
+                decoding="async"
+              />
+              <div className="blog-hero-overlay" />
             </div>
 
             {/* Content */}

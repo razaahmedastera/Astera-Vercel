@@ -413,6 +413,7 @@ export interface BlogPost {
   author?: BlogAuthor;
   authorName?: string;
   tags?: string[];
+  keyPoints?: string[];
   body?: string;
   publishedAt: string;
   createdAt: string;

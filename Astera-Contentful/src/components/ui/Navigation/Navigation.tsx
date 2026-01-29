@@ -5,13 +5,17 @@ import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { getAllProductPagesBrowser } from '@/lib/contentful/api-browser';
 import type { ProductPageSummary } from '@/types/contentful';
+import { MegaMenu, defaultFeaturedContent, defaultWhatsNew, getIconForSlug } from './MegaMenu';
+import type { Solution } from './MegaMenu';
+import './MegaMenu.css';
 
 export function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [products, setProducts] = useState<ProductPageSummary[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [solutions, setSolutions] = useState<Solution[]>([]);
+  const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   
   const currentSlug = searchParams.get('slug') || 'reportminer';
@@ -21,6 +25,14 @@ export function Header() {
       try {
         const productList = await getAllProductPagesBrowser();
         setProducts(productList);
+        
+        // Convert products to solutions format with icons
+        const solutionsList: Solution[] = productList.map(product => ({
+          name: product.productName,
+          slug: product.slug,
+          icon: getIconForSlug(product.slug),
+        }));
+        setSolutions(solutionsList);
       } catch (error) {
         console.error('Failed to fetch products:', error);
       } finally {
@@ -32,7 +44,7 @@ export function Header() {
 
   const handleProductSelect = (slug: string) => {
     router.push(`/product?slug=${slug}`);
-    setIsDropdownOpen(false);
+    setIsSolutionsOpen(false);
   };
 
   const currentProduct = products.find(p => p.slug === currentSlug);
@@ -53,19 +65,33 @@ export function Header() {
             </Link>
           </div>
           <nav className="hidden md:flex items-center gap-3 sm:gap-4 lg:gap-6 xl:gap-8 flex-1 justify-center">
-            {/* Products Dropdown */}
-            <div className="relative">
+            <Link 
+              href="/centerprise" 
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/centerprise' 
+                  ? 'text-[#005CCC]' 
+                  : 'text-gray-600 hover:text-[#005CCC]'
+              }`}
+            >
+              Centerprise
+            </Link>
+            
+            {/* Solutions Mega Menu */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsSolutionsOpen(true)}
+              onMouseLeave={() => setIsSolutionsOpen(false)}
+            >
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                  pathname === '/product' 
-                    ? 'text-[#005CCC]' 
+                  isSolutionsOpen || pathname === '/product'
+                    ? 'text-[#005CCC] bg-[#EFF5FF]' 
                     : 'text-gray-600 hover:text-[#005CCC]'
-                }`}
+                } px-3 py-2 rounded-md`}
               >
-                Products
+                Solutions
                 <svg 
-                  className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 transition-transform ${isSolutionsOpen ? 'rotate-180' : ''}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -74,39 +100,48 @@ export function Header() {
                 </svg>
               </button>
               
-              {isDropdownOpen && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-10" 
-                    onClick={() => setIsDropdownOpen(false)}
-                  />
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
-                    {loading ? (
-                      <div className="px-4 py-2 text-sm text-gray-500">Loading...</div>
-                    ) : products.length === 0 ? (
-                      <div className="px-4 py-2 text-sm text-gray-500">No products found</div>
-                    ) : (
-                      products.map((product) => (
-                        <button
-                          key={product.id}
-                          onClick={() => handleProductSelect(product.slug)}
-                          className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-[#EFF5FF] ${
-                            product.slug === currentSlug
-                              ? 'text-[#005CCC] font-medium bg-[#EFF5FF]'
-                              : 'text-gray-700'
-                          }`}
-                        >
-                          {product.productName}
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </>
-              )}
+              <MegaMenu
+                solutions={solutions}
+                featuredContent={defaultFeaturedContent}
+                whatsNew={defaultWhatsNew}
+                isOpen={isSolutionsOpen}
+                onClose={() => setIsSolutionsOpen(false)}
+              />
             </div>
-            <Link href="#use-cases" className="text-sm font-medium text-gray-600 hover:text-[#005CCC] transition-colors">
+            
+            <Link 
+              href="/use-cases" 
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/use-cases' 
+                  ? 'text-[#005CCC]' 
+                  : 'text-gray-600 hover:text-[#005CCC]'
+              }`}
+            >
               Use Cases
             </Link>
+            
+            <Link 
+              href="/industries" 
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/industries' 
+                  ? 'text-[#005CCC]' 
+                  : 'text-gray-600 hover:text-[#005CCC]'
+              }`}
+            >
+              Industries
+            </Link>
+            
+            <Link 
+              href="/services" 
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/services' 
+                  ? 'text-[#005CCC]' 
+                  : 'text-gray-600 hover:text-[#005CCC]'
+              }`}
+            >
+              Services
+            </Link>
+            
             <Link 
               href="/resources" 
               className={`text-sm font-medium transition-colors ${
@@ -117,6 +152,7 @@ export function Header() {
             >
               Resources
             </Link>
+            
             <Link 
               href="/company" 
               className={`text-sm font-medium transition-colors ${
