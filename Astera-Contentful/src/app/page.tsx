@@ -1,9 +1,10 @@
 import { HomeScreenNew } from '@/components/screens/HomeScreen/HomeScreenNew';
 import { getHomePageContent } from '@/lib/contentful/api';
 
-// SSR: Pages are rendered on each request for real-time content
-// This means content updates instantly when published in Contentful
-export const dynamic = 'force-dynamic'; // Force server-side rendering (SSR)
+// ISR: Pages are cached for 1 hour, but webhooks can trigger instant revalidation
+// This means content updates instantly when published in Contentful (via webhook)
+// Safety net: If webhook fails, content updates after 1 hour automatically
+export const revalidate = 3600; // 1 hour fallback (webhooks handle instant updates)
 
 export default async function Home() {
   try {
