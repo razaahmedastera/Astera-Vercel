@@ -3,12 +3,38 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
+  # IMPORTANT: Allow _next static files to be served directly (must be first)
+  # This ensures Next.js chunks, CSS, and other static assets load correctly
+  # Skip all rewrite rules for _next files - let Apache serve them directly
+  RewriteCond %{REQUEST_URI} ^/_next/
+  RewriteRule ^(.*)$ - [L]
+  
+  # Remove trailing slash (except for root)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} (.+)/$
+  RewriteRule ^(.+)/$ /$1 [R=301,L]
+  
+  # Handle directory requests - redirect /blog/ to /blog.html
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} ^/(blog|product)/
+  RewriteRule ^(.*)/$ /$1.html [R=301,L]
+  
   # If URL doesn't have extension and .html file exists, serve it
   # Example: /product -> /product.html
+  # BUT: Skip /blog/* routes to allow client-side routing for real-time blog posts
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/blog/
   RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^(.*)$ $1.html [L]
+  
+  # Route ALL /blog/* URLs to index.html for client-side routing
+  # This enables real-time blog posts - new posts published in Contentful
+  # will be accessible immediately without rebuilding
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} ^/blog/[^/]+$
+  RewriteRule ^(.*)$ /index.html [L]
   
   # If no .html file exists, rewrite to index.html for client-side routing
   RewriteCond %{REQUEST_FILENAME} !-f
@@ -17,8 +43,21 @@
   RewriteCond %{REQUEST_URI} !^/_next/
   RewriteCond %{REQUEST_URI} !^/index\.html$
   RewriteCond %{REQUEST_URI} !^/$
+  RewriteCond %{REQUEST_URI} !^/blog/
   RewriteRule ^(.*)$ /index.html [L]
 </IfModule>
+
+# Allow access to _next folder and its files (fixes 403 Forbidden error)
+<DirectoryMatch "^.*/_next/">
+  Options -Indexes +FollowSymLinks
+  AllowOverride None
+  Require all granted
+</DirectoryMatch>
+
+# Explicitly allow _next static files
+<FilesMatch "^/_next/.*">
+  Require all granted
+</FilesMatch>
 
 # Enable Compression
 <IfModule mod_deflate.c>

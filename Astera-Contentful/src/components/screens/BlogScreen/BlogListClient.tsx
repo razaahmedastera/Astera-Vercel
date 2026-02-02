@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlogPost, BlogCategory } from '@/types/contentful';
+import { getAllBlogPostsBrowser } from '@/lib/contentful/api-browser';
 import './BlogScreen.css';
 
 const FALLBACK_COVER =
@@ -78,6 +79,32 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
   const [solution, setSolution] = useState('all');
   const [industry, setIndustry] = useState('all');
   const [technology, setTechnology] = useState('all');
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch fresh data from Contentful on mount and periodically
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        const freshPosts = await getAllBlogPostsBrowser();
+        setPosts(freshPosts);
+        console.log('[BlogListClient] Fetched fresh posts from Contentful:', freshPosts.length);
+      } catch (error) {
+        console.error('[BlogListClient] Error fetching fresh posts:', error);
+        // Keep using initialPosts on error
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Fetch immediately on mount
+    fetchPosts();
+
+    // Optionally: Refresh every 5 minutes
+    const interval = setInterval(fetchPosts, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const scriptId = 'hubspot-forms-script';
@@ -114,12 +141,12 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
   }, []);
 
   // Featured must never change based on filters/search (per requirement)
-  const featured = initialPosts[0];
+  const featured = posts[0];
 
   const filtered = useMemo(() => {
     const term = search.toLowerCase();
     // Only filter the RIGHT-side list (exclude featured always)
-    const list = featured ? initialPosts.filter((p) => p !== featured) : initialPosts;
+    const list = featured ? posts.filter((p) => p !== featured) : posts;
 
     return list.filter((post) => {
       const tags = post.tags || [];
@@ -136,7 +163,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
 
       return matchesTerm && matchesSolution && matchesIndustry && matchesTechnology;
     });
-  }, [initialPosts, featured, search, solution, industry, technology]);
+  }, [posts, featured, search, solution, industry, technology]);
 
   // Layout: 1 featured + (pageSize - 1) items
   const listPerPage = Math.max(1, pageSize - 1);

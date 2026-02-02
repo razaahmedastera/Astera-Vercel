@@ -171,28 +171,36 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       </section>
 
       {/* AI-Driven Data Stack Section */}
-      <section id="ai-driven-data-stack" className="ai-driven-data-stack-section py-12 sm:py-16 lg:py-20 bg-gradient-to-br  to-white">
-        <div className="ai-driven-data-stack-container section-container">
-          <h2 className="section-title mb-4 sm:mb-6">
-            {content.aiStackSectionTitle}
-          </h2>
-          <p className="section-desc mb-6 sm:mb-8 lg:mb-10">
-            {content.aiStackSectionDescription}
-          </p>
-          <div className="ai-driven-data-stack-video-container max-w-[900px] mx-auto">
-            <div className="ai-driven-data-stack-video-wrapper relative w-full pb-[56.25%] h-0 overflow-hidden rounded-2xl shadow-2xl">
-              <iframe
-                id="product-tour-video"
-                className="ai-driven-data-stack-video absolute top-0 left-0 w-full h-full border-none rounded-2xl"
-                src={content.aiStackVideoUrl.replace('watch?v=', 'embed/')}
-                title="PRODUCT TOUR Astera Data Stack"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
+      {content.aiStackSectionTitle && content.aiStackVideoUrl && (
+        <section id="ai-driven-data-stack" className="ai-driven-data-stack-section py-12 sm:py-16 lg:py-20 bg-gradient-to-br  to-white">
+          <div className="ai-driven-data-stack-container section-container">
+            {content.aiStackSectionTitle && (
+              <h2 className="section-title mb-4 sm:mb-6">
+                {content.aiStackSectionTitle}
+              </h2>
+            )}
+            {content.aiStackSectionDescription && (
+              <p className="section-desc mb-6 sm:mb-8 lg:mb-10">
+                {content.aiStackSectionDescription}
+              </p>
+            )}
+            {content.aiStackVideoUrl && (
+              <div className="ai-driven-data-stack-video-container max-w-[900px] mx-auto">
+                <div className="ai-driven-data-stack-video-wrapper relative w-full pb-[56.25%] h-0 overflow-hidden rounded-2xl shadow-2xl">
+                  <iframe
+                    id="product-tour-video"
+                    className="ai-driven-data-stack-video absolute top-0 left-0 w-full h-full border-none rounded-2xl"
+                    src={content.aiStackVideoUrl.replace('watch?v=', 'embed/')}
+                    title="PRODUCT TOUR Astera Data Stack"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Feature Tabs Section */}
       <section id="simplifying-data-management" className="feature-tabs-section simplifying-data-management-section py-12 sm:py-16 lg:py-20" style={{ backgroundColor: '#EFF5FF' }}>

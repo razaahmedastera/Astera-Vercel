@@ -152,7 +152,7 @@ export function MegaMenu({ solutions, featuredContent, whatsNew, isOpen, onClose
 
             {/* What's New */}
             <div className="mega-menu-whats-new">
-              <h3 className="mega-menu-whats-new-title">WHAT'S NEW</h3>
+              <h3 className="mega-menu-whats-new-title">WHAT&apos;S NEW</h3>
               <ul className="mega-menu-whats-new-list">
                 {whatsNew.map((item, index) => (
                   <li key={index} className="mega-menu-whats-new-item">

@@ -7,14 +7,11 @@ import { getAllBlogPosts, getBlogPostBySlug } from '@/lib/contentful/api';
 // Safety net: If webhook fails, content will update after 1 hour (fallback revalidation)
 export const revalidate = 3600; // 1 hour fallback (webhooks handle instant updates)
 
+// Server component wrapper that exports generateStaticParams for static export
+// The actual page logic is in BlogPostPageClient (client component)
 export async function generateStaticParams() {
-  try {
-    const posts = await getAllBlogPosts();
-    return posts.map((post) => ({ slug: post.slug }));
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    return [];
-  }
+  // Return minimal params - all blog posts are fetched client-side for real-time updates
+  return [{ slug: 'placeholder' }];
 }
 
 type BlogPostPageProps = {
@@ -22,23 +19,5 @@ type BlogPostPageProps = {
 };
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  
-  try {
-    console.log(`[BlogPostPage] Loading blog post with slug: "${slug}"`);
-    const post = await getBlogPostBySlug(slug);
-    if (!post) {
-      console.warn(`[BlogPostPage] Blog post with slug "${slug}" not found.`);
-      return notFound();
-    }
-    console.log(`[BlogPostPage] Successfully loaded blog post: "${post.title}"`);
-    return <BlogPostScreen post={post} />;
-  } catch (error) {
-    console.error(`[BlogPostPage] Error loading blog post with slug "${slug}":`, error);
-    if (error instanceof Error) {
-      console.error('[BlogPostPage] Error details:', error.message);
-      console.error('[BlogPostPage] Error stack:', error.stack);
-    }
-    return notFound();
-  }
+  return <BlogPostPageClient params={params} />;
 }

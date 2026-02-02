@@ -6,6 +6,7 @@ import { Header } from '@/components/ui/Navigation';
 import { Footer } from '@/components/ui/Footer';
 import { getAllProductPages } from '@/lib/contentful/api';
 import type { ProductPageSummary } from '@/types/contentful';
+import { RouterHandler } from '@/components/RouterHandler';
 
 const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700'],
@@ -39,6 +40,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} className={poppins.className}>
+        <RouterHandler />
         <Suspense fallback={<div style={{ height: '64px' }} />}>
           <Header products={products} />
         </Suspense>

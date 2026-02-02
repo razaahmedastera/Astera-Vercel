@@ -801,23 +801,28 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
       </section>
 
       {/* Why Astera ReportMiner Section - Modern SaaS Grid (6 cards) */}
-      <section
-        id="why-astera-reportminer"
-        className="why-astera-section py-16 sm:py-20 lg:py-24"
-        style={{
-          background: 'linear-gradient(180deg, #f3f6ff 0%, #f9fbff 45%, #ffffff 100%)'
-        }}
-      >
-        <div className="section-container">
-          {/* Section Header */}
-          <div className="text-center mb-12 sm:mb-16 lg:mb-18">
-            <h2 className="section-title mb-3">
-              {documentToReactComponents(content.whyThisProductSectionTitle)}
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-              {content.whyThisProductSectionDescription}
-            </p>
-          </div>
+      {content.whyThisProductSectionTitle && content.whyThisProductSectionCards && content.whyThisProductSectionCards.length > 0 && (
+        <section
+          id="why-astera-reportminer"
+          className="why-astera-section py-16 sm:py-20 lg:py-24"
+          style={{
+            background: 'linear-gradient(180deg, #f3f6ff 0%, #f9fbff 45%, #ffffff 100%)'
+          }}
+        >
+          <div className="section-container">
+            {/* Section Header */}
+            <div className="text-center mb-12 sm:mb-16 lg:mb-18">
+              {content.whyThisProductSectionTitle && (
+                <h2 className="section-title mb-3">
+                  {documentToReactComponents(content.whyThisProductSectionTitle)}
+                </h2>
+              )}
+              {content.whyThisProductSectionDescription && (
+                <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                  {content.whyThisProductSectionDescription}
+                </p>
+              )}
+            </div>
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
@@ -867,6 +872,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Wave Divider */}
       <div className="wave-divider bg-white">
