@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import type { ProductPageSummary } from '@/types/contentful';
@@ -8,43 +8,26 @@ import { MegaMenu, defaultFeaturedContent, defaultWhatsNew, getIconForSlug } fro
 import type { Solution } from './MegaMenu';
 import './MegaMenu.css';
 
-export function Header() {
+interface HeaderProps {
+  products: ProductPageSummary[];
+}
+
+export function Header({ products }: HeaderProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [products, setProducts] = useState<ProductPageSummary[]>([]);
-  const [solutions, setSolutions] = useState<Solution[]>([]);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   
   const currentSlug = searchParams.get('slug') || 'reportminer';
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const productList = await getAllProductPagesBrowser();
-        setProducts(productList);
-        
-        // Convert products to solutions format with icons
-        const solutionsList: Solution[] = productList.map(product => ({
-          name: product.productName,
-          slug: product.slug,
-          icon: getIconForSlug(product.slug),
-        }));
-        setSolutions(solutionsList);
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const productList = await response.json();
-          setProducts(productList);
-        }
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
+  // Convert products to solutions format with icons (computed from props, no useEffect needed)
+  const solutions = useMemo(() => {
+    return products.map((product: ProductPageSummary) => ({
+      name: product.productName,
+      slug: product.slug,
+      icon: getIconForSlug(product.slug),
+    })) as Solution[];
+  }, [products]);
 
   const handleProductSelect = (slug: string) => {
     router.push(`/product?slug=${slug}`);
