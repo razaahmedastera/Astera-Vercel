@@ -45,24 +45,28 @@ export async function POST(request: NextRequest) {
 
     console.log('[Revalidate] Revalidating paths...', { contentType, entryId });
 
-    // Revalidate all pages that use Contentful content
-    revalidatePath('/', 'layout'); // Home page
-    revalidatePath('/product', 'layout'); // Product pages
-    revalidatePath('/blog', 'layout'); // Blog listing
-    revalidatePath('/blog/[slug]', 'page'); // Individual blog posts
-
-    // Also revalidate specific paths based on content type if available
+    // Revalidate only the relevant pages based on content type
+    // This is more efficient - only refreshes what actually changed
     if (contentType === 'homePage') {
+      // Home page content changed - only refresh home page
       revalidatePath('/', 'page');
+      revalidatePath('/', 'layout');
     } else if (contentType === 'productPage') {
+      // Product page content changed - refresh product pages and listing
       revalidatePath('/product', 'page');
+      revalidatePath('/product', 'layout');
     } else if (contentType === 'blog') {
+      // Blog post changed - refresh blog listing and all blog posts
       revalidatePath('/blog', 'page');
-      if (entryId) {
-        // Try to revalidate specific blog post if we have the entry ID
-        // Note: This requires fetching the slug, which we can do if needed
-        revalidatePath('/blog/[slug]', 'page');
-      }
+      revalidatePath('/blog', 'layout');
+      revalidatePath('/blog/[slug]', 'page'); // All individual blog posts
+    } else {
+      // Unknown content type or no contentType provided - refresh everything (safe fallback)
+      console.warn('[Revalidate] Unknown content type or missing contentType, revalidating all pages');
+      revalidatePath('/', 'layout');
+      revalidatePath('/product', 'layout');
+      revalidatePath('/blog', 'layout');
+      revalidatePath('/blog/[slug]', 'page');
     }
 
     return NextResponse.json({
