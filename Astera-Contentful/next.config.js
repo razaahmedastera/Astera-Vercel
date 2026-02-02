@@ -22,9 +22,14 @@ const nextConfig = {
   },
 };
 
-// Only enable static export for production builds
+// SSR Mode: Only enable static export if explicitly requested
+// For SSR (Server-Side Rendering), do NOT set output: 'export'
+// Static export is incompatible with SSR - SSR requires a Node.js server
 if (process.env.NODE_ENV === 'production' && process.env.STATIC_EXPORT === 'true') {
+  console.warn('⚠️  Static export enabled - SSR will not work. Use SSR mode for real-time content updates.');
   nextConfig.output = 'export';
+} else {
+  console.log('✅ SSR mode enabled - Pages will be rendered server-side for real-time content');
 }
 
 module.exports = nextConfig;

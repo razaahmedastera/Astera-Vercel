@@ -1,17 +1,18 @@
-'use client';
-
 import BlogListClient from '@/components/screens/BlogScreen/BlogListClient';
 import { getAllBlogPosts } from '@/lib/contentful/api';
+import { getAllBlogCategories } from '@/lib/contentful/api';
 
-// Webhook-only revalidation: Pages are cached indefinitely until webhook triggers revalidation
-// This means content updates instantly when published in Contentful (via webhook)
-// Safety net: If webhook fails, content will update after 1 hour (fallback revalidation)
-export const revalidate = 3600; // 1 hour fallback (webhooks handle instant updates)
+// SSR: Pages are rendered on each request for real-time content
+// This means content updates instantly when published in Contentful
+export const dynamic = 'force-dynamic'; // Force server-side rendering (SSR)
 
 export default async function BlogPage() {
   try {
-    // Fetch blog posts from Contentful
+    // Fetch blog posts from Contentful server-side
     const posts = await getAllBlogPosts();
+    
+    // Fetch categories from Contentful server-side
+    const categories = await getAllBlogCategories();
 
     console.log(`[BlogPage] Loaded ${posts.length} blog post(s)`);
     if (posts.length > 0) {
@@ -20,13 +21,20 @@ export default async function BlogPage() {
       console.warn('[BlogPage] No blog posts found in Contentful');
     }
 
-// Use static "All" category only (skip Contentful categories for now)
-const allCategories = [
-  { id: 'all', name: 'All', slug: 'all', title: 'All' },
-];
+    // Use static "All" category + Contentful categories
+    const allCategories = [
+      { id: 'all', name: 'All', slug: 'all', title: 'All' },
+      ...categories,
+    ];
 
-export default function BlogPage() {
-  // BlogListClient will fetch posts client-side for real-time updates
-  // Pass empty array as initialPosts - it will fetch fresh data on mount
-  return <BlogListClient initialPosts={[]} categories={allCategories} pageSize={9} />;
+    // Pass server-fetched data to client component (for filtering/pagination)
+    return <BlogListClient initialPosts={posts} categories={allCategories} pageSize={9} />;
+  } catch (error) {
+    console.error('[BlogPage] Error fetching blog posts:', error);
+    // Return empty state on error
+    const allCategories = [
+      { id: 'all', name: 'All', slug: 'all', title: 'All' },
+    ];
+    return <BlogListClient initialPosts={[]} categories={allCategories} pageSize={9} />;
+  }
 }

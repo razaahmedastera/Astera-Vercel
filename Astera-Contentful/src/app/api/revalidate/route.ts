@@ -1,8 +1,12 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
+// SSR: API route for Contentful webhook revalidation
+export const dynamic = 'force-dynamic'; // Force server-side rendering (SSR)
+
 /**
  * API route for Contentful webhook revalidation
+ * Note: This route is disabled for static export builds
  */
 export async function POST(request: NextRequest) {
   try {
