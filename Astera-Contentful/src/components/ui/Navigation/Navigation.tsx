@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { getAllProductPagesBrowser } from '@/lib/contentful/api-browser';
 import type { ProductPageSummary } from '@/types/contentful';
 
 export function Header() {
@@ -19,8 +18,11 @@ export function Header() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const productList = await getAllProductPagesBrowser();
-        setProducts(productList);
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const productList = await response.json();
+          setProducts(productList);
+        }
       } catch (error) {
         console.error('Failed to fetch products:', error);
       } finally {

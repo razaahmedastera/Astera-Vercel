@@ -4,7 +4,4 @@ export {
   getProductPageContent,
   getAllProductPages
 } from './api';
-export {
-  getAllProductPagesBrowser
-} from './api-browser';
 
