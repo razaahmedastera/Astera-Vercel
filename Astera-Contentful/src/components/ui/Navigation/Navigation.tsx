@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { getAllProductPagesBrowser } from '@/lib/contentful/api-browser';
 import type { ProductPageSummary } from '@/types/contentful';
 import { MegaMenu, defaultFeaturedContent, defaultWhatsNew, getIconForSlug } from './MegaMenu';
 import type { Solution } from './MegaMenu';
@@ -33,6 +32,11 @@ export function Header() {
           icon: getIconForSlug(product.slug),
         }));
         setSolutions(solutionsList);
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const productList = await response.json();
+          setProducts(productList);
+        }
       } catch (error) {
         console.error('Failed to fetch products:', error);
       } finally {
