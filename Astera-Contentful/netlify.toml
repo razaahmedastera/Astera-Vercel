@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Ensure we don't use static export for Netlify
+  # Netlify supports ISR/SSR natively with Next.js plugin
+  STATIC_EXPORT = "false"
+  NODE_ENV = "production"
