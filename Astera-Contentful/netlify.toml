@@ -1,4 +1,5 @@
 [build]
+  base = "Astera-Contentful"
   command = "npm run build"
   publish = ".next"
 
