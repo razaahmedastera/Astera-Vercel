@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import Script from 'next/script';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlogPost, BlogCategory } from '@/types/contentful';
 // Removed client-side fetching - using SSR data from server
@@ -84,9 +85,6 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
   const posts = initialPosts;
 
   useEffect(() => {
-    const scriptId = 'hubspot-forms-script';
-    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
-
     const createHubSpotForm = () => {
       const w = window as any;
       if (!w?.hbspt?.forms?.create) return;
@@ -104,17 +102,21 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
       });
     };
 
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://js.hsforms.net/forms/embed/v2.js';
-      script.charset = 'utf-8';
-      script.async = true;
-      script.onload = () => setTimeout(createHubSpotForm, 50);
-      document.body.appendChild(script);
-    } else {
+    // Listen for script load event
+    const handleScriptLoad = () => {
+      setTimeout(createHubSpotForm, 50);
+    };
+
+    window.addEventListener('hubspot-blog-loaded', handleScriptLoad);
+
+    // Check immediately if already loaded
+    if ((window as any).hbspt?.forms?.create) {
       setTimeout(createHubSpotForm, 50);
     }
+
+    return () => {
+      window.removeEventListener('hubspot-blog-loaded', handleScriptLoad);
+    };
   }, []);
 
   // Featured must never change based on filters/search (per requirement)
@@ -157,9 +159,20 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
   );
 
   return (
-    <section
-      className="py-12 sm:py-14 lg:py-16"
-      style={{
+    <>
+      {/* HubSpot Script - Optimized with next/script */}
+      <Script
+        src="https://js.hsforms.net/forms/embed/v2.js"
+        strategy="lazyOnload"
+        id="hubspot-forms-script-blog"
+        onLoad={() => {
+          const event = new Event('hubspot-blog-loaded');
+          window.dispatchEvent(event);
+        }}
+      />
+      <section
+        className="py-12 sm:py-14 lg:py-16"
+        style={{
         background: 'linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%)',
       }}
     >
@@ -176,16 +189,18 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
         {featured && (
           <Link
             href={`/blog/${featured.slug}`}
+            prefetch={true}
             className="group grid grid-cols-1 md:grid-cols-[460px_1fr] gap-8 items-center bg-white rounded-2xl border border-slate-100 shadow-[0_30px_70px_-55px_rgba(0,0,0,0.45)] p-6 sm:p-8 mb-10"
           >
             <div className="relative overflow-hidden rounded-2xl h-[260px] md:h-[320px]">
-              <img
+              <Image
                 src={featured.coverImage || featured.featuredImage || FALLBACK_COVER}
                 alt={featured.title}
-                onError={handleImageError}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                sizes="(max-width: 768px) 100vw, 460px"
                 loading="lazy"
-                decoding="async"
+                onError={handleImageError}
               />
               <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/20" />
             </div>
@@ -300,16 +315,18 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
+                prefetch={true}
                 className="group grid grid-cols-[160px_1fr] sm:grid-cols-[220px_1fr] gap-6 bg-white rounded-2xl border border-slate-100 shadow-[0_18px_55px_-45px_rgba(0,0,0,0.35)] p-5 hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="relative rounded-2xl overflow-hidden h-[120px] sm:h-[150px]">
-                  <img
+                  <Image
                     src={post.coverImage || post.featuredImage || FALLBACK_COVER}
                     alt={post.title}
-                    onError={handleImageError}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width: 640px) 160px, 220px"
                     loading="lazy"
-                    decoding="async"
+                    onError={handleImageError}
                   />
                 </div>
 
@@ -366,6 +383,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
         </div>
       </div>
     </section>
+    </>
   );
 }
 

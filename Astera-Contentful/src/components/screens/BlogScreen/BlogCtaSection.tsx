@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { BlogCta } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
@@ -71,10 +72,13 @@ export function BlogCtaSection({ cta }: Props) {
             )}
             </div>
             <div className="blog-cta-image-section">
-              <img
+              <Image
                 src="/images/blogcta.svg"
                 alt="CTA Illustration"
+                width={400}
+                height={300}
                 className="blog-cta-image"
+                loading="lazy"
               />
             </div>
           </div>

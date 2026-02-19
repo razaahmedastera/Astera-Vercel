@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Footer() {
   return (
@@ -7,13 +8,13 @@ export function Footer() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center mb-2">
             <a href="https://www.astera.com/" target="_blank" rel="noopener noreferrer">
-              <img 
+              <Image 
                 src="/images/astera-logo.svg" 
                 alt="Astera Logo" 
+                width={120}
+                height={32}
                 className="h-8 w-auto object-contain brightness-0 invert opacity-90 cursor-pointer transition-opacity hover:opacity-100"
                 loading="lazy"
-                width="120"
-                height="32"
               />
             </a>
           </div>

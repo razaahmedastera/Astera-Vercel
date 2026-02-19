@@ -122,6 +122,7 @@ export function MegaMenu({ solutions, featuredContent, whatsNew, isOpen, onClose
                 <li key={solution.slug}>
                   <Link 
                     href={`/product?slug=${solution.slug}`}
+                    prefetch={true}
                     className="mega-menu-solution-item"
                     onClick={onClose}
                   >
@@ -143,6 +144,7 @@ export function MegaMenu({ solutions, featuredContent, whatsNew, isOpen, onClose
               <p className="mega-menu-featured-description">{featuredContent.description}</p>
               <Link 
                 href={featuredContent.link}
+                prefetch={true}
                 className="mega-menu-featured-link"
                 onClick={onClose}
               >

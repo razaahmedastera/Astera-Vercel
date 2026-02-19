@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { ProductPageContent } from '@/types/contentful';
+import ContactUsHubSpotForm from '@/components/ui/HubSpotForm/ContactUsHubSpotForm';
 
 interface ProductScreenNewProps {
   content: ProductPageContent;
@@ -11,29 +13,20 @@ interface ProductScreenNewProps {
 export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
-  const [activeFeatureTab, setActiveFeatureTab] = useState(0); // First tab always open
+  const [activeFeatureTab, setActiveFeatureTab] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [hoveredUseCaseId, setHoveredUseCaseId] = useState<number | null>(null);
   const [isUseCasesHovered, setIsUseCasesHovered] = useState(false);
-  const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0); // First FAQ open by default
+  const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0);
   const useCasesScrollRef = useRef<HTMLDivElement>(null);
   
-  // Placeholder image URLs - Using high-quality placeholder services
-  const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format';
-  const PLACEHOLDER_ICON = 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=128&h=128&fit=crop&auto=format';
-  const PLACEHOLDER_TESTIMONIAL = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format';
-  const PLACEHOLDER_USE_CASE = 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=500&fit=crop&auto=format';
-  
-  // Helper function to get image URL with fallback
-  const getImageUrl = (url: string, placeholder: string = PLACEHOLDER_IMAGE) => {
-    return url && url.trim() !== '' ? url : placeholder;
-  };
-  
-  // Use Contentful data
+  // Contentful data
   const testimonialsData = content.testimonials || [];
   const useCasesData = content.useCases || [];
   const powerfulFeaturesData = content.powerfulFeatures || [];
   const metricsData = content.metrics || [];
+  const resourcesData = content.resources || [];
+  const whyAsteraCards = content.whyThisProductSectionCards || [];
 
   // Initialize counters state dynamically from metricsData
   const initialCounters = metricsData.reduce((acc, metric) => {
@@ -42,43 +35,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   }, {} as Record<string, number>);
   
   const [counters, setCounters] = useState(initialCounters);
-
-  // Media assets for carousel
-  const mediaAssets = [
-    {
-      id: "leverage-ai",
-      alt_text: "Leverage AI in Astera ReportMiner",
-      url: "/images/carousel/leverage-ai.jpg"
-    },
-    {
-      id: "frame-32",
-      alt_text: "Feature Display Frame 32",
-      url: "/images/carousel/Frame-32.png"
-    },
-    {
-      id: "frame-33",
-      alt_text: "Feature Display Frame 33",
-      url: "/images/carousel/Frame-33.png"
-    },
-    {
-      id: "frame-34",
-      alt_text: "Feature Display Frame 34",
-      url: "/images/carousel/Frame-34.png"
-    },
-    {
-      id: "frame-36",
-      alt_text: "Feature Display Frame 36",
-      url: "/images/carousel/Frame-36.png"
-    },
-    {
-      id: "frame-37",
-      alt_text: "Feature Display Frame 37",
-      url: "/images/carousel/Frame-37.png"
-    }
-  ];
-
-  // Why Astera Cards from Contentful
-  const whyAsteraCards = content.whyThisProductSectionCards || [];
 
   // Intersection Observer for metrics section - triggers counter when section is visible
   useEffect(() => {
@@ -209,484 +165,6 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
     };
   }, []);
 
-  // HubSpot Form Integration
-  useEffect(() => {
-    // Inject HubSpot form styles - Minimalist & Clean Design
-    const styleId = 'hubspot-form-styles';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = `
-        /* Base container - override HubSpot default max-width */
-        .hubspot-form-wrapper {
-          width: 100% !important;
-        }
-        .hubspot-form-wrapper * {
-          max-width: 100% !important;
-        }
-        #hubspot-form-container {
-          padding: 0 !important;
-          width: 100% !important;
-          max-width: 100% !important;
-        }
-        #hubspot-form-container *:not(input[type="submit"]):not(.hs-button):not(button) {
-          max-width: 100% !important;
-        }
-        #hubspot-form-container form,
-        #hubspot-form-container .hs-form,
-        #hubspot-form-container .hs-form-private {
-          font-family: 'Poppins', sans-serif !important;
-          width: 100% !important;
-          max-width: 100% !important;
-        }
-        #hubspot-form-container .hs-form fieldset,
-        #hubspot-form-container fieldset,
-        #hubspot-form-container .hs-form fieldset.form-columns-1,
-        #hubspot-form-container .hs-form fieldset.form-columns-2,
-        [class*="hs-form-"] fieldset {
-          width: 100% !important;
-          max-width: 100% !important;
-          border: 0 !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        #hubspot-form-container .hs-form fieldset.form-columns-1 .hs-form-field,
-        #hubspot-form-container .hs-form fieldset.form-columns-1 .input {
-          width: 100% !important;
-          max-width: 100% !important;
-        }
-        
-        /* Show labels */
-        #hubspot-form-container .hs-form-field > label {
-          display: block !important;
-          font-family: 'Poppins', sans-serif !important;
-          font-size: 14px !important;
-          font-weight: 500 !important;
-          color: #374151 !important;
-          margin-bottom: 8px !important;
-        }
-        #hubspot-form-container .hs-form-field > label .hs-form-required {
-          color: #005CCC !important;
-          margin-left: 2px !important;
-        }
-        
-        /* Field containers */
-        #hubspot-form-container .hs-form-field {
-          margin-bottom: 20px !important;
-        }
-        #hubspot-form-container .hs_submit {
-          margin-top: 24px !important;
-          clear: both !important;
-        }
-        #hubspot-form-container .hs_submit .actions {
-          text-align: right !important;
-        }
-        
-        /* All input types */
-        #hubspot-form-container input[type="text"],
-        #hubspot-form-container input[type="email"],
-        #hubspot-form-container input[type="tel"],
-        #hubspot-form-container input[type="number"],
-        #hubspot-form-container input[type="password"],
-        #hubspot-form-container select,
-        #hubspot-form-container textarea,
-        #hubspot-form-container .hs-input {
-          width: 100% !important;
-          max-width: 100% !important;
-          box-sizing: border-box !important;
-          padding: 12px 16px !important;
-          border: 1px solid #e5e7eb !important;
-          border-radius: 6px !important;
-          font-size: 15px !important;
-          font-family: 'Poppins', sans-serif !important;
-          transition: all 0.15s ease !important;
-          background-color: #fff !important;
-          color: #1f2937 !important;
-          box-sizing: border-box !important;
-          -webkit-appearance: none !important;
-          -moz-appearance: none !important;
-          appearance: none !important;
-        }
-        
-        /* Hover state */
-        #hubspot-form-container input[type="text"]:hover,
-        #hubspot-form-container input[type="email"]:hover,
-        #hubspot-form-container input[type="tel"]:hover,
-        #hubspot-form-container select:hover,
-        #hubspot-form-container textarea:hover,
-        #hubspot-form-container .hs-input:hover {
-          border-color: #d1d5db !important;
-        }
-        
-        /* Focus state */
-        #hubspot-form-container input[type="text"]:focus,
-        #hubspot-form-container input[type="email"]:focus,
-        #hubspot-form-container input[type="tel"]:focus,
-        #hubspot-form-container select:focus,
-        #hubspot-form-container textarea:focus,
-        #hubspot-form-container .hs-input:focus {
-          outline: none !important;
-          border-color: #005CCC !important;
-          box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08) !important;
-        }
-        
-        /* Placeholder */
-        #hubspot-form-container input::placeholder,
-        #hubspot-form-container textarea::placeholder,
-        #hubspot-form-container .hs-input::placeholder {
-          color: #9ca3af !important;
-          opacity: 1 !important;
-        }
-        
-        /* Textarea */
-        #hubspot-form-container textarea,
-        #hubspot-form-container textarea.hs-input {
-          min-height: 100px !important;
-          resize: vertical !important;
-          line-height: 1.5 !important;
-          width: 100% !important;
-          box-sizing: border-box !important;
-        }
-        
-        /* Select dropdown */
-        #hubspot-form-container select,
-        #hubspot-form-container select.hs-input {
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
-          background-repeat: no-repeat !important;
-          background-position: right 12px center !important;
-          background-size: 16px !important;
-          padding-right: 40px !important;
-          cursor: pointer !important;
-        }
-        
-        /* Submit button - Brand Guidelines: 51px height, orange hover */
-        #hubspot-form-container input[type="submit"],
-        #hubspot-form-container .hs-button,
-        #hubspot-form-container button[type="submit"] {
-          width: auto !important;
-          min-width: 140px !important;
-          height: 51px !important;
-          padding: 0 32px !important;
-          background: #005ccc !important;
-          color: #fff !important;
-          border: none !important;
-          border-radius: 10px !important;
-          font-size: 15px !important;
-          font-weight: 600 !important;
-          cursor: pointer !important;
-          transition: all 0.2s ease !important;
-          float: right !important;
-        }
-        
-        #hubspot-form-container input[type="submit"]:hover,
-        #hubspot-form-container .hs-button:hover,
-        #hubspot-form-container button[type="submit"]:hover {
-          background: #004ba3 !important;
-          transform: translateY(-1px) !important;
-        }
-        
-        /* Mobile - Full width submit button */
-        @media (max-width: 639px) {
-          #hubspot-form-container input[type="submit"],
-          #hubspot-form-container .hs-button,
-          #hubspot-form-container button[type="submit"] {
-            width: 100% !important;
-            float: none !important;
-          }
-          #hubspot-form-container .hs_submit .actions {
-            text-align: center !important;
-          }
-        }
-        
-        /* Error messages */
-        #hubspot-form-container .hs-error-msgs,
-        #hubspot-form-container .hs-error-msg {
-          color: #dc2626 !important;
-          font-size: 13px !important;
-          margin-top: 6px !important;
-          font-family: 'Poppins', sans-serif !important;
-        }
-        #hubspot-form-container .hs-error-msgs label {
-          position: static !important;
-          width: auto !important;
-          height: auto !important;
-          clip: auto !important;
-          overflow: visible !important;
-          color: #dc2626 !important;
-          font-size: 13px !important;
-        }
-        
-        /* Two column for names - Desktop */
-        @media (min-width: 640px) {
-          #hubspot-form-container .hs_firstname,
-          #hubspot-form-container .hs_lastname {
-            display: inline-block !important;
-            width: calc(50% - 8px) !important;
-            vertical-align: top !important;
-          }
-          #hubspot-form-container .hs_firstname {
-            margin-right: 16px !important;
-          }
-        }
-        
-        /* Phone field layout - all phone-related fields on same line */
-        #hubspot-form-container .hs-fieldtype-phonenumber,
-        #hubspot-form-container .hs_phone,
-        #hubspot-form-container [class*="hs_phone"] {
-          width: 100% !important;
-        }
-        #hubspot-form-container .hs-fieldtype-phonenumber .input,
-        #hubspot-form-container .hs_phone .input,
-        #hubspot-form-container [class*="hs_phone"] .input {
-          display: flex !important;
-          flex-direction: row !important;
-          flex-wrap: nowrap !important;
-          gap: 12px !important;
-          align-items: flex-start !important;
-          width: 100% !important;
-        }
-        #hubspot-form-container .hs-fieldtype-phonenumber .input > *,
-        #hubspot-form-container .hs_phone .input > *,
-        #hubspot-form-container [class*="hs_phone"] .input > * {
-          display: inline-block !important;
-          vertical-align: top !important;
-        }
-        #hubspot-form-container .hs-fieldtype-phonenumber select,
-        #hubspot-form-container .hs_phone select,
-        #hubspot-form-container [class*="hs_phone"] select {
-          width: 180px !important;
-          min-width: 180px !important;
-          max-width: 180px !important;
-          flex-shrink: 0 !important;
-          display: inline-block !important;
-        }
-        #hubspot-form-container .hs-fieldtype-phonenumber input[type="tel"],
-        #hubspot-form-container .hs-fieldtype-phonenumber input[type="text"],
-        #hubspot-form-container .hs_phone input[type="tel"],
-        #hubspot-form-container .hs_phone input[type="text"],
-        #hubspot-form-container [class*="hs_phone"] input[type="tel"],
-        #hubspot-form-container [class*="hs_phone"] input[type="text"] {
-          flex: 1 !important;
-          min-width: 0 !important;
-          display: inline-block !important;
-        }
-        /* Force phone fieldset to be inline */
-        #hubspot-form-container fieldset:has(.hs_phone),
-        #hubspot-form-container fieldset:has([class*="phone"]) {
-          display: flex !important;
-          flex-direction: row !important;
-          flex-wrap: nowrap !important;
-          gap: 12px !important;
-          align-items: flex-end !important;
-        }
-        #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field,
-        #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field {
-          flex: 1 !important;
-          margin-bottom: 0 !important;
-        }
-        #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field:first-child,
-        #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field:first-child {
-          flex: 0 0 180px !important;
-          max-width: 180px !important;
-        }
-        
-        /* Two-column field layouts - Desktop */
-        @media (min-width: 640px) {
-          #hubspot-form-container .form-columns-2,
-          #hubspot-form-container .form-columns-3 {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            gap: 16px !important;
-            width: 100% !important;
-          }
-          #hubspot-form-container .form-columns-2 > .hs-form-field,
-          #hubspot-form-container .form-columns-3 > .hs-form-field {
-            flex: 1 !important;
-            width: auto !important;
-            max-width: none !important;
-            margin-right: 0 !important;
-            margin-bottom: 0 !important;
-          }
-          #hubspot-form-container .form-columns-2 > .hs-form-field .input,
-          #hubspot-form-container .form-columns-3 > .hs-form-field .input {
-            width: 100% !important;
-          }
-        }
-        
-        /* Mobile - Stack all fields */
-        @media (max-width: 639px) {
-          #hubspot-form-container .form-columns-2,
-          #hubspot-form-container .form-columns-3 {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 0 !important;
-            width: 100% !important;
-          }
-          #hubspot-form-container .form-columns-2 > .hs-form-field,
-          #hubspot-form-container .form-columns-3 > .hs-form-field {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin-bottom: 20px !important;
-          }
-          #hubspot-form-container .hs_firstname,
-          #hubspot-form-container .hs_lastname {
-            display: block !important;
-            width: 100% !important;
-            margin-right: 0 !important;
-          }
-          /* Phone fields stack on mobile */
-          #hubspot-form-container .hs-fieldtype-phonenumber .input,
-          #hubspot-form-container .hs_phone .input,
-          #hubspot-form-container [class*="hs_phone"] .input {
-            flex-direction: column !important;
-            gap: 12px !important;
-          }
-          #hubspot-form-container .hs-fieldtype-phonenumber select,
-          #hubspot-form-container .hs_phone select,
-          #hubspot-form-container [class*="hs_phone"] select {
-            width: 100% !important;
-            min-width: 100% !important;
-            max-width: 100% !important;
-          }
-          #hubspot-form-container fieldset:has(.hs_phone),
-          #hubspot-form-container fieldset:has([class*="phone"]) {
-            flex-direction: column !important;
-            gap: 0 !important;
-          }
-          #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field,
-          #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin-bottom: 20px !important;
-          }
-          #hubspot-form-container fieldset:has(.hs_phone) > .hs-form-field:first-child,
-          #hubspot-form-container fieldset:has([class*="phone"]) > .hs-form-field:first-child {
-            flex: none !important;
-            max-width: 100% !important;
-          }
-        }
-        
-        /* Privacy text */
-        #hubspot-form-container .hs-richtext {
-          font-size: 13px !important;
-          color: #6b7280 !important;
-          line-height: 1.5 !important;
-          margin-bottom: 16px !important;
-        }
-        #hubspot-form-container .hs-richtext p {
-          margin: 0 !important;
-        }
-        
-        /* reCAPTCHA */
-        #hubspot-form-container .hs_recaptcha {
-          margin: 20px 0 !important;
-        }
-        
-        /* Remove default HubSpot margins and ensure full width */
-        #hubspot-form-container .input {
-          margin-right: 0 !important;
-          width: 100% !important;
-        }
-        #hubspot-form-container .hs-form-field > .input {
-          margin-right: 0 !important;
-          width: 100% !important;
-        }
-        #hubspot-form-container .hs-form-field {
-          width: 100% !important;
-        }
-        #hubspot-form-container .field {
-          margin-bottom: 0 !important;
-          width: 100% !important;
-        }
-        #hubspot-form-container .form-columns-2 {
-          width: 100% !important;
-        }
-        #hubspot-form-container .form-columns-2 .hs-form-field {
-          width: calc(50% - 6px) !important;
-        }
-        #hubspot-form-container ul.inputs-list {
-          list-style: none !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        #hubspot-form-container .hs-form-booleancheckbox {
-          margin-bottom: 8px !important;
-        }
-        #hubspot-form-container .hs-form-booleancheckbox label {
-          position: static !important;
-          width: auto !important;
-          height: auto !important;
-          clip: auto !important;
-          display: flex !important;
-          align-items: flex-start !important;
-          gap: 10px !important;
-          font-size: 13px !important;
-          color: #64748b !important;
-          cursor: pointer !important;
-        }
-        #hubspot-form-container .hs-form-booleancheckbox input[type="checkbox"] {
-          width: 18px !important;
-          height: 18px !important;
-          margin: 0 !important;
-          flex-shrink: 0 !important;
-          accent-color: #005CCC !important;
-          cursor: pointer !important;
-        }
-        #hubspot-form-container .legal-consent-container {
-          margin-top: 16px !important;
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Function to create HubSpot form
-    const createHubSpotForm = () => {
-      const container = document.getElementById('hubspot-form-container');
-      if (container && (window as any).hbspt) {
-        // Clear any existing form
-        container.innerHTML = '';
-        (window as any).hbspt.forms.create({
-          portalId: "6926702",
-          formId: "57530c31-b16f-40c9-947f-baeac0891a2f",
-          target: "#hubspot-form-container"
-        });
-      }
-    };
-
-    // Load HubSpot script
-    const scriptId = 'hubspot-forms-script';
-    const existingScript = document.getElementById(scriptId);
-    
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://js.hsforms.net/forms/v2.js';
-      script.charset = 'utf-8';
-      script.async = true;
-      script.onload = () => {
-        // Small delay to ensure DOM is ready
-        setTimeout(createHubSpotForm, 100);
-      };
-      document.head.appendChild(script);
-    } else if ((window as any).hbspt) {
-      // Script already loaded, create form with delay
-      setTimeout(createHubSpotForm, 100);
-    } else {
-      // Script exists but hbspt not ready, wait for it
-      existingScript.addEventListener('load', () => {
-        setTimeout(createHubSpotForm, 100);
-      });
-    }
-
-    // Cleanup
-    return () => {
-      const container = document.getElementById('hubspot-form-container');
-      if (container) {
-        container.innerHTML = '';
-      }
-    };
-  }, []);
 
   return (
     <>
@@ -722,32 +200,34 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <a 
-                href="https://www.astera.com/astera-reportminer-demo/" 
+                href={content.heroSectionPrimaryCtaUrl}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn-primary w-full sm:w-auto text-center"
+                className="btn-primary w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionPrimaryCta}
               </a>
               <a 
-                href="https://www.astera.com/astera-reportminer-trial/" 
+                href={content.heroSectionSecondaryCtaUrl}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn-secondary w-full sm:w-auto text-center"
+                className="btn-secondary w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionSecondaryCta}
               </a>
             </div>
 
             {/* Trust Badges */}
-            <div className="trust-badges mt-8">
-              {content.heroSectionTrustBadges.map((badge, index) => (
-                <div key={index} className="trust-badge">
-                  <div dangerouslySetInnerHTML={{ __html: badge.iconSvg }} />
-                  <span>{badge.text}</span>
-                </div>
-              ))}
-            </div>
+            {content.heroSectionTrustBadges && content.heroSectionTrustBadges.length > 0 && (
+              <div className="trust-badges mt-8">
+                {content.heroSectionTrustBadges.map((badge, index) => (
+                  <div key={index} className="trust-badge">
+                    <div dangerouslySetInnerHTML={{ __html: badge.iconSvg }} />
+                    <span>{badge.text}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           {/* Right Side - Media */}
@@ -755,13 +235,16 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] flex items-center justify-center">
               {/* Image - Hidden when video is playing */}
               <div className={`absolute inset-0 transition-opacity duration-0 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                <img 
-                  src="/images/product-hero-image.png"
-                  alt="AI-Driven Data Processing"
-                  className="w-full h-full object-contain"
-                  loading="lazy"
-                  decoding="async"
-                />
+                {content.heroImage && (
+                  <Image 
+                    src={content.heroImage}
+                    alt={content.productName}
+                    fill
+                    className="object-contain"
+                    loading="eager"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
                 {/* Play Icon Overlay - Just the icon, no button background */}
                 <button
                   onClick={() => setIsVideoPlaying(true)}
@@ -786,8 +269,8 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                   <iframe
                     width="100%"
                     height="100%"
-                    src={isVideoPlaying ? content.heroSectionVideoUrl : content.heroSectionVideoUrl.replace('autoplay=1&', '')}
-                    title="Astera ReportMiner Demo"
+                    src={isVideoPlaying ? content.heroSectionVideoUrl : (content.heroSectionVideoUrl || '').replace('autoplay=1&', '')}
+                    title={`${content.productName} Demo`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full rounded-lg"
@@ -836,11 +319,21 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                   {/* Icon */}
                   <div className="mb-5">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#e8f1ff] text-[#005CCC] shadow-inner">
-                      <img
-                        src={getImageUrl(card.iconImage, PLACEHOLDER_ICON)}
-                        alt=""
-                        className="w-6 h-6 object-contain"
-                      />
+                      {card.iconImage ? (
+                        <Image
+                          src={card.iconImage}
+                          alt=""
+                          width={24}
+                          height={24}
+                          className="object-contain"
+                        />
+                      ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                          <path d="M2 17l10 5 10-5"/>
+                          <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                      )}
                     </div>
                   </div>
 
@@ -857,7 +350,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                   {/* CTA */}
                   <div className="mt-5">
                     <button className="inline-flex items-center gap-2 text-[#005CCC] text-sm font-semibold transition-all duration-200 group-hover:gap-3">
-                      Read details
+                      {card.linkText || 'Read details'}
                       <span className="inline-block">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M5 12h14"></path>
@@ -874,14 +367,14 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
       </section>
       )}
 
-      {/* Wave Divider */}
+      {/* Metrics Section - Clean Simple Design */}
+      {metricsData.length > 0 && (
+      <>
       <div className="wave-divider bg-white">
         <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
           <path fill="#EFF5FF" d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z"/>
         </svg>
       </div>
-
-      {/* Metrics Section - Clean Simple Design */}
       <section id="product-metrics" className="product-metrics-section py-10 sm:py-12 lg:py-16 bg-[#EFF5FF] animate-on-scroll">
         <div className="section-container">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-16">
@@ -909,11 +402,11 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
-
-      {/* Wave Divider */}
-      <div></div>
+      </>
+      )}
 
       {/* Powerful Features Accordion Section */}
+      {powerfulFeaturesData.length > 0 && (
       <section id="powerful-features" className="powerful-features-section py-10 sm:py-12 lg:py-16 bg-white animate-on-scroll">
         <div className="section-container">
           {/* Section Header */}
@@ -1014,18 +507,23 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                           </a>
                         </div>
                         {/* Right Image */}
-                        <div className="lg:w-[50%] flex-shrink-0">
-                          <div className="relative group/image">
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#005CCC]/20 to-[#0070F3]/20 rounded-2xl blur-xl opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"></div>
-                            <div className="relative bg-white rounded-2xl p-3 shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                              <img 
-                                src={getImageUrl(feature.image)} 
-                                alt={feature.title}
-                                className="w-full h-auto rounded-xl transition-transform duration-500 group-hover/image:scale-[1.02]"
-                              />
+                        {feature.image && (
+                          <div className="lg:w-[50%] flex-shrink-0">
+                            <div className="relative group/image">
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#005CCC]/20 to-[#0070F3]/20 rounded-2xl blur-xl opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"></div>
+                              <div className="relative bg-white rounded-2xl p-3 shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                                <Image 
+                                  src={feature.image} 
+                                  alt={feature.title}
+                                  width={600}
+                                  height={400}
+                                  className="w-full h-auto rounded-xl transition-transform duration-500 group-hover/image:scale-[1.02]"
+                                  sizes="(max-width: 1024px) 100vw, 600px"
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1035,8 +533,10 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Testimonials Slider Section */}
+      {testimonialsData.length > 0 && (
       <section id="testimonials" className="testimonials-section py-10 sm:py-12 lg:py-16 bg-[#F8FAFF] animate-on-scroll">
         <div className="section-container">
           {/* Section Header */}
@@ -1078,15 +578,19 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     <div className="bg-[#F8FAFF] rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-slate-100">
                       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-center">
                         {/* Image */}
-                        <div className="w-full lg:w-[280px] flex-shrink-0">
-                          <div className="relative rounded-2xl overflow-hidden shadow-lg">
-                            <img 
-                              src={getImageUrl(testimonial.image, PLACEHOLDER_TESTIMONIAL)} 
-                              alt={`${testimonial.company} testimonial`}
-                              className="w-full h-auto object-cover"
-                            />
+                        {testimonial.image && (
+                          <div className="w-full lg:w-[280px] flex-shrink-0">
+                            <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-[4/5]">
+                              <Image 
+                                src={testimonial.image} 
+                                alt={`${testimonial.company} testimonial`}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 1024px) 100vw, 280px"
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Content */}
                         <div className="flex-1 text-center lg:text-left">
@@ -1170,8 +674,10 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Use Cases Section - Carousel with Flip Cards */}
+      {useCasesData.length > 0 && (
       <section id="use-cases" className="use-cases-section py-10 sm:py-12 lg:py-16 bg-white overflow-hidden animate-on-scroll">
         <div className="section-container mb-12">
           {/* Section Header */}
@@ -1227,11 +733,17 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg"
                     style={{ backfaceVisibility: 'hidden' }}
                   >
-                    <img 
-                      src={getImageUrl(useCase.image, PLACEHOLDER_USE_CASE)} 
-                      alt={useCase.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {useCase.image ? (
+                      <Image 
+                        src={useCase.image} 
+                        alt={useCase.title}
+                        fill
+                        className="object-cover"
+                        sizes="280px"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#005CCC] to-[#0070F3]" />
+                    )}
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     {/* Title on Front */}
@@ -1304,11 +816,17 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg"
                     style={{ backfaceVisibility: 'hidden' }}
                   >
-                    <img 
-                      src={getImageUrl(useCase.image, PLACEHOLDER_USE_CASE)} 
-                      alt={useCase.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {useCase.image ? (
+                      <Image 
+                        src={useCase.image} 
+                        alt={useCase.title}
+                        fill
+                        className="object-cover"
+                        sizes="280px"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#005CCC] to-[#0070F3]" />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-5">
                       <h3 
@@ -1360,9 +878,10 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
-
+      )}
 
       {/* FAQ Section */}
+      {content.faqs && content.faqs.length > 0 && (
       <section id="faqs" className="py-10 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-[#f8fafc] animate-on-scroll">
         <div className="section-container max-w-4xl mx-auto">
           {/* Section Header */}
@@ -1477,8 +996,80 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
+
+      {/* Explore Our Resources Section */}
+      {resourcesData.length > 0 && content.resourcesSectionTitle && (
+        <section id="explore-resources" className="product-resources-section animate-on-scroll">
+          <div className="section-container">
+            {/* Section Header */}
+            <div className="product-resources-header">
+              <span className="product-resources-badge">{content.resourcesSectionBadge || 'Resources'}</span>
+              <h2 className="section-title mb-4">
+                {content.resourcesSectionTitle}
+              </h2>
+              {content.resourcesSectionDescription && (
+                <p className="section-desc">
+                  {content.resourcesSectionDescription}
+                </p>
+              )}
+            </div>
+
+            {/* Resource Cards Grid */}
+            <div className="product-resources-grid">
+              {resourcesData.map((resource) => (
+                <a 
+                  key={resource.id} 
+                  href={resource.linkUrl}
+                  className="product-resource-card group"
+                >
+                  {/* Card Image */}
+                  <div className="product-resource-card-image">
+                    {resource.image ? (
+                      <Image 
+                        src={resource.image} 
+                        alt={resource.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 400px"
+                      />
+                    ) : (
+                      <div className="product-resource-card-image-placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#005CCC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14 2 14 8 20 8"/>
+                          <line x1="16" y1="13" x2="8" y2="13"/>
+                          <line x1="16" y1="17" x2="8" y2="17"/>
+                          <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                      </div>
+                    )}
+                    {/* Type Badge */}
+                    <span className="product-resource-type-badge">
+                      {resource.type}
+                    </span>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="product-resource-card-content">
+                    <h3 className="product-resource-card-title">{resource.title}</h3>
+                    <p className="product-resource-card-desc">{resource.description}</p>
+                    <span className="product-resource-card-link">
+                      {resource.linkText || 'Read more'}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contact Form Section with HubSpot */}
+      {content.contactFormSectionTitle && content.hubspotFormId && (
       <section id="contact-form" className="py-10 sm:py-12 lg:py-16 bg-[#f8fafc]">
         <div className="section-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -1523,19 +1114,20 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             
             {/* Right Column - HubSpot Form */}
             <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-gray-100 w-full">
-              <div 
-                id="hubspot-form-container"
-                className="hubspot-form-wrapper w-full"
-              >
-                {/* HubSpot form will be injected here */}
-              </div>
+              <ContactUsHubSpotForm
+                formId={content.hubspotFormId}
+                containerId="hubspot-form-container"
+                showLabels={true}
+                submitButtonAlign="right"
+              />
             </div>
           </div>
         </div>
       </section>
-
+      )}
 
       {/* CTA Section - Enhanced with Gradient */}
+      {content.ctaSectionTitle && (
       <section id="product-cta" className="product-cta-section py-16 sm:py-20 lg:py-24 gradient-cta relative overflow-hidden animate-on-scroll">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -1552,16 +1144,23 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
               {content.ctaSectionDescription}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="inline-flex items-center justify-center h-[51px] px-8 bg-white text-[#005CCC] font-semibold rounded-lg transition-all duration-200 hover:bg-gray-100 hover:scale-105 shadow-lg">
+              <a 
+                href={content.ctaSectionPrimaryUrl}
+                className="inline-flex items-center justify-center h-[51px] px-8 bg-white text-[#005CCC] font-semibold rounded-lg transition-all duration-200 hover:bg-gray-100 hover:scale-105 shadow-lg no-underline"
+              >
                 {content.ctaSectionPrimaryText}
-              </button>
-              <button className="inline-flex items-center justify-center h-[51px] px-8 bg-transparent text-white font-semibold rounded-lg border-2 border-white transition-all duration-200 hover:bg-white/10">
+              </a>
+              <a 
+                href={content.ctaSectionSecondaryUrl}
+                className="inline-flex items-center justify-center h-[51px] px-8 bg-transparent text-white font-semibold rounded-lg border-2 border-white transition-all duration-200 hover:bg-white/10 no-underline"
+              >
                 {content.ctaSectionSecondaryText}
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

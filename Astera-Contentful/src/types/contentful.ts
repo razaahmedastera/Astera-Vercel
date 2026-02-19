@@ -40,6 +40,7 @@ export interface ProductOffering {
 export interface Resource {
   type: 'WEBINAR' | 'EBOOK' | 'BLOG' | 'WHITEPAPER';
   title: string;
+  image?: string;
   linkUrl: string;
 }
 
@@ -68,6 +69,8 @@ export interface WhyAsteraCard {
   id: number;
   text: string;
   iconImage: string;
+  linkText?: string;
+  linkUrl?: string;
 }
 
 /**
@@ -111,7 +114,7 @@ export interface Testimonial {
 /**
  * Use Case interface (for product page carousel)
  */
-export interface UseCase {
+export interface ProductUseCase {
   id: number;
   title: string;
   description: string;
@@ -138,6 +141,27 @@ export interface ContactFormBenefit {
 }
 
 /**
+ * Resource Card interface (for explore resources section)
+ */
+export interface ResourceCard {
+  id: string;
+  type: string; // 'BLOG' | 'EBOOK' | 'WEBINAR' | 'WHITEPAPER'
+  title: string;
+  description: string;
+  image: string;
+  linkUrl: string;
+  linkText?: string;
+}
+
+/**
+ * Award interface (for awards section)
+ */
+export interface Award {
+  image: string;
+  alt: string;
+}
+
+/**
  * Contentful Home Page Content Type Skeleton
  */
 export interface HomePageContentSkeleton extends EntrySkeletonType {
@@ -151,7 +175,9 @@ export interface HomePageContentSkeleton extends EntrySkeletonType {
     heroSectionHeading: Document;
     heroSectionDescription: string;
     heroSectionPrimaryCta: string;
+    heroSectionPrimaryCtaUrl?: string;
     heroSectionSecondaryCta: string;
+    heroSectionSecondaryCtaUrl?: string;
     
     // AI Stack Section
     aiStackSectionTitle: string;
@@ -172,6 +198,7 @@ export interface HomePageContentSkeleton extends EntrySkeletonType {
     
     // Awards Section
     awardsSectionTitle: string;
+    awards?: Award[];
     
     // Resources Section
     resourcesSectionTitle: string;
@@ -199,7 +226,9 @@ export interface HomePageContent {
   heroSectionHeading: Document;
   heroSectionDescription: string;
   heroSectionPrimaryCta: string;
+  heroSectionPrimaryCtaUrl: string;
   heroSectionSecondaryCta: string;
+  heroSectionSecondaryCtaUrl: string;
   
   // AI Stack Section
   aiStackSectionTitle: string;
@@ -220,6 +249,7 @@ export interface HomePageContent {
   
   // Awards Section
   awardsSectionTitle: string;
+  awards: Award[];
   
   // Resources Section
   resourcesSectionTitle: string;
@@ -258,9 +288,12 @@ export interface ProductPageContentSkeleton extends EntrySkeletonType {
     heroSectionHeading: Document;
     heroSectionDescription: string;
     heroSectionPrimaryCta: string;
+    heroSectionPrimaryCtaUrl?: string;
     heroSectionSecondaryCta: string;
+    heroSectionSecondaryCtaUrl?: string;
     heroSectionVideoUrl: string;
     heroSectionTrustBadges: TrustBadge[];
+    heroImage?: any; // Asset reference
     
     // Why This Product Section
     whyThisProductSectionTitle: Document;
@@ -281,13 +314,19 @@ export interface ProductPageContentSkeleton extends EntrySkeletonType {
     // Use Cases Section
     useCasesSectionTitle: Document;
     useCasesSectionDescription: string;
-    useCases: UseCase[];
+    useCases: ProductUseCase[];
     
     // FAQ Section
     faqSectionBadge: string;
     faqSectionTitle: Document;
     faqSectionDescription: string;
     faqs: FAQ[];
+    
+    // Explore Resources Section
+    resourcesSectionTitle?: string;
+    resourcesSectionBadge?: string;
+    resourcesSectionDescription?: string;
+    resources?: ResourceCard[];
     
     // Contact Form Section
     contactFormSectionTitle: Document;
@@ -296,12 +335,15 @@ export interface ProductPageContentSkeleton extends EntrySkeletonType {
     contactFormSectionWhyTitle: string;
     contactFormSectionBenefits: ContactFormBenefit[];
     contactFormSectionFooterText: string;
+    hubspotFormId?: string;
     
     // CTA Section
     ctaSectionTitle: string;
     ctaSectionDescription: string;
     ctaSectionPrimaryText: string;
+    ctaSectionPrimaryUrl?: string;
     ctaSectionSecondaryText: string;
+    ctaSectionSecondaryUrl?: string;
   };
 }
 
@@ -321,9 +363,12 @@ export interface ProductPageContent {
   heroSectionHeading: Document;
   heroSectionDescription: string;
   heroSectionPrimaryCta: string;
+  heroSectionPrimaryCtaUrl: string;
   heroSectionSecondaryCta: string;
+  heroSectionSecondaryCtaUrl: string;
   heroSectionVideoUrl: string;
   heroSectionTrustBadges: TrustBadge[];
+  heroImage: string;
   
   // Why This Product Section
   whyThisProductSectionTitle: Document;
@@ -344,13 +389,19 @@ export interface ProductPageContent {
   // Use Cases Section
   useCasesSectionTitle: Document;
   useCasesSectionDescription: string;
-  useCases: UseCase[];
+  useCases: ProductUseCase[];
   
   // FAQ Section
   faqSectionBadge: string;
   faqSectionTitle: Document;
   faqSectionDescription: string;
   faqs: FAQ[];
+  
+  // Explore Resources Section
+  resourcesSectionTitle?: string;
+  resourcesSectionBadge?: string;
+  resourcesSectionDescription?: string;
+  resources?: ResourceCard[];
   
   // Contact Form Section
   contactFormSectionTitle: Document;
@@ -359,12 +410,15 @@ export interface ProductPageContent {
   contactFormSectionWhyTitle: string;
   contactFormSectionBenefits: ContactFormBenefit[];
   contactFormSectionFooterText: string;
+  hubspotFormId: string;
   
   // CTA Section
   ctaSectionTitle: string;
   ctaSectionDescription: string;
   ctaSectionPrimaryText: string;
+  ctaSectionPrimaryUrl: string;
   ctaSectionSecondaryText: string;
+  ctaSectionSecondaryUrl: string;
   
   createdAt: string;
   updatedAt: string;
@@ -401,6 +455,16 @@ export interface BlogAuthor {
 /**
  * Blog Post interface
  */
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface FAQSection {
+  heading: string;
+  items: FAQItem[];
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -414,6 +478,8 @@ export interface BlogPost {
   authorName?: string;
   tags?: string[];
   keyPoints?: string[];
+  keyTakeaways?: Document; // Rich Text Document
+  faQss?: FAQSection; // FAQs section from JSON field
   body?: string;
   publishedAt: string;
   createdAt: string;
@@ -484,5 +550,309 @@ export interface BlogPostSkeleton extends EntrySkeletonType {
     author?: Entry<BlogAuthorSkeleton>;
     tags?: string[];
     publishedAt: string;
+  };
+}
+
+/**
+ * eBook interface (for eBook pages)
+ */
+export interface Ebook {
+  id: string;
+  title: string;
+  slug: string;
+  description: Document | string; // Rich Text Document or plain string
+  pdfUrl: string; // URL to the PDF file for download
+  coverImage?: string;
+  topics?: string[];
+  hubspotFormId?: string;
+  createdAt: string;
+  updatedAt: string;
+  // SEO Fields
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
+  focusKeyword?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  metaRobots?: string;
+  schemaType?: string;
+}
+
+/**
+ * Contentful eBook Skeleton
+ */
+export interface EbookSkeleton extends EntrySkeletonType {
+  contentTypeId: 'eBook';
+  fields: {
+    eBookTitle: string;
+    eBookDescription: string;
+    eBookURL: string; // PDF URL
+    slug: string; // Required slug field (like blogs) - defines the URL
+  };
+}
+
+/**
+ * =============================================
+ * INDUSTRY CONTENT TYPES
+ * =============================================
+ */
+
+export interface IndustryFeature {
+  id: string;
+  title: string;
+  description: string;
+  icon: string; // Icon name (fallback) or image URL
+  iconImage?: string; // PNG image URL from Contentful
+}
+
+export interface IndustryCaseStudy {
+  label: string;
+  title: string;
+  quote: string;
+  author: string;
+  authorRole: string;
+  company: string;
+  image: string;
+  ctaText: string;
+  ctaLink: string;
+}
+
+/**
+ * Industry interface (for Industry pages)
+ */
+export interface Industry {
+  id: string;
+  name: string;
+  slug: string;
+  subtitle: string;
+  heroImage: string;
+  ctaText: string;
+  ctaLink: string;
+  videoTitle?: string;
+  videoUrl?: string;
+  videoThumbnail?: string;
+  featuresSectionTitle: string;
+  features: IndustryFeature[];
+  caseStudy: IndustryCaseStudy;
+  finalCtaTitle: string;
+  finalCtaSubtitle: string;
+  finalCtaButtonText: string;
+  finalCtaButtonLink: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Contentful Industry Skeleton
+ */
+export interface IndustrySkeleton extends EntrySkeletonType {
+  contentTypeId: '21U5b9oci2lilctbzJrh4a';
+  fields: {
+    industryName: string;
+    slug: string;
+    subtitle: string;
+    heroImage: any; // AssetLink
+    ctaText?: string;
+    ctaLink?: string;
+    videoTitle?: string;
+    videoUrl?: string;
+    videoThumbnail?: any; // AssetLink
+    featuresSectionTitle?: string;
+    features?: any; // JSON Object (array of feature objects)
+    caseStudyLabel?: string;
+    caseStudyTitle?: string;
+    caseStudyQuote?: string;
+    caseStudyAuthor?: string;
+    caseStudyAuthorRole?: string;
+    caseStudyCompany?: string;
+    caseStudyImage?: any; // AssetLink
+    caseStudyCtaText?: string;
+    caseStudyCtaLink?: string;
+    finalCtaTitle?: string;
+    finalCtaSubtitle?: string;
+    finalCtaButtonText?: string;
+    finalCtaButtonLink?: string;
+  };
+}
+
+/**
+ * =============================================
+ * USE CASE CONTENT TYPES
+ * =============================================
+ */
+
+export interface UseCaseStat {
+  value: string;
+  label: string;
+}
+
+export interface UseCaseFeature {
+  title: string;
+  description: string;
+  icon?: string; // Icon type for fallback
+  iconImage?: string; // Icon image URL from Contentful
+  image?: string; // Feature image URL from Contentful
+}
+
+export interface UseCaseHowItWorks {
+  step: number;
+  title: string;
+  description: string;
+}
+
+export interface UseCaseCapability {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface UseCaseCaseStudy {
+  quote: string;
+  author: string;
+  company: string;
+  link: string;
+}
+
+export interface UseCaseFAQ {
+  question: string;
+  answer: string;
+}
+
+/**
+ * Use Case Content (parsed/simplified)
+ */
+export interface UseCase {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  heroDescription: string;
+  heroImage?: string; // Hero image URL from Contentful
+  
+  // Rich Text Content
+  content?: Document | string; // Rich Text Document or plain string
+  
+  // Stats Section
+  stats: UseCaseStat[];
+  benefits: string;
+  
+  // Features Section
+  featuresDescription?: string;
+  features: UseCaseFeature[];
+  
+  // How It Works Section
+  howItWorks: UseCaseHowItWorks[];
+  
+  // Capabilities Section
+  capabilities: UseCaseCapability[];
+  
+  // Integrations
+  integrations: string[];
+  
+  // Case Study
+  caseStudy?: UseCaseCaseStudy;
+  
+  // FAQs
+  faqs: UseCaseFAQ[];
+  
+  // SEO Fields
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
+  ogImage?: string;
+  
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Use Case Summary (for listing)
+ */
+export interface UseCaseSummary {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  icon?: string;
+  iconImage?: string; // Icon image URL from Contentful
+  category?: string;
+  featured?: boolean;
+}
+
+/**
+ * Contentful Use Case Skeleton
+ */
+export interface UseCaseSkeleton extends EntrySkeletonType {
+  contentTypeId: 'useCase';
+  fields: {
+    title: string;
+    slug: string;
+    subtitle: string;
+    heroDescription: string;
+    heroImage?: any; // Asset reference
+    
+    // Rich Text Content
+    content?: Document; // Rich Text Document
+    
+    // Stats Section
+    stats?: Array<{
+      value: string;
+      label: string;
+    }>;
+    benefits: string;
+    
+    // Features Section
+    featuresDescription?: string;
+    features?: Array<{
+      title: string;
+      description: string;
+      icon?: string;
+      iconImage?: any; // Asset reference
+      image?: any; // Asset reference
+    }>;
+    
+    // How It Works Section
+    howItWorks?: Array<{
+      step: number;
+      title: string;
+      description: string;
+    }>;
+    
+    // Capabilities Section
+    capabilities?: Array<{
+      title: string;
+      description: string;
+      icon: string;
+    }>;
+    
+    // Integrations
+    integrations?: string[];
+    
+    // Case Study
+    caseStudy?: {
+      quote: string;
+      author: string;
+      company: string;
+      link: string;
+    };
+    
+    // FAQs
+    faqs?: Array<{
+      question: string;
+      answer: string;
+    }>;
+    
+    // Listing fields
+    description?: string; // Short description for listing
+    icon?: string; // Icon type for listing
+    iconImage?: any; // Icon image for listing
+    category?: string;
+    featured?: boolean;
+    
+    // SEO Fields
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    ogImage?: any; // Asset reference
   };
 }

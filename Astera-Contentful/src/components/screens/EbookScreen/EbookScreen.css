@@ -1,0 +1,1006 @@
+/* ========================================
+   EBOOK SCREEN STYLES
+   ======================================== */
+
+/* eBook List Page */
+.ebook-list-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%);
+  padding-top: 100px;
+}
+
+/* Hero Section */
+.ebook-hero-section {
+  padding: 60px 0 80px;
+  text-align: center;
+}
+
+.ebook-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ebook-hero-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.ebook-hero-description {
+  font-size: clamp(16px, 2vw, 18px);
+  color: #4b5563;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* eBook List Section */
+.ebook-list-section {
+  padding: 0 0 80px;
+}
+
+.ebook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+  margin-top: 40px;
+}
+
+/* eBook Card */
+.ebook-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ebook-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 92, 204, 0.15);
+}
+
+.ebook-card-image-wrapper {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #005CCC 0%, #003d8f 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.ebook-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #005CCC 0%, #003d8f 100%);
+  position: relative;
+}
+
+.ebook-card-image-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(187, 213, 255, 0.2) 0%, transparent 50%);
+}
+
+.ebook-card-icon {
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 1;
+}
+
+.ebook-card-content {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ebook-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ebook-card-description {
+  font-size: 15px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ebook-card-footer {
+  margin-top: auto;
+}
+
+.ebook-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #005CCC;
+  transition: gap 0.2s ease;
+}
+
+.ebook-card:hover .ebook-card-link {
+  gap: 12px;
+}
+
+.ebook-card-link svg {
+  transition: transform 0.2s ease;
+}
+
+.ebook-card:hover .ebook-card-link svg {
+  transform: translateX(4px);
+}
+
+/* ========================================
+   EBOOK DETAIL PAGE
+   ======================================== */
+
+.ebook-detail-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%);
+
+}
+
+/* Detail Hero Section */
+.ebook-detail-hero {
+  padding: 60px 0 80px;
+  background: linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%);
+}
+
+.ebook-detail-hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 60px;
+  align-items: center;
+}
+
+.ebook-detail-hero-content {
+  max-width: 700px;
+}
+
+.ebook-detail-label {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #005CCC;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+}
+
+.ebook-detail-title {
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.ebook-detail-description {
+  font-size: clamp(16px, 2vw, 18px);
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+/* Rich Text Content Styles */
+.ebook-detail-content {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ebook-detail-content p,
+.ebook-detail-content-p {
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #4b5563;
+}
+
+/* H2 Styles */
+.ebook-detail-content h2,
+.ebook-detail-content-h2 {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 24px !important;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: 32px;
+  margin-top: 40px !important;
+  margin-bottom: 20px !important;
+  color: #01348d !important;
+  scroll-margin-top: 100px;
+}
+
+/* List Styles */
+.ebook-detail-content ul,
+.ebook-detail-content-ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.ebook-detail-content ul li,
+.ebook-detail-content-ul li,
+.ebook-detail-content-li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  display: list-item;
+  white-space: normal;
+  line-height: 1.6;
+  font-size: 16px;
+  color: #4b5563;
+}
+
+.ebook-detail-content ol,
+.ebook-detail-content-ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.ebook-detail-content ol li,
+.ebook-detail-content-ol li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  display: list-item;
+  white-space: normal;
+  line-height: 1.6;
+  font-size: 16px;
+  color: #4b5563;
+}
+
+/* Nested lists */
+.ebook-detail-content ul ul,
+.ebook-detail-content ol ul {
+  list-style-type: circle;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ebook-detail-content ol ol,
+.ebook-detail-content ul ol {
+  list-style-type: lower-alpha;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Hero Cover Section */
+.ebook-detail-hero-cover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ebook-cover-stack {
+  position: relative;
+  width: 464px;
+  height: 300px;
+  max-width: 464px;
+  max-height: 300px;
+}
+
+/* Back cover (lighter blue, peeking from right) */
+.ebook-cover-back {
+  position: absolute;
+  top: 20px;
+  right: -15px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  border-radius: 12px;
+  z-index: 1;
+  box-shadow: 0 8px 24px rgba(0, 92, 204, 0.2);
+}
+
+/* Main cover */
+.ebook-cover-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #005CCC 0%, #003d8f 100%);
+  border-radius: 12px;
+  z-index: 2;
+  box-shadow: 0 12px 32px rgba(0, 92, 204, 0.3);
+  overflow: hidden;
+}
+
+.ebook-cover-label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #005CCC;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 3;
+}
+
+.ebook-cover-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 92, 204, 0.8) 0%, rgba(0, 61, 143, 0.9) 100%);
+  z-index: 1;
+}
+
+/* Abstract shapes on cover */
+.ebook-cover-shapes {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  z-index: 2;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 70%, rgba(187, 213, 255, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 70% 80%, rgba(157, 201, 252, 0.3) 0%, transparent 50%),
+    radial-gradient(circle 30% at 40% 50%, rgba(211, 231, 255, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Main Content Layout */
+.ebook-detail-main {
+  padding: 80px 0 80px;
+}
+#hubspot-ebook-form .hs_submit{
+  margin:0;
+}
+/* Left Content - 60% width, no max-width constraint */
+.ebook-detail-content {
+  width: 100%;
+}
+
+.ebook-topics-section {
+  margin-bottom: 32px;
+}
+
+.ebook-topics-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.ebook-topics-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ebook-topic-item {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.7;
+  padding: 12px 0 12px 28px;
+  position: relative;
+}
+
+.ebook-topic-item::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #005CCC;
+  font-size: 24px;
+  line-height: 1;
+  top: 12px;
+}
+
+.ebook-detail-conclusion {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-top: 32px;
+}
+
+/* Right Sidebar */
+.ebook-detail-sidebar {
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+  height: fit-content;
+}
+
+/* HubSpot Form Wrapper - Clean Modern SaaS Design */
+.ebook-form-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+/* eBook Form - Additional 2-column layout styles */
+#hubspot-ebook-form .hs-form-heading,
+#hubspot-ebook-form h2,
+#hubspot-ebook-form .hs-form-title,
+#hubspot-ebook-form .submitted-message {
+  display: none !important;
+}
+
+/* Form field layout - Always 2 fields per row on desktop */
+@media (min-width: 640px) {
+  /* First row: First Name + Last Name (2 fields) */
+  #hubspot-ebook-form fieldset:has(.hs_firstname):has(.hs_lastname) {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  #hubspot-ebook-form fieldset:has(.hs_firstname):has(.hs_lastname) .hs-form-field {
+    flex: 1 !important;
+    width: auto !important;
+    margin-right: 0 !important;
+    margin-bottom: 12px !important;
+  }
+  
+  /* Second row: Business Email + Company Name (2 fields) */
+  #hubspot-ebook-form fieldset:has(.hs-email):has(.hs_company),
+  #hubspot-ebook-form fieldset:has(.hs-email):has(.hs-company) {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  #hubspot-ebook-form fieldset:has(.hs-email):has(.hs_company) .hs-form-field,
+  #hubspot-ebook-form fieldset:has(.hs-email):has(.hs-company) .hs-form-field {
+    flex: 1 !important;
+    width: auto !important;
+    margin-right: 0 !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+/* Last row: Country + Code + Phone (3 fields in one row) */
+/* Fieldset containing phone field - make it flex */
+#hubspot-ebook-form fieldset.form-columns-3,
+#hubspot-ebook-form fieldset.form-columns-3:has(.hs-fieldtype-phonenumber),
+#hubspot-ebook-form fieldset.form-columns-3:has(.hs_phone),
+#hubspot-ebook-form fieldset.form-columns-3:has([class*="hs_phone"]),
+#hubspot-ebook-form fieldset:has(.hs-fieldtype-phonenumber),
+#hubspot-ebook-form fieldset:has(.hs_phone),
+#hubspot-ebook-form fieldset:has([class*="hs_phone"]) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  margin-bottom: 12px !important;
+}
+#hubspot-ebook-form .hs-fieldtype-phonenumber,
+#hubspot-ebook-form .hs_phone,
+#hubspot-ebook-form [class*="hs_phone"] {
+  width: 100% !important;
+}
+
+/* Phone field container - Combined field (country code + phone in one) */
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input,
+#hubspot-ebook-form .hs_phone .input,
+#hubspot-ebook-form [class*="hs_phone"] .input,
+#hubspot-ebook-form fieldset:has(.hs_phone) .input {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+/* Ensure all direct children are inline */
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > *,
+#hubspot-ebook-form .hs_phone .input > *,
+#hubspot-ebook-form [class*="hs_phone"] .input > *,
+#hubspot-ebook-form fieldset:has(.hs_phone) .input > * {
+  display: inline-block !important;
+  vertical-align: top !important;
+}
+
+/* Country dropdown - first field (140px) */
+#hubspot-ebook-form .hs-fieldtype-phonenumber select:first-of-type,
+#hubspot-ebook-form .hs_phone select:first-of-type,
+#hubspot-ebook-form [class*="hs_phone"] select:first-of-type,
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > select:first-of-type,
+#hubspot-ebook-form .hs_phone .input > select:first-of-type,
+#hubspot-ebook-form fieldset:has(.hs_phone) select:first-of-type {
+  width: 140px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  padding: 12px 16px !important;
+  background-color: #fff !important;
+  display: block !important;
+}
+
+/* Country code - second field (80px) - part of combined field */
+#hubspot-ebook-form .hs-fieldtype-phonenumber input[type="tel"]:first-of-type,
+#hubspot-ebook-form .hs_phone input[type="tel"]:first-of-type,
+#hubspot-ebook-form [class*="hs_phone"] input[type="tel"]:first-of-type,
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > input[type="tel"]:first-of-type,
+#hubspot-ebook-form .hs_phone .input > input[type="tel"]:first-of-type,
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > *:nth-child(2),
+#hubspot-ebook-form .hs_phone .input > *:nth-child(2),
+#hubspot-ebook-form fieldset:has(.hs_phone) input[type="tel"]:nth-of-type(1),
+#hubspot-ebook-form fieldset:has(.hs_phone) .input > *:nth-child(2) {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  padding: 12px 16px !important;
+  margin: 0 10px !important;
+  background-color: #f9fafb !important;
+  display: block !important;
+}
+
+/* Phone number - third field (takes remaining space) - part of combined field */
+#hubspot-ebook-form .hs-fieldtype-phonenumber input[type="tel"]:last-of-type,
+#hubspot-ebook-form .hs_phone input[type="tel"]:last-of-type,
+#hubspot-ebook-form [class*="hs_phone"] input[type="tel"]:last-of-type,
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > input[type="tel"]:last-of-type,
+#hubspot-ebook-form .hs_phone .input > input[type="tel"]:last-of-type,
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input > *:last-child,
+#hubspot-ebook-form .hs_phone .input > *:last-child,
+#hubspot-ebook-form fieldset:has(.hs_phone) input[type="tel"]:last-of-type,
+#hubspot-ebook-form fieldset:has(.hs_phone) .input > *:last-child {
+  flex: 1 !important;
+  min-width: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 12px 16px !important;
+  margin: 0 !important;
+  background-color: #fff !important;
+  display: block !important;
+}
+
+/* Focus state for the combined field */
+#hubspot-ebook-form .hs-fieldtype-phonenumber .input:focus-within,
+#hubspot-ebook-form .hs_phone .input:focus-within,
+#hubspot-ebook-form [class*="hs_phone"] .input:focus-within,
+#hubspot-ebook-form fieldset:has(.hs_phone) .input:focus-within {
+  border-color: #005CCC !important;
+  box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08) !important;
+}
+
+/* Mobile - Keep combined field layout */
+@media (max-width: 639px) {
+  #hubspot-ebook-form .hs-fieldtype-phonenumber .input,
+  #hubspot-ebook-form .hs_phone .input,
+  #hubspot-ebook-form [class*="hs_phone"] .input {
+    flex-direction: row !important;
+    gap: 0 !important;
+  }
+  #hubspot-ebook-form .hs-fieldtype-phonenumber select:first-of-type,
+  #hubspot-ebook-form .hs_phone select:first-of-type,
+  #hubspot-ebook-form [class*="hs_phone"] select:first-of-type {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    border-right: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+  }
+  #hubspot-ebook-form .hs-fieldtype-phonenumber input[type="tel"]:first-of-type,
+  #hubspot-ebook-form .hs_phone input[type="tel"]:first-of-type,
+  #hubspot-ebook-form [class*="hs_phone"] input[type="tel"]:first-of-type {
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+    border-right: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+  }
+  #hubspot-ebook-form .hs-fieldtype-phonenumber input[type="tel"]:last-of-type,
+  #hubspot-ebook-form .hs_phone input[type="tel"]:last-of-type,
+  #hubspot-ebook-form [class*="hs_phone"] input[type="tel"]:last-of-type {
+    flex: 1 !important;
+    min-width: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+.ebook-form {
+  width: 100%;
+}
+
+/* HubSpot Form - Clean Modern Styling */
+.ebook-form .hs-form {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+}
+.hs-richtext.hs-main-font-element {
+  display: none;
+}
+.ebook-form .hs-form-field {
+  margin-bottom: 16px;
+}
+
+/* Two-column layout for name fields */
+.ebook-form .hs-form-field.hs-firstname,
+.ebook-form .hs-form-field.hs-lastname {
+  display: inline-block;
+  width: calc(50% - 8px);
+  vertical-align: top;
+  margin-bottom: 16px;
+}
+
+.ebook-form .hs-form-field.hs-firstname {
+  margin-right: 16px;
+}
+
+/* Two-column layout for email and company */
+.ebook-form .hs-form-field.hs-email,
+.ebook-form .hs-form-field.hs-company {
+  display: inline-block;
+  width: calc(50% - 8px);
+  vertical-align: top;
+  margin-bottom: 16px;
+}
+
+.ebook-form .hs-form-field.hs-email {
+  margin-right: 16px;
+}
+
+/* Phone number fields container - three columns in a row */
+.ebook-form .hs-form-field.hs-phone {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+/* Phone field wrapper for proper layout */
+.ebook-form .hs-form-field.hs-phone > div {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+/* Country dropdown - first in phone row */
+.ebook-form .hs-form-field.hs-phone select,
+.ebook-form .hs-form-field.hs-phone .hs-input[type="tel"]:first-of-type {
+  flex: 0 0 auto;
+  min-width: 110px;
+  max-width: 130px;
+}
+
+/* Country code field - second in phone row (read-only or pre-filled) */
+.ebook-form .hs-form-field.hs-phone .hs-input[type="tel"]:nth-of-type(2),
+.ebook-form .hs-form-field.hs-phone input[readonly] {
+  flex: 0 0 auto;
+  min-width: 60px;
+  max-width: 80px;
+  background-color: #f9fafb;
+}
+
+/* Phone number - third in phone row */
+.ebook-form .hs-form-field.hs-phone .hs-input[type="tel"]:last-of-type:not([readonly]) {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hide all field labels - placeholders show field names */
+.ebook-form .hs-form-field label,
+.ebook-form .hs-form-field > label,
+.ebook-form .hs-form-field .hs-label,
+.ebook-form .hs-form-field label span,
+.ebook-form label:not(.hs-error-msgs label) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  width: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Input fields - Clean Modern SaaS Design */
+.ebook-form .hs-form-field input[type="text"],
+.ebook-form .hs-form-field input[type="email"],
+.ebook-form .hs-form-field input[type="tel"],
+.ebook-form .hs-form-field select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  box-sizing: border-box;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+/* Placeholder styling */
+.ebook-form .hs-form-field input::placeholder,
+.ebook-form .hs-form-field select::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+/* Focus state - Modern blue accent */
+.ebook-form .hs-form-field input:focus,
+.ebook-form .hs-form-field select:focus {
+  outline: none;
+  border-color: #005CCC;
+  box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.1);
+  background: white;
+}
+
+/* Hover state */
+.ebook-form .hs-form-field input:hover:not(:focus),
+.ebook-form .hs-form-field select:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Error state - Red border */
+.ebook-form .hs-form-field input.error,
+.ebook-form .hs-form-field select.error,
+.ebook-form .hs-form-field.hs-error input,
+.ebook-form .hs-form-field.hs-error select {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.ebook-form .hs-form-field.hs-error input:focus,
+.ebook-form .hs-form-field.hs-error select:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Select dropdown styling - Modern */
+.ebook-form .hs-form-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+/* Submit button - Clean Modern SaaS Design */
+.ebook-form .hs-submit {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.ebook-form .hs-button {
+  width: 100%;
+  padding: 14px 24px;
+  background: #005CCC;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0;
+  text-align: center;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ebook-form .hs-button:hover {
+  background: #004ba3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.3);
+}
+
+.ebook-form .hs-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ebook-form .hs-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.2), 0 4px 12px rgba(0, 92, 204, 0.3);
+}
+
+/* Error messages - Clean Modern Design */
+.ebook-form .hs-error-msgs {
+  margin-top: 6px;
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Keep error message labels visible (they're not field labels) */
+.ebook-form .hs-error-msgs label,
+.ebook-form .hs-error-msgs li {
+  font-size: 13px;
+  font-weight: 400;
+  color: #ef4444;
+  margin: 0;
+  padding: 0;
+  display: block !important;
+  line-height: 1.4;
+}
+
+.ebook-form .hs-error-msgs label::before,
+.ebook-form .hs-error-msgs li::before {
+  content: '';
+  display: none;
+}
+
+/* Error message text */
+.ebook-form .hs-main-content-element .hs-error-msgs {
+  color: #ef4444;
+}
+
+/* Responsive form layout */
+@media (max-width: 640px) {
+  .ebook-form-wrapper {
+    padding: 24px;
+  }
+
+  .ebook-form .hs-form-field.hs-firstname,
+  .ebook-form .hs-form-field.hs-lastname,
+  .ebook-form .hs-form-field.hs-email,
+  .ebook-form .hs-form-field.hs-company {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .ebook-form .hs-form-field.hs-phone {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ebook-form .hs-form-field.hs-phone select,
+  .ebook-form .hs-form-field.hs-phone .hs-input[type="tel"] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ebook-detail-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ebook-detail-hero-cover {
+    order: -1;
+    margin-bottom: 20px;
+  }
+
+  .ebook-cover-stack {
+    width: 464px;
+    height: 300px;
+    max-width: 464px;
+    max-height: 300px;
+    margin: 0 auto;
+  }
+
+  .ebook-detail-sidebar {
+    position: static;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .ebook-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ebook-list-page,
+  .ebook-detail-page {
+    padding-top: 80px;
+  }
+
+  .ebook-hero-section {
+    padding: 40px 0 60px;
+  }
+
+  .ebook-hero-title {
+    font-size: 32px;
+  }
+
+  .ebook-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .ebook-card-image-wrapper {
+    height: 180px;
+  }
+
+  .ebook-detail-hero {
+    padding: 40px 0 60px;
+  }
+
+  .ebook-detail-title {
+    font-size: 28px;
+  }
+
+  .ebook-cover-stack {
+    width: 100%;
+    max-width: 464px;
+    height: auto;
+    aspect-ratio: 464 / 300;
+  }
+
+  .ebook-cover-back {
+    right: -10px;
+    top: 15px;
+  }
+
+  .ebook-form-wrapper {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ebook-hero-section {
+    padding: 32px 0 48px;
+  }
+
+  .ebook-list-section {
+    padding-bottom: 60px;
+  }
+
+  .ebook-detail-main {
+    padding-bottom: 60px;
+  }
+
+  .ebook-topics-title {
+    font-size: 20px;
+  }
+
+  .ebook-topic-item {
+    font-size: 15px;
+    padding: 10px 0 10px 24px;
+  }
+}

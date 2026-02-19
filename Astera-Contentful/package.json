@@ -3,32 +3,49 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
+    "dev:clean": "node scripts/clean-cache.js && next dev",
+    "clean": "node scripts/clean-cache.js",
+    "clean:next": "Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue; Write-Host 'Cleaned .next directory'",
     "build": "next build",
     "build:static": "cross-env STATIC_EXPORT=true NODE_ENV=production next build && node scripts/copy-htaccess.js",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build"
+    "export": "next build",
+    "migrate:blogs": "tsx scripts/migrate-astera-blogs.ts",
+    "setup:use-case": "tsx scripts/setup-use-case-model.ts",
+    "setup:product-fields": "tsx scripts/add-product-page-fields.ts",
+    "setup:dynamic-fields": "tsx scripts/add-dynamic-fields.ts",
+    "upload:images": "tsx scripts/upload-placeholder-images.ts",
+    "setup:all": "tsx scripts/add-dynamic-fields.ts && tsx scripts/upload-placeholder-images.ts"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.22.11",
     "@contentful/rich-text-types": "^16.8.5",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0",
     "contentful": "^11.10.1",
+    "contentful-management": "^11.0.0",
+    "dotenv": "^16.4.0",
     "lottie-react": "^2.4.1",
     "next": "^15.1.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "sharp": "^0.34.5",
+    "turndown": "^7.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/turndown": "^5.0.5",
     "autoprefixer": "^10.4.23",
     "cross-env": "^10.1.0",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
+    "tsx": "^4.7.0",
     "typescript": "^5.7.2"
   }
 }

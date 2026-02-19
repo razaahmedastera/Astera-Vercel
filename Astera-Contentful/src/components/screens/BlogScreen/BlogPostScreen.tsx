@@ -1,11 +1,13 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useEffect, useMemo, useState, useRef } from 'react';
+import Image from 'next/image';
 import type { BlogPost } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
 import { BlogCtaSection } from './BlogCtaSection';
+import { KeyTakeawaysSection } from './KeyTakeawaysSection';
+import { FAQSection } from './FAQSection';
 import './BlogPostScreen.css';
 
 type Props = {
@@ -406,6 +408,7 @@ export function BlogPostScreen({ post }: Props) {
   
   const [activeTocId, setActiveTocId] = useState<string>('');
   const sidebarRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Add class to aside when scrolling and maintain horizontal position
   useEffect(() => {
@@ -420,7 +423,7 @@ export function BlogPostScreen({ post }: Props) {
       if (!sidebar) return null;
 
       // Get the grid container to calculate proper position
-      const gridContainer = sidebar.closest('.section-container.grid');
+      const gridContainer = sidebar.closest('.grid') || sidebar.closest('.section-container');
       if (!gridContainer) return null;
 
       const gridRect = gridContainer.getBoundingClientRect();
@@ -467,7 +470,7 @@ export function BlogPostScreen({ post }: Props) {
         thresholdScroll = calculateThreshold();
       }
       
-      // Add 'is-fixed' class when header touches TOC
+      // Add 'is-fixed' class when header touches TOC - keep it fixed throughout scroll
       if (scrollTop > thresholdScroll) {
         if (!isFixed) {
           // Capture position before adding class
@@ -492,11 +495,16 @@ export function BlogPostScreen({ post }: Props) {
             isFixed = true;
           }
         } else {
-          // Update position if already fixed (for resize or scroll)
+          // Update position if already fixed (for resize or scroll) - keep it fixed smoothly
           const leftPos = updatePosition();
           if (leftPos !== null && initialLeft !== leftPos) {
             initialLeft = leftPos;
             sidebar.style.setProperty('left', `${initialLeft}px`, 'important');
+          }
+          // Keep promo container hidden when already fixed
+          const promoContainer = sidebar.querySelector('.blog-promo-container');
+          if (promoContainer) {
+            (promoContainer as HTMLElement).style.display = 'none';
           }
         }
       } else {
@@ -571,40 +579,75 @@ export function BlogPostScreen({ post }: Props) {
   }, [post.keyPoints, contentData]);
 
 
-  // Track active TOC section on scroll
+  // Track active TOC section on scroll - highlight the heading user is currently reading
   useEffect(() => {
     if (toc.length === 0) return;
 
-    const observerOptions = {
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0,
+    const updateActiveToc = () => {
+      const scrollPosition = window.scrollY + 150; // Offset for header + some padding
+      let activeId = '';
+
+      // Find the heading that's closest to the top of the viewport
+      for (let i = toc.length - 1; i >= 0; i--) {
+        const element = document.getElementById(toc[i].id);
+        if (element) {
+          const elementTop = element.offsetTop;
+          if (elementTop <= scrollPosition) {
+            activeId = toc[i].id;
+            break;
+          }
+        }
+      }
+
+      // If no heading found, use the first one
+      if (!activeId && toc.length > 0) {
+        activeId = toc[0].id;
+      }
+
+      setActiveTocId(activeId);
+
+      // Auto-scroll active TOC item into view
+      if (activeId) {
+        const activeLink = document.querySelector(`.blog-toc-link[href="#${activeId}"]`) as HTMLElement;
+        if (activeLink) {
+          const tocList = activeLink.closest('.blog-toc-list') as HTMLElement;
+          if (tocList) {
+            const linkRect = activeLink.getBoundingClientRect();
+            const listRect = tocList.getBoundingClientRect();
+            
+            // Check if link is outside visible area
+            if (linkRect.top < listRect.top || linkRect.bottom > listRect.bottom) {
+              activeLink.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+              });
+            }
+          }
+        }
+      }
     };
 
-    const observers = toc.map((item) => {
-      const element = document.getElementById(item.id);
-      if (!element) return null;
+    // Initial check
+    updateActiveToc();
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveTocId(item.id);
-            }
-          });
-        },
-        observerOptions
-      );
+    // Update on scroll
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActiveToc();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-      observer.observe(element);
-      return { observer, element };
-    });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', updateActiveToc);
 
     return () => {
-      observers.forEach((obs) => {
-        if (obs) {
-          obs.observer.disconnect();
-        }
-      });
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', updateActiveToc);
     };
   }, [toc]);
 
@@ -639,85 +682,32 @@ export function BlogPostScreen({ post }: Props) {
           </h2>
         );
       },
+      // Table support
+      [BLOCKS.TABLE]: (node: any, children: any) => {
+        return (
+          <div className="blog-post-table-wrapper">
+            <table className="blog-post-table">
+              {children}
+            </table>
+          </div>
+        );
+      },
+      [BLOCKS.TABLE_ROW]: (node: any, children: any) => {
+        return <tr className="blog-post-table-row">{children}</tr>;
+      },
+      [BLOCKS.TABLE_HEADER_CELL]: (node: any, children: any) => {
+        return <th className="blog-post-table-header">{children}</th>;
+      },
+      [BLOCKS.TABLE_CELL]: (node: any, children: any) => {
+        return <td className="blog-post-table-cell">{children}</td>;
+      },
       [BLOCKS.EMBEDDED_ENTRY]: (node: any) => {
         const entry = node.data.target;
         const contentType = entry?.sys?.contentType?.sys?.id;
         
-        // Render blogKeyPoints entries inline in the content
+        // Skip blogKeyPoints entries in content - they are displayed separately via keyTakeaways field
         if (contentType === 'blogKeyPoints') {
-          const fields = entry.fields || {};
-          
-          // Helper function to find field by multiple possible names
-          const findField = (possibleNames: string[]): any => {
-            for (const name of possibleNames) {
-              if (fields[name] !== undefined && fields[name] !== null && fields[name] !== '') {
-                return fields[name];
-              }
-            }
-            // Try case-insensitive match
-            const fieldKeys = Object.keys(fields);
-            for (const key of fieldKeys) {
-              for (const name of possibleNames) {
-                if (key.toLowerCase() === name.toLowerCase()) {
-                  return fields[key];
-                }
-              }
-            }
-            return '';
-          };
-          
-          const heading = findField(['blogKeyHeading', 'heading', 'title', 'blogKeyHeading']);
-          const text = findField(['blogKeyText', 'text', 'blogKeyText', 'description', 'content']);
-          
-          console.log('[BlogPostScreen] Rendering blogKeyPoints inline:', {
-            heading,
-            text,
-            textType: typeof text,
-            isRichText: text?.nodeType === 'document',
-            allFields: Object.keys(fields)
-          });
-          
-          // Helper to render text - handle both string and rich text
-          const renderText = (content: any) => {
-            // Check if it's a rich text document
-            if (content && typeof content === 'object' && content.nodeType === 'document') {
-              // Render rich text content
-              return documentToReactComponents(content, {
-                renderNode: {
-                  [BLOCKS.PARAGRAPH]: (node: any, children: any) => (
-                    <p className="blog-key-point-inline-text">{children}</p>
-                  ),
-                  [BLOCKS.HEADING_1]: (node: any, children: any) => (
-                    <h1 className="blog-key-point-inline-text">{children}</h1>
-                  ),
-                  [BLOCKS.HEADING_2]: (node: any, children: any) => (
-                    <h2 className="blog-key-point-inline-text">{children}</h2>
-                  ),
-                  [BLOCKS.HEADING_3]: (node: any, children: any) => (
-                    <h3 className="blog-key-point-inline-text">{children}</h3>
-                  ),
-                },
-              });
-            }
-            // Plain string
-            if (typeof content === 'string') {
-              return <p className="blog-key-point-inline-text">{content}</p>;
-            }
-            return null;
-          };
-          
-          // Render inline key point with heading and text
-          if (heading || text) {
-            return (
-              <div key={entry.sys.id} className="blog-key-point-inline">
-                {heading && (
-                  <h4 className="blog-key-point-inline-heading">{heading}</h4>
-                )}
-                {text && renderText(text)}
-              </div>
-            );
-          }
-          
+          // Don't render Key Takeaways inline in content since we have a separate keyTakeaways field
           return null;
         }
         
@@ -808,12 +798,14 @@ export function BlogPostScreen({ post }: Props) {
           
           return (
             <figure className="blog-post-embedded-image">
-              <img
+              <Image
                 src={url}
                 alt={alt}
+                width={1200}
+                height={675}
                 className="blog-post-content-image"
                 loading="lazy"
-                decoding="async"
+                sizes="(max-width: 768px) 100vw, 1200px"
               />
               {asset.fields.description && (
                 <figcaption className="blog-post-image-caption">
@@ -830,15 +822,16 @@ export function BlogPostScreen({ post }: Props) {
 
   return (
     <article className="bg-white">
-      <div
+      <section
         className="py-12 sm:py-14 lg:py-16"
         style={{
           background: 'linear-gradient(180deg, #f4f7ff 0%, #f9fbff 50%, #ffffff 100%)',
         }}
       >
-        <div className="section-container grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
-          {/* Main Content */}
-          <div className="flex flex-col gap-8">
+        <div className="section-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
+            {/* Main Content */}
+            <div ref={contentRef} className="flex flex-col gap-8 max-w-4xl min-w-0">
             {/* Title */}
             <h1 className="blog-post-title">{post.title}</h1>
 
@@ -864,47 +857,57 @@ export function BlogPostScreen({ post }: Props) {
 
             {/* Hero Image - Moved after title */}
             <div className="blog-hero-image-container">
-              <img
+              <Image
                 src={cover}
                 alt={post.title}
-                onError={handleImageError}
+                fill
                 className="blog-hero-image"
-                loading="eager"
-                decoding="async"
+                priority
+                sizes="(max-width: 768px) 100vw, 1200px"
+                onError={handleImageError}
               />
               <div className="blog-hero-overlay" />
             </div>
 
+            {/* Key Takeaways Section - Add after hero image, before content */}
+            {post.keyTakeaways && (
+              <KeyTakeawaysSection 
+                keyTakeaways={post.keyTakeaways} 
+                authorName={authorName}
+              />
+            )}
+
             {/* Content */}
-            <div className="blog-post-content">
-              {hasRichText ? (
-                <div>
-                  {(() => {
-                    try {
-                      return documentToReactComponents(contentData, renderOptions);
-                    } catch (error) {
-                      console.error('Error rendering rich text content:', error, contentData);
-                      return <div className="text-red-500">Error rendering content. Check console.</div>;
-                    }
-                  })()}
-                </div>
-              ) : (
-                <div>
-                  <p className="text-gray-500 mb-4">Content preview:</p>
-                  <p>{post.excerpt || 'Content coming soon.'}</p>
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                      <p className="text-sm text-yellow-800">
-                        <strong>Debug:</strong> hasRichText = {String(hasRichText)}, 
-                        contentData exists = {String(!!contentData)},
-                        nodeType = {contentData?.nodeType || 'undefined'},
-                        content length = {contentData?.content?.length || 0}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            {hasRichText || post.excerpt ? (
+              <div className="blog-post-content">
+                {hasRichText ? (
+                  <div>
+                    {(() => {
+                      try {
+                        return documentToReactComponents(contentData, renderOptions);
+                      } catch (error) {
+                        console.error('Error rendering rich text content:', error, contentData);
+                        return <div className="text-red-500">Error rendering content. Check console.</div>;
+                      }
+                    })()}
+                  </div>
+                ) : (
+                  <div>
+                    {post.excerpt && (
+                      <>
+                        <p className="text-gray-500 mb-4">Content preview:</p>
+                        <p>{post.excerpt}</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {/* FAQs Section - At the end of blog content */}
+            {post.faQss && (
+              <FAQSection faqSection={post.faQss} />
+            )}
           </div>
 
           {/* Sidebar */}
@@ -940,8 +943,9 @@ export function BlogPostScreen({ post }: Props) {
               </a>
             </div>
           </aside>
+          </div>
         </div>
-      </div>
+      </section>
     </article>
   );
 }

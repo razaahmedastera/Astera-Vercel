@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 interface Award {
   image: string;
   alt: string;
@@ -11,21 +13,14 @@ interface AwardsProps {
   className?: string;
 }
 
-// Default awards data - Contentful-ready
-const defaultAwards: Award[] = [
-  { image: '/images/awards/best-support.png', alt: 'Best Support Winter 2024' },
-  { image: '/images/awards/momentum-leader.png', alt: 'Momentum Leader Spring 2024' },
-  { image: '/images/awards/stevie-award.png', alt: 'Silver Stevie Award Winner' },
-  { image: '/images/awards/top-performer-2024.png', alt: 'Customer Success Top Performer 2024' },
-  { image: '/images/awards/top-rated-2023.png', alt: 'TrustRadius Top Rated 2023' },
-  { image: '/images/awards/big-innovation-2023.png', alt: 'Big Innovation Award 2023' }
-];
-
 export function Awards({ 
   title = 'Honored for Delivering Results for You',
-  awards = defaultAwards,
+  awards,
   className = ''
 }: AwardsProps) {
+  // Don't render the section if no awards data is available
+  if (!awards || awards.length === 0) return null;
+
   return (
     <section id="awards" className={`awards-section py-10 sm:py-12 lg:py-16 bg-white ${className}`}>
       <div className="section-container">
@@ -41,9 +36,11 @@ export function Awards({
               key={index} 
               className="award-card flex justify-center items-center flex-1 min-w-[100px] max-w-[160px] sm:max-w-none transition-transform duration-300 hover:scale-110"
             >
-              <img 
+              <Image 
                 src={award.image} 
                 alt={award.alt}
+                width={160}
+                height={96}
                 className="h-16 sm:h-20 lg:h-24 w-auto object-contain max-w-full"
                 loading="lazy"
               />
@@ -56,4 +53,3 @@ export function Awards({
 }
 
 export default Awards;
-

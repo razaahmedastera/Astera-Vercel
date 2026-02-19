@@ -50,27 +50,61 @@ export async function POST(request: NextRequest) {
     console.log('[Revalidate] Revalidating paths...', { contentType, entryId });
 
     // Revalidate only the relevant pages based on content type
-    // This is more efficient - only refreshes what actually changed
+    // Use cache tags for efficient revalidation, then revalidate paths
     if (contentType === 'homePage') {
-      // Home page content changed - only refresh home page
+      // Home page content changed - revalidate cache tag and paths
+      revalidateTag('home-page');
+      revalidateTag('home');
       revalidatePath('/', 'page');
       revalidatePath('/', 'layout');
     } else if (contentType === 'productPage') {
-      // Product page content changed - refresh product pages and listing
+      // Product page content changed - revalidate cache tags and paths
+      revalidateTag('product-pages');
+      revalidateTag('product');
       revalidatePath('/product', 'page');
       revalidatePath('/product', 'layout');
     } else if (contentType === 'blog') {
-      // Blog post changed - refresh blog listing and all blog posts
+      // Blog post changed - revalidate cache tags and paths
+      revalidateTag('blog-posts');
+      revalidateTag('blog');
       revalidatePath('/blog', 'page');
       revalidatePath('/blog', 'layout');
       revalidatePath('/blog/[slug]', 'page'); // All individual blog posts
+    } else if (contentType === 'eBook') {
+      // eBook changed - revalidate cache tags and paths
+      revalidateTag('ebooks');
+      revalidateTag('ebook');
+      revalidatePath('/ebook', 'page');
+      revalidatePath('/ebook/[slug]', 'page');
+    } else if (contentType === '21U5b9oci2lilctbzJrh4a') {
+      // Industry page changed - revalidate cache tags and paths
+      revalidateTag('industries');
+      revalidateTag('industry');
+      revalidatePath('/industry-solutions/[slug]', 'page');
+    } else if (contentType === 'useCase') {
+      // Use case changed - revalidate cache tags and paths
+      revalidateTag('use-cases');
+      revalidateTag('use-case');
+      revalidatePath('/use-cases', 'page');
+      revalidatePath('/use-cases/[slug]', 'page');
     } else {
       // Unknown content type or no contentType provided - refresh everything (safe fallback)
       console.warn('[Revalidate] Unknown content type or missing contentType, revalidating all pages');
+      revalidateTag('home-page');
+      revalidateTag('product-pages');
+      revalidateTag('blog-posts');
+      revalidateTag('ebooks');
+      revalidateTag('industries');
+      revalidateTag('use-cases');
       revalidatePath('/', 'layout');
       revalidatePath('/product', 'layout');
       revalidatePath('/blog', 'layout');
       revalidatePath('/blog/[slug]', 'page');
+      revalidatePath('/ebook', 'page');
+      revalidatePath('/ebook/[slug]', 'page');
+      revalidatePath('/industry-solutions/[slug]', 'page');
+      revalidatePath('/use-cases', 'page');
+      revalidatePath('/use-cases/[slug]', 'page');
     }
 
     return NextResponse.json({
@@ -107,10 +141,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Revalidate all cache tags
+    revalidateTag('home-page');
+    revalidateTag('product-pages');
+    revalidateTag('blog-posts');
+    revalidateTag('ebooks');
+    revalidateTag('industries');
+    revalidateTag('use-cases');
+    
+    // Revalidate all paths
     revalidatePath('/', 'layout');
     revalidatePath('/product', 'layout');
     revalidatePath('/blog', 'layout');
     revalidatePath('/blog/[slug]', 'page');
+    revalidatePath('/ebook', 'page');
+    revalidatePath('/ebook/[slug]', 'page');
+    revalidatePath('/industry-solutions/[slug]', 'page');
+    revalidatePath('/use-cases', 'page');
+    revalidatePath('/use-cases/[slug]', 'page');
 
     return NextResponse.json({
       revalidated: true,

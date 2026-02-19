@@ -2,6 +2,23 @@
    BLOG POST PAGE STYLES
    ======================================== */
 
+/* Article Container - Ensure blog post is contained */
+article.bg-white {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  margin: 0 auto;
+}
+
+article.bg-white > section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  margin: 0 auto;
+}
+
 /* Hero Image Section */
 .blog-hero-image-container {
   position: relative;
@@ -16,8 +33,6 @@
 }
 
 .blog-hero-image {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
@@ -176,11 +191,19 @@
   font-size: 16px;
   line-height: 1.8;
   color: #1a1a1a;
-  max-width: none;
+  max-width: 100%;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .blog-post-content p {
   margin-bottom: 12px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* List styles - show disc bullets to differentiate from paragraphs */
@@ -231,11 +254,15 @@
 .blog-post-embedded-image {
   margin: 2rem 0;
   text-align: center;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .blog-post-content-image {
+  width: 100%;
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
 .blog-post-image-caption {
@@ -300,37 +327,350 @@
   line-height: 1.3;
 }
 
+/* Prevent content overflow - Links, Code, Pre, etc. */
+.blog-post-content a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  max-width: 100%;
+  display: inline-block;
+}
+
+.blog-post-content code,
+.blog-post-content pre {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.blog-post-content pre {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+}
+
+/* Table Wrapper */
+.blog-post-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 2.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.blog-post-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  display: table;
+  table-layout: auto;
+}
+
+/* Table Header Row - Smooth Light Blue Background */
+.blog-post-table-header {
+  background: #0992C2;
+  color: white;
+  font-weight: 600;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  border: none;
+  border-bottom: 3px solid #0778a0;
+  white-space: nowrap;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(9, 146, 194, 0.3);
+}
+
+.blog-post-table-header:first-child {
+  border-top-left-radius: 8px;
+}
+
+.blog-post-table-header:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* Table Rows */
+.blog-post-table-row {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.blog-post-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Alternating row colors - white and light gray */
+.blog-post-table-row:nth-child(odd) .blog-post-table-cell {
+  background: #ffffff;
+}
+
+.blog-post-table-row:nth-child(even) .blog-post-table-cell {
+  background: #f5f5f5;
+}
+
+/* Hover effect for rows - smooth transition */
+.blog-post-table-row:hover .blog-post-table-cell {
+  background-color: #e6f7ff !important;
+  color: #005a87;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Table Cells */
+.blog-post-table-cell {
+  padding: 15px;
+  color: #333;
+  font-size: 16px;
+  line-height: 24px;
+  vertical-align: top;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* First column (Task column) - colored */
+.blog-post-table-cell:first-child {
+  font-weight: 400;
+  color: #005a87;
+}
+
+/* Preserve first column font-weight on hover */
+.blog-post-table-row:hover .blog-post-table-cell:first-child {
+  font-weight: 400;
+  color: #005a87;
+}
+
+/* Second and third columns - larger font and darker */
+.blog-post-table-cell:nth-child(2),
+.blog-post-table-cell:nth-child(3) {
+  font-size: 16px;
+  font-weight: 400;
+  color: #222;
+  line-height: 24px;
+}
+
+.blog-post-table-cell p {
+  margin: 0;
+  padding: 0;
+}
+
+.blog-post-table-cell p:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+/* Ensure text in cells wraps properly */
+.blog-post-table-cell,
+.blog-post-table-header {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Responsive Design for Tables */
+@media (max-width: 1024px) {
+  .blog-post-table-wrapper {
+    margin: 2rem 0;
+  }
+  
+  .blog-post-table-header,
+  .blog-post-table-cell {
+    padding: 12px;
+    font-size: 15px;
+  }
+  
+  .blog-post-table-cell:nth-child(2),
+  .blog-post-table-cell:nth-child(3) {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .blog-post-table-wrapper {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+  }
+  
+  .blog-post-table {
+    min-width: 600px; /* Prevent too much compression */
+  }
+  
+  .blog-post-table-header {
+    padding: 12px;
+    font-size: 14px;
+    white-space: normal; /* Allow wrapping on mobile */
+  }
+  
+  .blog-post-table-cell {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .blog-post-table-cell:nth-child(2),
+  .blog-post-table-cell:nth-child(3) {
+    font-size: 15px;
+  }
+  
+  /* Responsive for fallback tables */
+  .blog-post-content table {
+    min-width: 600px;
+    margin: 1.5rem 0;
+  }
+  
+  .blog-post-content table th,
+  .blog-post-content table td {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .blog-post-content table th {
+    white-space: normal;
+  }
+  
+  .blog-post-content table td:nth-child(2),
+  .blog-post-content table td:nth-child(3) {
+    font-size: 15px;
+  }
+}
+
+/* Fallback for tables without wrapper (backward compatibility) */
+.blog-post-content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 2.5rem 0;
+}
+
+.blog-post-content table td,
+.blog-post-content table th {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.blog-post-content table th {
+  background: #0992C2;
+  color: white;
+  font-weight: 600;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  border: none;
+  border-bottom: 3px solid #0778a0;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(9, 146, 194, 0.3);
+}
+
+.blog-post-content table td {
+  padding: 15px;
+  color: #333;
+  font-size: 16px;
+  line-height: 24px;
+  vertical-align: top;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.blog-post-content table tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.blog-post-content table tr:last-child {
+  border-bottom: none;
+}
+
+.blog-post-content table tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.blog-post-content table tr:nth-child(even) {
+  background: #f5f5f5;
+}
+
+/* Hover effect for fallback tables */
+.blog-post-content table tr:hover {
+  background-color: #e6f7ff;
+}
+
+.blog-post-content table tr:hover td {
+  background-color: #e6f7ff;
+  color: #005a87;
+}
+
+/* First column styling for fallback tables */
+.blog-post-content table td:first-child {
+  font-weight: 400;
+  color: #005a87;
+}
+
+/* Second and third columns for fallback tables */
+.blog-post-content table td:nth-child(2),
+.blog-post-content table td:nth-child(3) {
+  font-size: 16px;
+  font-weight: 400;
+  color: #222;
+  line-height: 24px;
+}
+
+/* Ensure all child elements respect container width */
+.blog-post-content * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /* Sidebar - Sticky on scroll (becomes fixed when scrolling down) */
 @media (min-width: 1024px) {
   /* Ensure ALL parent containers don't block sticky */
   article.bg-white {
-    overflow: visible !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    width: 100%;
+    max-width: 100%;
   }
 
-  article > div {
-    overflow: visible !important;
+  article > section {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
     position: relative;
+    width: 100%;
+    max-width: 100%;
   }
 
-  /* Ensure the wrapper div with background gradient doesn't block sticky */
-  article > div[style*="background"] {
+  /* Ensure the wrapper section with background gradient doesn't block sticky */
+  article > section[style*="background"] {
     overflow: visible !important;
     position: relative;
   }
 
   /* Ensure grid allows sticky positioning */
-  .section-container.grid {
+  .section-container > .grid {
     align-items: start !important;
-    overflow: visible !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
     position: relative;
-    min-height: 100vh; /* Ensure container has enough height */
+    width: 100%;
+    max-width: 100%;
   }
 
   /* Sticky positioning - fixes when scrolling down */
   aside.blog-sidebar,
   .blog-sidebar,
-  .section-container > aside.blog-sidebar,
-  .section-container.grid > aside.blog-sidebar,
+  .section-container > .grid > aside.blog-sidebar,
   .section-container aside,
   article aside.blog-sidebar {
     position: -webkit-sticky !important;
@@ -344,13 +684,13 @@
     z-index: 10 !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
+    transition: opacity 0.3s ease, top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
   }
 
   /* When is-fixed class is added via JavaScript - use higher specificity */
-  article.bg-white > div > div.section-container.grid > aside.blog-sidebar.is-fixed,
-  article > div > div.section-container.grid > aside.blog-sidebar.is-fixed,
-  .section-container.grid > aside.blog-sidebar.is-fixed,
+  article.bg-white > section > div.section-container > .grid > aside.blog-sidebar.is-fixed,
+  article > section > div.section-container > .grid > aside.blog-sidebar.is-fixed,
+  .section-container > .grid > aside.blog-sidebar.is-fixed,
   aside.blog-sidebar.is-fixed,
   .blog-sidebar.is-fixed {
     position: fixed !important;
@@ -363,6 +703,11 @@
     right: auto !important;
     /* Smooth transition */
     transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
+  }
+
+  /* Hide promo container when sidebar is fixed */
+  .blog-sidebar.is-fixed .blog-promo-container {
+    display: none !important;
   }
 
 
@@ -397,6 +742,11 @@
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-right: 4px solid #005CCC;
+  min-height: 300px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .blog-toc-title {
@@ -413,10 +763,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
 }
 
 .blog-toc-item {
   margin: 0;
+      padding: 0 8px;
 }
 
 .blog-toc-link {
@@ -440,6 +795,39 @@
   background: #EFF5FF;
   color: #005CCC;
   font-weight: 600;
+  border-left: 3px solid #005CCC;
+  padding-left: calc(0.75rem - 3px);
+  position: relative;
+}
+
+.blog-toc-link-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #005CCC;
+  border-radius: 0 2px 2px 0;
+}
+
+/* TOC Scrollbar Styling */
+.blog-toc-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.blog-toc-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.blog-toc-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.blog-toc-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Promotional Section */
@@ -789,7 +1177,7 @@
   }
 
   /* Make grid single column on mobile */
-  .section-container.grid {
+  .section-container > .grid {
     grid-template-columns: 1fr !important;
   }
 }
@@ -1015,5 +1403,274 @@
 
   .blog-cta-wrapper .blog-cta-image {
     max-width: 180px;
+  }
+}
+
+/* ========================================
+   KEY TAKEAWAYS SECTION STYLES
+   ======================================== */
+
+.key-takeaways-container {
+  background-color: #EFF5FF;
+  border-left: 4px solid #005CCC;
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin: 32px 0;
+}
+
+.key-takeaways-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #005CCC;
+  margin: 0 0 20px 0;
+  line-height: 1.3;
+}
+
+.key-takeaways-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.key-takeaways-item {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+}
+
+.key-takeaways-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #005CCC;
+  margin: 0 0 8px 0;
+}
+
+.key-takeaways-bold {
+  font-weight: 700;
+  color: #005CCC;
+}
+
+/* Responsive adjustments for Key Takeaways */
+@media (max-width: 768px) {
+  .key-takeaways-container {
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .key-takeaways-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .key-takeaways-item {
+    font-size: 15px;
+  }
+
+  .key-takeaways-heading {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .key-takeaways-container {
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .key-takeaways-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .key-takeaways-item {
+    font-size: 14px;
+    gap: 12px;
+  }
+
+  .key-takeaways-heading {
+    font-size: 15px;
+  }
+}
+
+/* ========================================
+   FAQ SECTION STYLES
+   ======================================== */
+
+.blog-faq-section {
+  margin: 48px 0;
+  padding: 0;
+  position: relative;
+}
+
+.blog-faq-heading {
+  font-size: 32px;
+  font-weight: 700;
+  color: #005CCC;
+  margin: 0 0 32px 0;
+  line-height: 1.3;
+}
+
+.blog-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.blog-faq-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.blog-faq-item:hover {
+  border-color: #005CCC;
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.1);
+}
+
+.blog-faq-item-open {
+  border-color: #005CCC;
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.15);
+}
+
+.blog-faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.blog-faq-question:hover {
+  background-color: #f9fafb;
+}
+
+.blog-faq-question:focus {
+  outline: none;
+  background-color: #f3f6ff;
+}
+
+.blog-faq-question-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex: 1;
+  padding-right: 16px;
+  line-height: 1.5;
+}
+
+.blog-faq-icon {
+  flex-shrink: 0;
+  color: #005CCC;
+  transition: transform 0.3s ease;
+}
+
+.blog-faq-icon-open {
+  transform: rotate(180deg);
+}
+
+.blog-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+  background-color: #f9fafb;
+  will-change: max-height;
+  position: relative;
+}
+
+.blog-faq-answer-open {
+  max-height: 1000px; /* Accommodate longer answers */
+  padding: 0 24px 20px 24px;
+}
+
+.blog-faq-answer-content {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4b5563;
+  padding-top: 4px;
+}
+
+/* Responsive adjustments for FAQ Section */
+@media (max-width: 768px) {
+  .blog-faq-section {
+    margin: 40px 0;
+  }
+
+  .blog-faq-heading {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .blog-faq-question {
+    padding: 18px 20px;
+  }
+
+  .blog-faq-question-text {
+    font-size: 16px;
+  }
+
+  .blog-faq-answer {
+    max-height: 0;
+  }
+
+  .blog-faq-answer-open {
+    max-height: 800px; /* Accommodate longer answers */
+    padding: 0 20px 18px 20px;
+  }
+
+  .blog-faq-answer-content {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  .blog-faq-section {
+    margin: 32px 0;
+  }
+
+  .blog-faq-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .blog-faq-question {
+    padding: 16px 18px;
+  }
+
+  .blog-faq-question-text {
+    font-size: 15px;
+    padding-right: 12px;
+  }
+
+  .blog-faq-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .blog-faq-answer {
+    max-height: 0;
+  }
+
+  .blog-faq-answer-open {
+    max-height: 600px; /* Accommodate longer answers */
+    padding: 0 18px 16px 18px;
+  }
+
+  .blog-faq-answer-content {
+    font-size: 14px;
+    line-height: 1.6;
   }
 }

@@ -4,13 +4,47 @@ const nextConfig = {
   // Remove this line when running dev server, or use conditional export
   // output: 'export', // Commented out for dev server
   images: {
-    unoptimized: true
+    unoptimized: false, // Enable Next.js image optimization
+    formats: ['image/avif', 'image/webp'], // Modern image formats for better performance
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60, // Cache optimized images for 60 seconds
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.astera.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.kindpng.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.youtu.be',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.ctfassets.net', // Contentful images
+      },
+      {
+        protocol: 'https',
+        hostname: '**.contentful.com', // Contentful CDN
+      },
+    ],
   },
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
   reactStrictMode: true,
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     // Fix webpack module resolution issues
     if (!isServer) {
       config.resolve.fallback = {
@@ -18,6 +52,52 @@ const nextConfig = {
         fs: false,
       };
     }
+    
+    // Improve HMR and prevent cache issues in development
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000, // Check for changes every second
+        aggregateTimeout: 300, // Delay before rebuilding
+        ignored: /node_modules/,
+      };
+      
+      // Use memory cache in development to prevent filesystem cache corruption
+      // This prevents "Cannot read properties" and module resolution errors on Windows
+      config.cache = {
+        type: 'memory', // Use memory cache instead of filesystem in dev
+      };
+      
+      // Better error handling for module resolution
+      config.resolve.symlinks = false; // Disable symlinks to prevent resolution issues
+      
+      // Fix vendor chunks resolution issues
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunks
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/]/,
+              priority: 20,
+            },
+          },
+        },
+      };
+    } else {
+      // Production: use filesystem cache for better performance
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+      };
+    }
+    
     return config;
   },
 };

@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { ProductScreenNew } from '@/components/screens/ProductScreen/ProductScreenNew';
 import { getProductPageContent } from '@/lib/contentful/api';
 
@@ -12,20 +11,11 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ searchParams }: ProductPageProps) {
-  // For static export, searchParams may not be available
   // Default to 'reportminer' if searchParams is not provided
   const slug = searchParams ? ((await searchParams).slug || 'reportminer') : 'reportminer';
   
-  return (
-    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>Loading...</div>}>
-      <ProductPageContent slug={slug} />
-    </Suspense>
-  );
-}
-
-async function ProductPageContent({ slug }: { slug: string }) {
   try {
-    // Fetch product page content server-side
+    // Fetch product page content server-side (SSR/ISR)
     const content = await getProductPageContent(slug);
     
     return <ProductScreenNew content={content} />;

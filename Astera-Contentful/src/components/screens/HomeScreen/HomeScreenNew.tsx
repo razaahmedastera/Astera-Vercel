@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import dynamic from 'next/dynamic';
 import type { HomePageContent } from '@/types/contentful';
-import { Awards } from '@/components/ui/Awards';
+import { Awards } from '@/components/ui/Awards/Awards';
 
 // Lazy load Lottie to improve initial page load
 const Lottie = dynamic(
@@ -49,6 +50,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
   useEffect(() => {
     let isMounted = true;
     
+    // Use static Lottie file
     fetch('/lottie/headerv2.json')
       .then((response) => response.json())
       .then((data) => {
@@ -146,12 +148,18 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
               {content.heroSectionDescription}
             </p>
             <div className="hero-section-cta flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-none cursor-pointer transition-all bg-[#005CCC] text-white shadow-[#005CCC]/1 hover:-translate-y-0.3 hover:shadow-xl hover:shadow-[#005CCC]/20 w-full sm:w-auto">
+              <a 
+                href={content.heroSectionPrimaryCtaUrl}
+                className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-none cursor-pointer transition-all bg-[#005CCC] text-white shadow-[#005CCC]/1 hover:-translate-y-0.3 hover:shadow-xl hover:shadow-[#005CCC]/20 w-full sm:w-auto text-center no-underline"
+              >
                 {content.heroSectionPrimaryCta}
-              </button>
-              <button className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-2 border-[#005CCC] cursor-pointer transition-all bg-white text-[#005CCC] hover:border-[#004ba3] hover:text-[#004ba3] w-full sm:w-auto">
+              </a>
+              <a 
+                href={content.heroSectionSecondaryCtaUrl}
+                className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-2 border-[#005CCC] cursor-pointer transition-all bg-white text-[#005CCC] hover:border-[#004ba3] hover:text-[#004ba3] w-full sm:w-auto text-center no-underline"
+              >
                 {content.heroSectionSecondaryCta}
-              </button>
+              </a>
             </div>
           </div>
           <div className="hero-section-animation animate-[fadeInRight_0.6s_ease-out]">
@@ -191,7 +199,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                     id="product-tour-video"
                     className="ai-driven-data-stack-video absolute top-0 left-0 w-full h-full border-none rounded-2xl"
                     src={content.aiStackVideoUrl.replace('watch?v=', 'embed/')}
-                    title="PRODUCT TOUR Astera Data Stack"
+                    title={content.aiStackSectionTitle || 'Product Tour'}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
@@ -203,6 +211,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       )}
 
       {/* Feature Tabs Section */}
+      {content.featureTabs && content.featureTabs.length > 0 && (
       <section id="simplifying-data-management" className="feature-tabs-section simplifying-data-management-section py-12 sm:py-16 lg:py-20" style={{ backgroundColor: '#EFF5FF' }}>
         <div className="feature-tabs-container section-container bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-12 shadow-sm">
           <h2 className="section-title mb-6 sm:mb-8">
@@ -249,11 +258,14 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
             <div className="feature-tabs-visual w-full">
               <div className="feature-tabs-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
                 <div className="relative w-full h-full min-h-[250px] sm:min-h-[300px] lg:min-h-[400px] flex items-center justify-center p-4 sm:p-6">
-                  <img 
+                  <Image 
                     src={tabContent[activeTab].image}
                     alt={tabContent[activeTab].title}
+                    width={800}
+                    height={600}
                     className="w-full h-auto object-contain rounded-lg"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 800px"
                   />
                 </div>
               </div>
@@ -261,8 +273,10 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Metrics Section */}
+      {content.metrics && content.metrics.length > 0 && (
       <section id="achieve-more" className="metrics-section achieve-more-section py-12 sm:py-16 lg:py-20">
         <div className="metrics-container section-container">
           <h2 className="section-title mb-8 sm:mb-10 lg:mb-12">
@@ -281,8 +295,10 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Product Offerings Section */}
+      {content.productOfferings && content.productOfferings.length > 0 && (
       <section id="transform-integrate-scale" className="product-offerings-section transform-integrate-scale-section py-12 sm:py-16 lg:py-24 bg-white">
         <div className="product-offerings-container section-container">
           <h2 className="section-title mb-8 sm:mb-12 lg:mb-16">
@@ -315,11 +331,16 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Awards Section - Global Component */}
-      <Awards title={content.awardsSectionTitle} />
+      <Awards 
+        title={content.awardsSectionTitle} 
+        awards={content.awards} 
+      />
 
       {/* Resources Section */}
+      {content.resources && content.resources.length > 0 && (
       <section id="resources" className="resources-section py-12 sm:py-16 lg:py-28 bg-gradient-to-br from-primary-50 to-white">
         <div className="resources-container section-container">
           <h2 className="section-title mb-8 sm:mb-12 lg:mb-16">
@@ -336,9 +357,22 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                 className="resource-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
               >
                 {/* Top Section - Image */}
-                <div className="resource-image-container relative h-56 bg-gradient-to-br from-[#005CCC] to-[#004ba3] overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#005CCC]/30"></div>
+                <div className="resource-image-container relative h-56 overflow-hidden flex items-center justify-center">
+                  {resource.image ? (
+                    <Image 
+                      src={resource.image} 
+                      alt={resource.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#005CCC] to-[#004ba3]"></div>
+                      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#005CCC]/30"></div>
+                    </>
+                  )}
                 </div>
                 {/* Bottom Section - Content */}
                 <div className="resource-content p-6">
@@ -354,8 +388,10 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Final CTA Section */}
+      {content.finalCtaCards && content.finalCtaCards.length > 0 && (
       <section id="final-cta" className="final-cta-section py-12 sm:py-16 lg:py-28" style={{ backgroundColor: 'transparent', backgroundImage: 'linear-gradient(180deg, #EFF5FF 0%, #FFFFFF 100%)' }}>
         <div className="final-cta-container section-container">
           <h2 className="section-title mb-4 sm:mb-6">
@@ -379,6 +415,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

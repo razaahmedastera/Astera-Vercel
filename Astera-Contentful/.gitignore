@@ -23,12 +23,18 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
-.env.local
-.env
+# .env*.local
+# .env.local
+# .env
+# .env.development
+# .env.production
+# .env.test
 
 # vercel
 .vercel
+
+# scripts folder (contains sensitive Contentful management scripts)
+/scripts/
 
 # typescript
 *.tsbuildinfo
