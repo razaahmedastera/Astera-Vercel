@@ -1528,8 +1528,8 @@ export async function getBlogPostsByAuthor(authorId: string): Promise<BlogPost[]
           if (category) {
             categoryData = {
               id: category.sys.id,
-              name: (category.fields.name as string) || '',
-              slug: (category.fields.slug as string) || '',
+              name: (category.fields.name as unknown as string) || '',
+              slug: (category.fields.slug as unknown as string) || '',
             };
           }
 
