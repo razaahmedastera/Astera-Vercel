@@ -50,7 +50,7 @@ export default function IndustryScreen({ industry }: Props) {
         if (rect.top < window.innerHeight && rect.bottom > 0) {
           section.classList.add('visible');
         }
-      
+      });
       
       if (featuresSection) {
         featuresSection.classList.add('js-enabled');
