@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { IndustryData } from '@/data/industries';
@@ -36,8 +36,6 @@ function getYouTubeEmbedUrl(url: string): string {
 }
 
 export default function IndustryScreen({ industry }: Props) {
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set(['hero']));
-
   // Intersection Observer for scroll animations
   useEffect(() => {
     const sections = document.querySelectorAll('[data-animate-section]');
