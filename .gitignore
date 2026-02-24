@@ -65,3 +65,8 @@ public/static/
 
 # Optional: host-specific files
 *.local
+
+# Old projects - not needed
+Astera-Webpage/
+Astera-Webpage-Dark/
+README.md
