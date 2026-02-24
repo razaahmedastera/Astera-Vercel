@@ -38,6 +38,12 @@ function handleImageError(e: React.SyntheticEvent<HTMLImageElement, Event>) {
   }
 }
 
+function getAuthorSlug(post: BlogPost): string {
+  if (post.author?.slug) return post.author.slug;
+  const name = post.authorName || post.author?.name || 'astera-team';
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 const SOLUTIONS = [
   { label: 'API management', value: 'api-management' },
   { label: 'Data extraction', value: 'data-extraction' },
@@ -220,7 +226,15 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
                   <span className="w-7 h-7 rounded-full bg-[#e8f1ff] text-[#005CCC] flex items-center justify-center font-semibold">
                     {(featured.authorName || 'A').slice(0, 1).toUpperCase()}
                   </span>
-                  {featured.authorName || 'Astera Team'}
+                  <Link
+                    href={`/blog/author/${getAuthorSlug(featured)}`}
+                    className="text-slate-600 hover:text-[#005CCC] transition-colors"
+                    style={{ textDecoration: 'none' }}
+                    onClick={(e) => e.stopPropagation()}
+                    prefetch={true}
+                  >
+                    {featured.authorName || 'Astera Team'}
+                  </Link>
                 </span>
                 <span>•</span>
                 <span>{formatDate(featured.publishedAt)}</span>
@@ -341,7 +355,16 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
                     {post.excerpt}
                   </p>
                   <div className="mt-2 text-xs text-slate-500">
-                    By {post.authorName || 'Astera Team'}
+                    By{' '}
+                    <Link
+                      href={`/blog/author/${getAuthorSlug(post)}`}
+                      className="text-slate-500 hover:text-[#005CCC] transition-colors"
+                      style={{ textDecoration: 'none' }}
+                      onClick={(e) => e.stopPropagation()}
+                      prefetch={true}
+                    >
+                      {post.authorName || 'Astera Team'}
+                    </Link>
                   </div>
                 </div>
               </Link>

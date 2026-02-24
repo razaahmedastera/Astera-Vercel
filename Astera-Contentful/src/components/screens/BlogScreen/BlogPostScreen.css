@@ -123,6 +123,30 @@ article.bg-white > section {
   margin-bottom: 2px;
 }
 
+.blog-author-section-main .blog-author-name-link {
+  text-decoration: none !important;
+  color: #1a1a1a;
+  transition: color 0.2s ease;
+  display: block;
+  cursor: pointer;
+}
+
+.blog-author-section-main .blog-author-name-link:hover {
+  color: #005CCC;
+}
+
+.blog-author-section-main .blog-author-avatar-link {
+  text-decoration: none !important;
+  color: #005CCC;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-author-section-main .blog-author-avatar-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 92, 204, 0.2);
+}
+
 .blog-author-section-main .blog-author-role {
   font-size: 14px;
   color: #6b7280;
@@ -300,6 +324,7 @@ article.bg-white > section {
   margin-top: 40px !important;
   margin-bottom: 20px !important;
   scroll-margin-top: 100px; /* Proper spacing when scrolling to heading */
+  text-decoration: none !important;
 }
 
 /* Heading hierarchy for future use */
@@ -334,6 +359,12 @@ article.bg-white > section {
   word-break: break-all;
   max-width: 100%;
   display: inline-block;
+  color: #003292;
+  text-decoration: underline;
+}
+
+.blog-post-content a:hover {
+  color: #004ba3;
 }
 
 .blog-post-content code,

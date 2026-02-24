@@ -447,9 +447,16 @@ export interface BlogCategory {
 export interface BlogAuthor {
   id: string;
   name: string;
+  slug: string;
   role?: string;
+  jobTitle?: string;
   bio?: string;
+  longBio?: string;
   avatar?: string;
+  featuredImage?: string;
+  socialLinkedin?: string;
+  socialTwitter?: string;
+  socialWebsite?: string;
 }
 
 /**
@@ -505,9 +512,16 @@ export interface BlogAuthorSkeleton extends EntrySkeletonType {
   contentTypeId: 'blogAuthor';
   fields: {
     name: string;
+    slug: string;
     role?: string;
+    jobTitle?: string;
     bio?: string;
+    longBio?: string;
     avatar?: { fields: { file: { url: string } } };
+    featuredImage?: { fields: { file: { url: string } } };
+    socialLinkedin?: string;
+    socialTwitter?: string;
+    socialWebsite?: string;
   };
 }
 
@@ -704,6 +718,12 @@ export interface UseCaseCapability {
   title: string;
   description: string;
   icon: string;
+  iconImage?: string;
+}
+
+export interface UseCaseClientLogo {
+  name: string;
+  image?: string;
 }
 
 export interface UseCaseCaseStudy {
@@ -727,24 +747,43 @@ export interface UseCase {
   title: string;
   subtitle: string;
   heroDescription: string;
-  heroImage?: string; // Hero image URL from Contentful
+  heroImage?: string;
+  heroCtaPrimaryText?: string;
+  heroCtaPrimaryUrl?: string;
+  heroCtaSecondaryText?: string;
+  heroCtaSecondaryUrl?: string;
+  heroBulletPoints?: string[];
   
   // Rich Text Content
-  content?: Document | string; // Rich Text Document or plain string
+  content?: Document | string;
   
   // Stats Section
+  statsSectionBadge?: string;
+  statsSectionTitle?: string;
   stats: UseCaseStat[];
   benefits: string;
   
   // Features Section
+  featuresSectionTitle?: string;
   featuresDescription?: string;
   features: UseCaseFeature[];
   
+  // CTA Banner
+  ctaBannerTitle?: string;
+  ctaBannerButtonText?: string;
+  ctaBannerButtonUrl?: string;
+  
   // How It Works Section
+  howItWorksSectionTitle?: string;
   howItWorks: UseCaseHowItWorks[];
   
   // Capabilities Section
+  capabilitiesSectionTitle?: string;
   capabilities: UseCaseCapability[];
+  
+  // Client Logos Section
+  clientLogosSectionTitle?: string;
+  clientLogos?: UseCaseClientLogo[];
   
   // Integrations
   integrations: string[];
@@ -752,8 +791,15 @@ export interface UseCase {
   // Case Study
   caseStudy?: UseCaseCaseStudy;
   
-  // FAQs
+  // FAQs Section
+  faqsSectionTitle?: string;
   faqs: UseCaseFAQ[];
+  
+  // Contact Form Section
+  contactFormTitle?: string;
+  contactFormSubtitle?: string;
+  contactFormBenefits?: string[];
+  hubspotFormId?: string;
   
   // SEO Fields
   seoTitle?: string;
@@ -783,35 +829,46 @@ export interface UseCaseSummary {
  * Contentful Use Case Skeleton
  */
 export interface UseCaseSkeleton extends EntrySkeletonType {
-  contentTypeId: 'useCase';
+  contentTypeId: '1u9d2q1RLTX2B0YogpSiRj';
   fields: {
     title: string;
     slug: string;
     subtitle: string;
     heroDescription: string;
-    heroImage?: any; // Asset reference
+    heroImage?: any;
+    heroCtaPrimaryText?: string;
+    heroCtaPrimaryUrl?: string;
+    heroCtaSecondaryText?: string;
+    heroCtaSecondaryUrl?: string;
+    heroBulletPoints?: string[];
     
     // Rich Text Content
-    content?: Document; // Rich Text Document
+    content?: Document;
     
     // Stats Section
-    stats?: Array<{
-      value: string;
-      label: string;
-    }>;
+    statsSectionBadge?: string;
+    statsSectionTitle?: string;
+    stats?: Array<{ value: string; label: string }>;
     benefits: string;
     
     // Features Section
+    featuresSectionTitle?: string;
     featuresDescription?: string;
     features?: Array<{
       title: string;
       description: string;
       icon?: string;
-      iconImage?: any; // Asset reference
-      image?: any; // Asset reference
+      iconImage?: any;
+      image?: any;
     }>;
     
+    // CTA Banner
+    ctaBannerTitle?: string;
+    ctaBannerButtonText?: string;
+    ctaBannerButtonUrl?: string;
+    
     // How It Works Section
+    howItWorksSectionTitle?: string;
     howItWorks?: Array<{
       step: number;
       title: string;
@@ -819,10 +876,19 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
     }>;
     
     // Capabilities Section
+    capabilitiesSectionTitle?: string;
     capabilities?: Array<{
       title: string;
       description: string;
       icon: string;
+      iconImage?: string;
+    }>;
+    
+    // Client Logos Section
+    clientLogosSectionTitle?: string;
+    clientLogos?: Array<{
+      name: string;
+      image?: string;
     }>;
     
     // Integrations
@@ -836,16 +902,20 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
       link: string;
     };
     
-    // FAQs
-    faqs?: Array<{
-      question: string;
-      answer: string;
-    }>;
+    // FAQs Section
+    faqsSectionTitle?: string;
+    faqs?: Array<{ question: string; answer: string }>;
+    
+    // Contact Form Section
+    contactFormTitle?: string;
+    contactFormSubtitle?: string;
+    contactFormBenefits?: string[];
+    hubspotFormId?: string;
     
     // Listing fields
-    description?: string; // Short description for listing
-    icon?: string; // Icon type for listing
-    iconImage?: any; // Icon image for listing
+    description?: string;
+    icon?: string;
+    iconImage?: any;
     category?: string;
     featured?: boolean;
     
@@ -853,6 +923,118 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
     seoTitle?: string;
     seoDescription?: string;
     seoKeywords?: string;
-    ogImage?: any; // Asset reference
+    ogImage?: any;
+  };
+}
+
+/**
+ * =============================================
+ * VIDEO PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface PlaylistVideoItem {
+  videoId: string;
+  title: string;
+  thumbnail?: string;
+}
+
+export interface VideoPlaylist {
+  title: string;
+  playlistId: string;
+  videos?: PlaylistVideoItem[];
+}
+
+export interface VideoPageContent {
+  id: string;
+  pageTitle: string;
+  pageSubtitle?: string;
+  featuredVideoUrl?: string;
+  featuredVideoTitle?: string;
+  featuredVideoDescription?: string;
+  socialFacebook?: string;
+  socialTwitter?: string;
+  socialLinkedin?: string;
+  playlists: VideoPlaylist[];
+}
+
+export interface VideoPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'videoPage';
+  fields: {
+    pageTitle: string;
+    pageSubtitle?: string;
+    featuredVideoUrl?: string;
+    featuredVideoTitle?: string;
+    featuredVideoDescription?: string;
+    socialFacebook?: string;
+    socialTwitter?: string;
+    socialLinkedin?: string;
+    playlists?: VideoPlaylist[];
+  };
+}
+
+/**
+ * =============================================
+ * WEBINAR CONTENT TYPES
+ * =============================================
+ */
+
+export interface WebinarSpeaker {
+  name: string;
+  title: string;
+  bio?: string;
+  image?: string;
+}
+
+export interface WebinarBadge {
+  name: string;
+  image?: string;
+}
+
+export interface Webinar {
+  id: string;
+  title: string;
+  slug: string;
+  subtitle?: string;
+  description?: string;
+  featuredImage?: string;
+  category?: string;
+  webinarDate: string;
+  timezone?: string;
+  isCompleted: boolean;
+  hubspotFormId?: string;
+  keyTakeaways?: string[];
+  aboutWebinar?: any;
+  bulletPoints?: string[];
+  recordingUrl?: string;
+  recordingSummary?: string;
+  speakers?: WebinarSpeaker[];
+  badges?: WebinarBadge[];
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface WebinarSkeleton extends EntrySkeletonType {
+  contentTypeId: 'webinar';
+  fields: {
+    title: string;
+    slug: string;
+    subtitle?: string;
+    description?: string;
+    featuredImage?: any;
+    category?: string;
+    webinarDate: string;
+    timezone?: string;
+    isCompleted: boolean;
+    hubspotFormId?: string;
+    keyTakeaways?: string[];
+    aboutWebinar?: any;
+    bulletPoints?: string[];
+    recordingUrl?: string;
+    recordingSummary?: string;
+    speakers?: WebinarSpeaker[];
+    badges?: WebinarBadge[];
+    seoTitle?: string;
+    seoDescription?: string;
   };
 }

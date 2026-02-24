@@ -8,6 +8,7 @@ import type {
   ProductPageSummary,
   BlogPost,
   BlogCategory,
+  BlogAuthor,
   BlogPostSkeleton,
   BlogCategorySkeleton,
   BlogAuthorSkeleton,
@@ -17,7 +18,10 @@ import type {
   IndustryFeature,
   UseCase,
   UseCaseSkeleton,
-  UseCaseSummary
+  UseCaseSummary,
+  Webinar,
+  WebinarSkeleton,
+  WebinarSpeaker,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -380,7 +384,9 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
             authorData = {
               id: author.sys.id,
               name: author.fields.name || '',
+              slug: (author.fields as any).slug || '',
               role: author.fields.role,
+              jobTitle: (author.fields as any).jobTitle,
               bio: author.fields.bio,
               avatar: avatarUrl 
                 ? (avatarUrl.startsWith('//') 
@@ -529,7 +535,9 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
           authorData = {
             id: author.sys.id,
             name: author.fields.name || '',
+            slug: (author.fields as any).slug || '',
             role: author.fields.role,
+            jobTitle: (author.fields as any).jobTitle,
             bio: author.fields.bio,
             avatar: (() => {
               const avatarField = author.fields.avatar as any;
@@ -677,29 +685,34 @@ function extractAssetUrl(asset: any, includes?: any): string {
   
   // If it's already a string URL, return it
   if (typeof asset === 'string') {
-    return asset;
+    return asset.startsWith('//') ? `https:${asset}` : asset;
   }
   
   // If it's a link object with sys.id, try to resolve from includes
-  if (asset.sys?.id && asset.sys?.type === 'Link' && includes?.Asset) {
+  if (asset.sys?.id && (asset.sys?.type === 'Link' || asset.sys?.linkType === 'Asset') && includes?.Asset) {
     const resolvedAsset = includes.Asset.find((a: any) => a.sys.id === asset.sys.id);
     if (resolvedAsset) {
       return extractAssetUrl(resolvedAsset);
     }
   }
   
+  // If it's a resolved Asset object (sys.type === 'Asset'), extract URL
+  if (asset.sys?.type === 'Asset' && asset.fields?.file?.url) {
+    const url = asset.fields.file.url;
+    if (url.startsWith('//')) return `https:${url}`;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return `https:${url}`;
+  }
+
   // If it's an Asset object, extract the URL from fields.file.url
   if (asset.fields?.file?.url) {
     const url = asset.fields.file.url;
-    // Handle Contentful URLs that start with // (protocol-relative)
     if (url.startsWith('//')) {
       return `https:${url}`;
     }
-    // Handle URLs that already have protocol
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    // Default to https
     return `https:${url}`;
   }
   
@@ -721,6 +734,68 @@ function extractAssetUrl(asset: any, includes?: any): string {
   }
   
   return '';
+}
+
+function parseSpeakers(speakerRefs: any, speakersJson: any, includes?: any): WebinarSpeaker[] | undefined {
+  // Prefer linked Speaker entries (speakerRefs)
+  if (speakerRefs && Array.isArray(speakerRefs) && speakerRefs.length > 0) {
+    const resolved: WebinarSpeaker[] = [];
+    for (const ref of speakerRefs) {
+      // Resolved entry (CDA auto-resolves links)
+      if (ref.fields) {
+        const imgUrl = ref.fields.image ? extractAssetUrl(ref.fields.image, includes) : undefined;
+        resolved.push({
+          name: ref.fields.name || '',
+          title: ref.fields.title || '',
+          bio: ref.fields.bio || undefined,
+          image: imgUrl || undefined,
+        });
+      } else if (ref.sys?.id && includes?.Entry) {
+        // Unresolved link — look up in includes
+        const entry = includes.Entry.find((e: any) => e.sys.id === ref.sys.id);
+        if (entry?.fields) {
+          const imgUrl = entry.fields.image ? extractAssetUrl(entry.fields.image, includes) : undefined;
+          resolved.push({
+            name: entry.fields.name || '',
+            title: entry.fields.title || '',
+            bio: entry.fields.bio || undefined,
+            image: imgUrl || undefined,
+          });
+        }
+      }
+    }
+    if (resolved.length > 0) return resolved;
+  }
+
+  // Fallback: old JSON speakers field
+  let speakers = speakersJson;
+  if (!speakers) return undefined;
+  if (!Array.isArray(speakers) && typeof speakers === 'object') {
+    const keys = Object.keys(speakers);
+    if (keys.length === 1 && Array.isArray(speakers[keys[0]])) {
+      speakers = speakers[keys[0]];
+    }
+  }
+  if (!Array.isArray(speakers)) return undefined;
+
+  return speakers.map((s: any) => {
+    let imageUrl: string | undefined;
+    const imgField = s.image || s.imageUrl || s.photo;
+    if (imgField) {
+      if (typeof imgField === 'string' && imgField.length > 0) {
+        imageUrl = imgField.startsWith('//') ? `https:${imgField}` : imgField;
+      } else {
+        const resolved = extractAssetUrl(imgField, includes);
+        if (resolved) imageUrl = resolved;
+      }
+    }
+    return {
+      name: s.name || '',
+      title: s.title || s.role || '',
+      bio: s.bio || s.description || undefined,
+      image: imageUrl || undefined,
+    };
+  });
 }
 
 /**
@@ -1152,9 +1227,9 @@ export async function getAllUseCases(): Promise<UseCaseSummary[]> {
     async () => {
       try {
         const response = await contentfulClient.getEntries({
-          content_type: 'useCase',
+          content_type: '1u9d2q1RLTX2B0YogpSiRj',
           order: ['-fields.featured', 'fields.title'],
-          include: 2, // Include linked assets
+          include: 2,
         }) as any;
 
         if (!response.items || response.items.length === 0) {
@@ -1201,10 +1276,10 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
     async () => {
       try {
         const response = await contentfulClient.getEntries({
-          content_type: 'useCase',
+          content_type: '1u9d2q1RLTX2B0YogpSiRj',
           'fields.slug': slug,
           limit: 1,
-          include: 2, // Include linked assets
+          include: 2,
         }) as any;
 
         if (response.items.length === 0) {
@@ -1221,15 +1296,20 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
           subtitle: fields.subtitle || '',
           heroDescription: fields.heroDescription || '',
           heroImage: fields.heroImage ? extractAssetUrl(fields.heroImage, response.includes) : undefined,
+          heroCtaPrimaryText: fields.heroCtaPrimaryText || undefined,
+          heroCtaPrimaryUrl: fields.heroCtaPrimaryUrl || undefined,
+          heroCtaSecondaryText: fields.heroCtaSecondaryText || undefined,
+          heroCtaSecondaryUrl: fields.heroCtaSecondaryUrl || undefined,
+          heroBulletPoints: fields.heroBulletPoints || undefined,
           
-          // Rich Text Content
           content: fields.content || undefined,
           
-          // Stats Section
+          statsSectionBadge: fields.statsSectionBadge || undefined,
+          statsSectionTitle: fields.statsSectionTitle || undefined,
           stats: fields.stats || [],
           benefits: fields.benefits || '',
           
-          // Features Section
+          featuresSectionTitle: fields.featuresSectionTitle || undefined,
           featuresDescription: fields.featuresDescription || undefined,
           features: (fields.features || []).map((feature: any) => ({
             title: feature.title || '',
@@ -1239,16 +1319,26 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
             image: feature.image ? extractAssetUrl(feature.image, response.includes) : undefined,
           })),
           
-          // How It Works Section
+          ctaBannerTitle: fields.ctaBannerTitle || undefined,
+          ctaBannerButtonText: fields.ctaBannerButtonText || undefined,
+          ctaBannerButtonUrl: fields.ctaBannerButtonUrl || undefined,
+          
+          howItWorksSectionTitle: fields.howItWorksSectionTitle || undefined,
           howItWorks: fields.howItWorks || [],
           
-          // Capabilities Section
-          capabilities: fields.capabilities || [],
+          capabilitiesSectionTitle: fields.capabilitiesSectionTitle || undefined,
+          capabilities: (fields.capabilities || []).map((cap: any) => ({
+            title: cap.title || '',
+            description: cap.description || '',
+            icon: cap.icon || '',
+            iconImage: cap.iconImage ? extractAssetUrl(cap.iconImage, response.includes) : undefined,
+          })),
           
-          // Integrations
+          clientLogosSectionTitle: fields.clientLogosSectionTitle || undefined,
+          clientLogos: fields.clientLogos || undefined,
+          
           integrations: fields.integrations || [],
           
-          // Case Study
           caseStudy: fields.caseStudy ? {
             quote: fields.caseStudy.quote || '',
             author: fields.caseStudy.author || '',
@@ -1256,10 +1346,14 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
             link: fields.caseStudy.link || '#',
           } : undefined,
           
-          // FAQs
+          faqsSectionTitle: fields.faqsSectionTitle || undefined,
           faqs: fields.faqs || [],
           
-          // SEO Fields
+          contactFormTitle: fields.contactFormTitle || undefined,
+          contactFormSubtitle: fields.contactFormSubtitle || undefined,
+          contactFormBenefits: fields.contactFormBenefits || undefined,
+          hubspotFormId: fields.hubspotFormId || undefined,
+          
           seoTitle: fields.seoTitle || undefined,
           seoDescription: fields.seoDescription || undefined,
           seoKeywords: fields.seoKeywords || undefined,
@@ -1281,6 +1375,368 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
     {
       revalidate: 3600,
       tags: ['use-cases', 'use-case', `use-case-${slug}`],
+    }
+  )();
+}
+
+// ─── Author API Functions ───
+
+/**
+ * Helper to extract author data from a Contentful entry
+ */
+function mapAuthorEntry(entry: any): BlogAuthor {
+  const fields = entry.fields || {};
+  const avatarField = fields.avatar as any;
+  const avatarUrl = avatarField?.fields?.file?.url;
+  const featuredImageField = fields.featuredImage as any;
+  const featuredImageUrl = featuredImageField?.fields?.file?.url;
+
+  return {
+    id: entry.sys.id,
+    name: fields.name || '',
+    slug: fields.slug || '',
+    role: fields.role || undefined,
+    jobTitle: fields.jobTitle || undefined,
+    bio: fields.bio || undefined,
+    longBio: fields.longBio || undefined,
+    avatar: avatarUrl
+      ? (avatarUrl.startsWith('//') ? `https:${avatarUrl}` : avatarUrl)
+      : undefined,
+    featuredImage: featuredImageUrl
+      ? (featuredImageUrl.startsWith('//') ? `https:${featuredImageUrl}` : featuredImageUrl)
+      : undefined,
+    socialLinkedin: fields.socialLinkedin || undefined,
+    socialTwitter: fields.socialTwitter || undefined,
+    socialWebsite: fields.socialWebsite || undefined,
+  };
+}
+
+/**
+ * Fetch all blog authors from Contentful
+ * @returns Array of blog authors
+ */
+export async function getAllAuthors(): Promise<BlogAuthor[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'blogAuthor',
+          order: ['fields.name'],
+          include: 2,
+        }) as any;
+
+        return response.items.map(mapAuthorEntry);
+      } catch (error) {
+        console.error('Error fetching authors:', error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] blogAuthor content type not found.');
+          return [];
+        }
+        return [];
+      }
+    },
+    ['authors'],
+    {
+      revalidate: 3600,
+      tags: ['authors', 'blogAuthor'],
+    }
+  )();
+}
+
+/**
+ * Fetch a single author by slug
+ * @param slug - The author slug
+ * @returns Author or null if not found
+ */
+export async function getAuthorBySlug(slug: string): Promise<BlogAuthor | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'blogAuthor',
+          'fields.slug': slug,
+          limit: 1,
+          include: 2,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+        return mapAuthorEntry(response.items[0]);
+      } catch (error) {
+        console.error(`Error fetching author with slug "${slug}":`, error);
+        return null;
+      }
+    },
+    [`author-${slug}`],
+    {
+      revalidate: 3600,
+      tags: ['authors', 'blogAuthor', `author-${slug}`],
+    }
+  )();
+}
+
+/**
+ * Fetch all blog posts by a specific author ID
+ * @param authorId - The Contentful entry ID of the author
+ * @returns Array of blog posts by that author
+ */
+export async function getBlogPostsByAuthor(authorId: string): Promise<BlogPost[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'blog',
+          'fields.author.sys.id': authorId,
+          order: ['-sys.createdAt'],
+          include: 10,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+          const category = fields.category as Entry<BlogCategorySkeleton> | undefined;
+          const author = fields.author as Entry<BlogAuthorSkeleton> | undefined;
+
+          // Extract content
+          let content: any = null;
+          let excerpt = '';
+
+          if (fields.description) {
+            if (typeof fields.description === 'object' && fields.description.nodeType === 'document') {
+              content = fields.description;
+              excerpt = ensureStringExcerpt(fields.excerpt || fields.summary || '');
+            } else if (typeof fields.description === 'string') {
+              excerpt = ensureStringExcerpt(fields.description);
+              content = fields.content || fields.body || fields.richText;
+            }
+          }
+
+          if (!content) {
+            content = fields.content || fields.body || fields.richText || fields.postContent;
+          }
+
+          // Extract featured image URL
+          let featuredImageUrl = '';
+          if (fields.featuredImage) {
+            const featuredImage = fields.featuredImage as any;
+            if (featuredImage.fields?.file?.url) {
+              const url = featuredImage.fields.file.url;
+              featuredImageUrl = url.startsWith('//') ? `https:${url}` : url;
+            }
+          }
+
+          // Extract category info
+          let categoryData: BlogCategory | undefined;
+          if (category) {
+            categoryData = {
+              id: category.sys.id,
+              name: (category.fields.name as string) || '',
+              slug: (category.fields.slug as string) || '',
+            };
+          }
+
+          // Extract author info
+          let authorData: any = undefined;
+          if (author) {
+            const avatarField = (author.fields as any).avatar as any;
+            const avatarUrl = avatarField?.fields?.file?.url;
+            authorData = {
+              id: author.sys.id,
+              name: author.fields.name || '',
+              slug: (author.fields as any).slug || '',
+              role: author.fields.role,
+              jobTitle: (author.fields as any).jobTitle,
+              bio: author.fields.bio,
+              avatar: avatarUrl
+                ? (avatarUrl.startsWith('//') ? `https:${avatarUrl}` : avatarUrl)
+                : undefined,
+            };
+          }
+
+          return {
+            id: entry.sys.id,
+            title: fields.title || 'Untitled',
+            slug: fields.slug || '',
+            excerpt: excerpt || extractTextFromRichText(content).substring(0, 200),
+            content: content,
+            featuredImage: featuredImageUrl,
+            category: categoryData!,
+            author: authorData,
+            authorName: authorData?.name || fields.authorName || 'Unknown Author',
+            tags: fields.tags || [],
+            keyPoints: fields.keyPoints || [],
+            publishedAt: fields.publishedAt || entry.sys.createdAt,
+            createdAt: entry.sys.createdAt,
+            updatedAt: entry.sys.updatedAt,
+          } as BlogPost;
+        });
+      } catch (error) {
+        console.error(`Error fetching posts for author ${authorId}:`, error);
+        return [];
+      }
+    },
+    [`author-posts-${authorId}`],
+    {
+      revalidate: 3600,
+      tags: ['blog-posts', 'blog', `author-${authorId}`],
+    }
+  )();
+}
+
+// ─── Video Page API Functions ───
+
+import type { VideoPageContent } from '@/types/contentful';
+
+/**
+ * Fetch video page content from Contentful
+ */
+export async function getVideoPageContent(): Promise<VideoPageContent | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'videoPage',
+          limit: 1,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+
+        return {
+          id: entry.sys.id,
+          pageTitle: fields.pageTitle || 'Videos',
+          pageSubtitle: fields.pageSubtitle || undefined,
+          featuredVideoUrl: fields.featuredVideoUrl || undefined,
+          featuredVideoTitle: fields.featuredVideoTitle || undefined,
+          featuredVideoDescription: fields.featuredVideoDescription || undefined,
+          socialFacebook: fields.socialFacebook || undefined,
+          socialTwitter: fields.socialTwitter || undefined,
+          socialLinkedin: fields.socialLinkedin || undefined,
+          playlists: fields.playlists || [],
+        } as VideoPageContent;
+      } catch (error) {
+        console.error('Error fetching video page content:', error);
+        return null;
+      }
+    },
+    ['video-page'],
+    {
+      revalidate: 3600,
+      tags: ['video-page', 'videoPage'],
+    }
+  )();
+}
+
+/**
+ * =============================================
+ * WEBINAR FUNCTIONS
+ * =============================================
+ */
+
+export async function getAllWebinars(): Promise<Webinar[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'webinar',
+          order: ['-fields.webinarDate'],
+          limit: 100,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+          const featuredImage = fields.featuredImage
+            ? extractAssetUrl(fields.featuredImage, response.includes)
+            : undefined;
+
+          const speakers = parseSpeakers(fields.speakerRefs, fields.speakers, response.includes);
+
+          return {
+            id: entry.sys.id,
+            title: fields.title || '',
+            slug: fields.slug || '',
+            subtitle: fields.subtitle || undefined,
+            description: fields.description || undefined,
+            featuredImage,
+            category: fields.category || undefined,
+            webinarDate: fields.webinarDate || '',
+            timezone: fields.timezone || undefined,
+            isCompleted: fields.isCompleted ?? false,
+            hubspotFormId: fields.hubspotFormId || undefined,
+            keyTakeaways: fields.keyTakeaways || undefined,
+            bulletPoints: fields.bulletPoints || undefined,
+            recordingUrl: fields.recordingUrl || undefined,
+            recordingSummary: fields.recordingSummary || undefined,
+            speakers,
+            badges: fields.badges || undefined,
+            seoTitle: fields.seoTitle || undefined,
+            seoDescription: fields.seoDescription || undefined,
+          } as Webinar;
+        });
+      } catch (error) {
+        console.error('Error fetching webinars:', error);
+        return [];
+      }
+    },
+    ['webinars-all'],
+    {
+      revalidate: 3600,
+      tags: ['webinars', 'webinar'],
+    }
+  )();
+}
+
+export async function getWebinarBySlug(slug: string): Promise<Webinar | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'webinar',
+          'fields.slug': slug,
+          limit: 1,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+        const featuredImage = fields.featuredImage
+          ? extractAssetUrl(fields.featuredImage, response.includes)
+          : undefined;
+
+        const speakers = parseSpeakers(fields.speakerRefs, fields.speakers, response.includes);
+
+        return {
+          id: entry.sys.id,
+          title: fields.title || '',
+          slug: fields.slug || '',
+          subtitle: fields.subtitle || undefined,
+          description: fields.description || undefined,
+          featuredImage,
+          category: fields.category || undefined,
+          webinarDate: fields.webinarDate || '',
+          timezone: fields.timezone || undefined,
+          isCompleted: fields.isCompleted ?? false,
+          hubspotFormId: fields.hubspotFormId || undefined,
+          keyTakeaways: fields.keyTakeaways || undefined,
+          aboutWebinar: fields.aboutWebinar || undefined,
+          bulletPoints: fields.bulletPoints || undefined,
+          recordingUrl: fields.recordingUrl || undefined,
+          recordingSummary: fields.recordingSummary || undefined,
+          speakers,
+          badges: fields.badges || undefined,
+          seoTitle: fields.seoTitle || undefined,
+          seoDescription: fields.seoDescription || undefined,
+        } as Webinar;
+      } catch (error) {
+        console.error('Error fetching webinar by slug:', error);
+        return null;
+      }
+    },
+    [`webinar-${slug}`],
+    {
+      revalidate: 3600,
+      tags: ['webinars', 'webinar', `webinar-${slug}`],
     }
   )();
 }

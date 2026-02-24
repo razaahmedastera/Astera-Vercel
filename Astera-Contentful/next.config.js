@@ -38,6 +38,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.contentful.com', // Contentful CDN
       },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com', // YouTube thumbnails
+      },
     ],
   },
   compress: true,

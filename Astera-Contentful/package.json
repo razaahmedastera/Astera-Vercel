@@ -17,7 +17,10 @@
     "setup:product-fields": "tsx scripts/add-product-page-fields.ts",
     "setup:dynamic-fields": "tsx scripts/add-dynamic-fields.ts",
     "upload:images": "tsx scripts/upload-placeholder-images.ts",
-    "setup:all": "tsx scripts/add-dynamic-fields.ts && tsx scripts/upload-placeholder-images.ts"
+    "setup:all": "tsx scripts/add-dynamic-fields.ts && tsx scripts/upload-placeholder-images.ts",
+    "setup:authors": "tsx scripts/setup-author-fields.ts",
+    "setup:usecase-fields": "tsx scripts/add-usecase-dynamic-fields.ts",
+    "setup:video-page": "tsx scripts/setup-video-page.ts"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.22.11",

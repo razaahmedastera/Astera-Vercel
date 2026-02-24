@@ -424,3 +424,11 @@
     padding: 20px;
   }
 }
+
+/* No results state */
+.use-case-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-body);
+  font-size: 18px;
+}

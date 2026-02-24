@@ -87,65 +87,140 @@
 /* Hero Section */
 .use-case-detail-hero {
   padding: 100px 0 80px;
-  background: linear-gradient(180deg, #f4f7ff 0%, #ffffff 100%);
+  background: #eef2ff;
 }
 
 .use-case-detail-hero-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 48px;
   align-items: center;
 }
 
 .use-case-detail-hero-text {
-  max-width: 600px;
+  max-width: 560px;
 }
 
 .use-case-detail-hero-title {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 20px;
-  line-height: 1.2;
+  font-size: 33px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 24px;
+  line-height: 1.25;
 }
 
-.use-case-detail-hero-subtitle {
-  font-size: clamp(18px, 2.5vw, 22px);
-  color: var(--text-body);
-  line-height: 1.6;
-  margin-bottom: 32px;
+.use-case-detail-hero-title strong,
+.use-case-detail-hero-title b {
+  font-weight: 700;
+  font-style: italic;
+}
+
+.use-case-detail-hero-description {
+  font-size: clamp(15px, 2vw, 17px);
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.use-case-detail-hero-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.use-case-detail-hero-bullet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #1e293b;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.use-case-hero-check {
+  flex-shrink: 0;
 }
 
 .use-case-detail-hero-cta {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
+}
+
+.use-case-hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  background: #005CCC;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 2px solid #005CCC;
+}
+
+.use-case-hero-btn-primary:hover {
+  background: #004ba3;
+  border-color: #004ba3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.3);
+}
+
+.use-case-hero-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  background: transparent;
+  color: #005CCC;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 2px solid #005CCC;
+}
+
+.use-case-hero-btn-secondary:hover {
+  background: #005CCC;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.3);
 }
 
 .use-case-detail-hero-visual {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .use-case-detail-hero-image {
   width: 100%;
-  max-width: 600px;
+  max-width: 620px;
   height: auto;
-  border-radius: 16px;
+  border-radius: 14px;
   object-fit: cover;
+  box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.1);
 }
 
 .use-case-detail-hero-diagram {
   width: 100%;
-  max-width: 500px;
-  height: 300px;
-  background: linear-gradient(135deg, #EFF5FF 0%, #d3e7ff 100%);
-  border-radius: 16px;
+  max-width: 520px;
+  height: 320px;
+  background: #ffffff;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px;
+  box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.1);
 }
 
 .workflow-diagram {
@@ -560,6 +635,20 @@
   border: 2px solid #005CCC;
 }
 
+.capability-icon-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+}
+
+.client-logo-img {
+  max-width: 150px;
+  height: auto;
+  object-fit: contain;
+}
+
 .use-case-detail-capability-title {
   font-size: clamp(18px, 2vw, 20px);
   font-weight: 600;
@@ -915,6 +1004,14 @@
     gap: 40px;
   }
 
+  .use-case-detail-hero-visual {
+    justify-content: center;
+  }
+
+  .use-case-detail-hero-image {
+    max-width: 100%;
+  }
+
   .use-case-detail-feature-item {
     grid-template-columns: 1fr;
   }
@@ -935,7 +1032,11 @@
 
 @media (max-width: 768px) {
   .use-case-detail-hero {
-    padding: 80px 0 60px;
+    padding: 80px 0 48px;
+  }
+
+  .use-case-detail-hero-title {
+    font-size: 26px;
   }
 
   .use-case-detail-stats,
@@ -979,9 +1080,10 @@
     flex-direction: column;
   }
 
-  .use-case-detail-hero-cta .btn-primary,
-  .use-case-detail-hero-cta .btn-secondary {
+  .use-case-hero-btn-primary,
+  .use-case-hero-btn-secondary {
     width: 100%;
+    text-align: center;
   }
 
   .use-case-detail-feature-item {

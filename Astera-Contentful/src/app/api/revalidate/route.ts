@@ -81,14 +81,29 @@ export async function POST(request: NextRequest) {
       revalidateTag('industries');
       revalidateTag('industry');
       revalidatePath('/industry-solutions/[slug]', 'page');
-    } else if (contentType === 'useCase') {
+    } else if (contentType === '1u9d2q1RLTX2B0YogpSiRj') {
       // Use case changed - revalidate cache tags and paths
       revalidateTag('use-cases');
       revalidateTag('use-case');
       revalidatePath('/use-cases', 'page');
       revalidatePath('/use-cases/[slug]', 'page');
+    } else if (contentType === 'blogAuthor') {
+      revalidateTag('authors');
+      revalidateTag('blogAuthor');
+      revalidateTag('blog-posts');
+      revalidatePath('/blog/author/[slug]', 'page');
+      revalidatePath('/blog', 'page');
+      revalidatePath('/blog/[slug]', 'page');
+    } else if (contentType === 'videoPage') {
+      revalidateTag('video-page');
+      revalidateTag('videoPage');
+      revalidatePath('/videos', 'page');
+    } else if (contentType === 'webinar' || contentType === 'speaker') {
+      revalidateTag('webinars');
+      revalidateTag('webinar');
+      revalidatePath('/webinars', 'page');
+      revalidatePath('/webinars/[slug]', 'page');
     } else {
-      // Unknown content type or no contentType provided - refresh everything (safe fallback)
       console.warn('[Revalidate] Unknown content type or missing contentType, revalidating all pages');
       revalidateTag('home-page');
       revalidateTag('product-pages');
@@ -96,15 +111,24 @@ export async function POST(request: NextRequest) {
       revalidateTag('ebooks');
       revalidateTag('industries');
       revalidateTag('use-cases');
+      revalidateTag('authors');
+      revalidateTag('blogAuthor');
+      revalidateTag('video-page');
+      revalidateTag('webinars');
+      revalidateTag('webinar');
       revalidatePath('/', 'layout');
       revalidatePath('/product', 'layout');
       revalidatePath('/blog', 'layout');
       revalidatePath('/blog/[slug]', 'page');
+      revalidatePath('/blog/author/[slug]', 'page');
       revalidatePath('/ebook', 'page');
       revalidatePath('/ebook/[slug]', 'page');
       revalidatePath('/industry-solutions/[slug]', 'page');
       revalidatePath('/use-cases', 'page');
       revalidatePath('/use-cases/[slug]', 'page');
+      revalidatePath('/videos', 'page');
+      revalidatePath('/webinars', 'page');
+      revalidatePath('/webinars/[slug]', 'page');
     }
 
     return NextResponse.json({
@@ -141,24 +165,31 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Revalidate all cache tags
     revalidateTag('home-page');
     revalidateTag('product-pages');
     revalidateTag('blog-posts');
     revalidateTag('ebooks');
     revalidateTag('industries');
     revalidateTag('use-cases');
+    revalidateTag('authors');
+    revalidateTag('blogAuthor');
+    revalidateTag('video-page');
+    revalidateTag('webinars');
+    revalidateTag('webinar');
     
-    // Revalidate all paths
     revalidatePath('/', 'layout');
     revalidatePath('/product', 'layout');
     revalidatePath('/blog', 'layout');
     revalidatePath('/blog/[slug]', 'page');
+    revalidatePath('/blog/author/[slug]', 'page');
     revalidatePath('/ebook', 'page');
     revalidatePath('/ebook/[slug]', 'page');
     revalidatePath('/industry-solutions/[slug]', 'page');
     revalidatePath('/use-cases', 'page');
     revalidatePath('/use-cases/[slug]', 'page');
+    revalidatePath('/videos', 'page');
+    revalidatePath('/webinars', 'page');
+    revalidatePath('/webinars/[slug]', 'page');
 
     return NextResponse.json({
       revalidated: true,

@@ -217,7 +217,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
             >
               <button
                 className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                  isResourcesOpen || pathname === '/blog' || pathname?.startsWith('/blog/') || pathname === '/ebook' || pathname?.startsWith('/ebook/')
+                  isResourcesOpen || pathname === '/blog' || pathname?.startsWith('/blog/') || pathname === '/ebook' || pathname?.startsWith('/ebook/') || pathname === '/videos' || pathname === '/webinars' || pathname?.startsWith('/webinars/')
                     ? 'text-[#005CCC] bg-[#EFF5FF]' 
                     : 'text-gray-600 hover:text-[#005CCC]'
                 } px-3 py-2 rounded-md`}
@@ -267,6 +267,30 @@ export function Header({ products, industries = [] }: HeaderProps) {
                     onClick={() => setIsResourcesOpen(false)}
                   >
                     eBook
+                  </Link>
+                  <Link 
+                    href="/videos" 
+                    prefetch={true}
+                    className={`block px-4 py-2 text-sm transition-colors ${
+                      pathname === '/videos'
+                        ? 'text-[#005CCC] bg-[#EFF5FF]' 
+                        : 'text-gray-600 hover:text-[#005CCC] hover:bg-gray-50'
+                    }`}
+                    onClick={() => setIsResourcesOpen(false)}
+                  >
+                    Videos
+                  </Link>
+                  <Link 
+                    href="/webinars" 
+                    prefetch={true}
+                    className={`block px-4 py-2 text-sm transition-colors ${
+                      pathname === '/webinars' || pathname?.startsWith('/webinars/')
+                        ? 'text-[#005CCC] bg-[#EFF5FF]' 
+                        : 'text-gray-600 hover:text-[#005CCC] hover:bg-gray-50'
+                    }`}
+                    onClick={() => setIsResourcesOpen(false)}
+                  >
+                    Webinars
                   </Link>
                   </div>
                 </div>

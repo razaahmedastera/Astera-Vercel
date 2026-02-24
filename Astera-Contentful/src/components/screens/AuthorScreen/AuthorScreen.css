@@ -1,0 +1,465 @@
+/* ========================================
+   AUTHOR PAGE STYLES
+   Clean, modern SASS design following site theme
+   ======================================== */
+
+/* Hero Section */
+.author-hero {
+  background: linear-gradient(135deg, #f4f7ff 0%, #e8f0fe 50%, #f9fbff 100%);
+  padding: 80px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.author-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 92, 204, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.author-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.author-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.author-avatar-large {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 8px 32px rgba(0, 92, 204, 0.15);
+}
+
+.author-avatar-placeholder {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #005CCC 0%, #0070F3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 700;
+  color: white;
+  border: 4px solid white;
+  box-shadow: 0 8px 32px rgba(0, 92, 204, 0.15);
+}
+
+.author-info {
+  flex: 1;
+}
+
+.author-name {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.author-job-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #005CCC;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.author-bio {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0 0 24px;
+  max-width: 600px;
+}
+
+.author-social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.author-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: white;
+  color: #4b5563;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.author-social-link:hover {
+  background: #005CCC;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.25);
+}
+
+.author-social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Long Bio Section */
+.author-long-bio-section {
+  padding: 48px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.author-long-bio-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 16px;
+}
+
+.author-long-bio-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #4b5563;
+  max-width: 800px;
+}
+
+/* Blog Posts Section */
+.author-posts-section {
+  padding: 60px 0 80px;
+}
+
+.author-posts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.author-posts-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.author-posts-count {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* Blog Post Grid */
+.author-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+/* Blog Post Card */
+.author-post-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.author-post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 92, 204, 0.12);
+  color: inherit;
+}
+
+.author-post-card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e8f0fe 0%, #f4f7ff 100%);
+}
+
+.author-post-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.author-post-card:hover .author-post-card-image img {
+  transform: scale(1.05);
+}
+
+.author-post-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #005CCC 0%, #0070F3 100%);
+  color: white;
+  font-size: 32px;
+}
+
+.author-post-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.author-post-card-category {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #005CCC;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.author-post-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin: 0 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.author-post-card:hover .author-post-card-title {
+  color: #005CCC;
+}
+
+.author-post-card-excerpt {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.author-post-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.author-post-card-date {
+  font-size: 13px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.author-post-card-date svg {
+  width: 14px;
+  height: 14px;
+}
+
+.author-post-card-read {
+  font-size: 13px;
+  font-weight: 600;
+  color: #005CCC;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none !important;
+}
+
+.author-post-card-read svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.author-post-card:hover .author-post-card-read svg {
+  transform: translateX(3px);
+}
+
+/* Empty State */
+.author-posts-empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f9fafb;
+  border-radius: 16px;
+}
+
+.author-posts-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: #e8f0fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #005CCC;
+}
+
+.author-posts-empty-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.author-posts-empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.author-posts-empty-text {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .author-posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .author-hero {
+    padding: 60px 0 48px;
+  }
+
+  .author-hero-content {
+    gap: 32px;
+  }
+
+  .author-name {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .author-hero {
+    padding: 48px 0 40px;
+  }
+
+  .author-hero-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .author-avatar-large,
+  .author-avatar-placeholder {
+    width: 120px;
+    height: 120px;
+  }
+
+  .author-avatar-placeholder {
+    font-size: 42px;
+  }
+
+  .author-name {
+    font-size: 26px;
+  }
+
+  .author-job-title {
+    font-size: 16px;
+  }
+
+  .author-bio {
+    font-size: 15px;
+    max-width: 100%;
+  }
+
+  .author-social-links {
+    justify-content: center;
+  }
+
+  .author-long-bio-section {
+    padding: 36px 0;
+  }
+
+  .author-posts-section {
+    padding: 40px 0 60px;
+  }
+
+  .author-posts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .author-posts-title {
+    font-size: 24px;
+  }
+
+  .author-posts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .author-post-card-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .author-hero {
+    padding: 36px 0 32px;
+  }
+
+  .author-avatar-large,
+  .author-avatar-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .author-avatar-placeholder {
+    font-size: 36px;
+  }
+
+  .author-name {
+    font-size: 22px;
+  }
+
+  .author-post-card-body {
+    padding: 18px;
+  }
+
+  .author-post-card-title {
+    font-size: 16px;
+  }
+}

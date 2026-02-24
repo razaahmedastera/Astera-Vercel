@@ -52,11 +52,12 @@
     font-size: clamp(24px, 4vw, 36px);
     font-weight: 600;
     line-height: 1.2;
+    text-decoration: none;
   }
 
   a {
     color: #003292;
-    text-decoration: underline;
+    text-decoration: none;
   }
   
   a:hover {

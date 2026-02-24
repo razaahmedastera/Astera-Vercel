@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { BlogPost } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
@@ -377,11 +378,19 @@ const PromoIcons = () => {
   );
 };
 
+function authorSlugFromName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 export function BlogPostScreen({ post }: Props) {
   // Use featuredImage from Contentful field ID "featuredImage" for hero image
   const cover = post.featuredImage || post.coverImage || FALLBACK_COVER;
   const authorName = post.authorName || post.author?.name || 'Astera Team';
-  const authorRole = (post as any).authorRole || 'Product Marketing Specialist';
+  const authorRole = (post as any).authorRole || post.author?.role || post.author?.jobTitle || 'Product Marketing Specialist';
+  const authorSlug = post.author?.slug || authorSlugFromName(authorName);
   
   // Normalize content to ensure it matches Contentful's expected format
   const rawContent = post.content as any;
@@ -837,11 +846,13 @@ export function BlogPostScreen({ post }: Props) {
 
             {/* Author and Date Section - After title in one row */}
             <div className="blog-author-section-main">
-              <div className="blog-author-avatar">
+              <Link href={`/blog/author/${authorSlug}`} className="blog-author-avatar blog-author-avatar-link" prefetch={true}>
                 {(authorName || 'A').slice(0, 1).toUpperCase()}
-              </div>
+              </Link>
               <div className="blog-author-info">
-                <div className="blog-author-name">{authorName}</div>
+                <Link href={`/blog/author/${authorSlug}`} className="blog-author-name blog-author-name-link" prefetch={true}>
+                  {authorName}
+                </Link>
                 <div className="blog-author-role">{authorRole}</div>
               </div>
               <div className="blog-author-date">
