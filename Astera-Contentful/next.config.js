@@ -92,14 +92,6 @@ const nextConfig = {
           },
         },
       };
-    } else {
-      // Production: use filesystem cache for better performance
-      config.cache = {
-        type: 'filesystem',
-        buildDependencies: {
-          config: [__filename],
-        },
-      };
     }
     
     return config;
