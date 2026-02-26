@@ -1,0 +1,634 @@
+/* ========================================
+   WHITEPAPER - CLEAN SAAS MINIMALIST
+   ======================================== */
+
+/* ---- LIST PAGE ---- */
+.wp-list-page {
+  min-height: 100vh;
+  background: #ffffff;
+  padding-top: 100px;
+}
+
+.wp-hero-section {
+  padding: 64px 0 48px;
+  text-align: center;
+}
+
+.wp-hero-content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.wp-hero-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #005CCC;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.wp-hero-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px;
+  line-height: 1.15;
+}
+
+.wp-hero-description {
+  font-size: 17px;
+  color: #64748b;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ---- GRID ---- */
+.wp-list-section {
+  padding: 0 0 96px;
+}
+
+.wp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 28px;
+}
+
+/* ---- CARD ---- */
+.wp-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.wp-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 92, 204, 0.1);
+  border-color: #cbd5e1;
+}
+
+.wp-card-visual {
+  position: relative;
+  height: 180px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.wp-card-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(0, 92, 204, 0.25) 0%, transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(99, 164, 255, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.wp-card-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 1;
+}
+
+.wp-card-type {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  z-index: 1;
+}
+
+.wp-card-body {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.wp-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.45;
+  margin: 0 0 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wp-card-desc {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.65;
+  margin: 0 0 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wp-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #005CCC;
+  transition: gap 0.2s ease;
+}
+
+.wp-card:hover .wp-card-cta {
+  gap: 10px;
+}
+
+.wp-card-cta svg {
+  transition: transform 0.2s ease;
+}
+
+.wp-card:hover .wp-card-cta svg {
+  transform: translateX(3px);
+}
+
+/* ---- EMPTY STATE ---- */
+.wp-empty {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.wp-empty-icon {
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+
+.wp-empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0 0 8px;
+}
+
+.wp-empty-text {
+  font-size: 15px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* ========================================
+   DETAIL PAGE
+   ======================================== */
+
+.wp-detail-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* ---- HERO ---- */
+.wp-detail-hero {
+  padding: 120px 0 64px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.wp-detail-hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 56px;
+  align-items: center;
+}
+
+.wp-detail-hero-text {
+  max-width: 640px;
+}
+
+.wp-detail-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #005CCC;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.wp-detail-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+  margin: 0;
+}
+
+/* ---- COVER VISUAL ---- */
+.wp-detail-hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.wp-cover-stack {
+  position: relative;
+  width: 340px;
+  height: 240px;
+}
+
+.wp-cover-back {
+  position: absolute;
+  top: 14px;
+  right: -10px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #334155 0%, #475569 100%);
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.wp-cover-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  border-radius: 12px;
+  z-index: 2;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+  overflow: hidden;
+}
+
+.wp-cover-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  z-index: 3;
+}
+
+.wp-cover-pattern {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 70%, rgba(0, 92, 204, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 75% 25%, rgba(99, 164, 255, 0.2) 0%, transparent 50%);
+  z-index: 1;
+}
+
+/* ---- BODY ---- */
+.wp-detail-body {
+  padding: 64px 0 96px;
+}
+
+.wp-detail-grid {
+  display: flex;
+  gap: 48px;
+}
+
+.wp-detail-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.wp-description {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #334155;
+}
+
+.wp-content-h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 40px 0 16px;
+  line-height: 1.35;
+}
+
+.wp-content-p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+.wp-content-ul,
+.wp-content-ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.wp-content-ul {
+  list-style-type: disc;
+}
+
+.wp-content-ol {
+  list-style-type: decimal;
+}
+
+.wp-content-li {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #475569;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+/* ---- SIDEBAR / FORM ---- */
+.wp-detail-sidebar {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+}
+
+.wp-form-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.wp-form-header {
+  margin-bottom: 24px;
+}
+
+.wp-form-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.wp-form-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* HubSpot form overrides */
+#hubspot-whitepaper-form .hs-form-heading,
+#hubspot-whitepaper-form h2,
+#hubspot-whitepaper-form .hs-form-title,
+#hubspot-whitepaper-form .submitted-message,
+#hubspot-whitepaper-form .hs-richtext.hs-main-font-element {
+  display: none !important;
+}
+
+#hubspot-whitepaper-form .hs-form-field {
+  margin-bottom: 16px;
+}
+
+#hubspot-whitepaper-form .hs-form-field label,
+#hubspot-whitepaper-form .hs-form-field > label,
+#hubspot-whitepaper-form .hs-form-field .hs-label {
+  display: none !important;
+}
+
+#hubspot-whitepaper-form .hs-form-field input[type="text"],
+#hubspot-whitepaper-form .hs-form-field input[type="email"],
+#hubspot-whitepaper-form .hs-form-field input[type="tel"],
+#hubspot-whitepaper-form .hs-form-field select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  color: #0f172a;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#hubspot-whitepaper-form .hs-form-field input:focus,
+#hubspot-whitepaper-form .hs-form-field select:focus {
+  outline: none;
+  border-color: #005CCC;
+  box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08);
+}
+
+#hubspot-whitepaper-form .hs-form-field input::placeholder {
+  color: #94a3b8;
+}
+
+#hubspot-whitepaper-form .hs_submit {
+  margin: 0;
+}
+
+#hubspot-whitepaper-form .hs-submit {
+  width: 100%;
+  margin-top: 8px;
+}
+
+#hubspot-whitepaper-form .hs-button {
+  width: 100%;
+  padding: 14px 24px;
+  background: #005CCC;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#hubspot-whitepaper-form .hs-button:hover {
+  background: #004ba3;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 92, 204, 0.3);
+}
+
+#hubspot-whitepaper-form .hs-error-msgs {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+}
+
+#hubspot-whitepaper-form .hs-error-msgs label,
+#hubspot-whitepaper-form .hs-error-msgs li {
+  font-size: 12px;
+  color: #ef4444;
+  display: block !important;
+}
+
+/* ========================================
+   THANK YOU PAGE
+   ======================================== */
+
+.wp-thankyou {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 100px 24px;
+}
+
+.wp-thankyou-card {
+  max-width: 520px;
+  text-align: center;
+}
+
+.wp-thankyou-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #EFF5FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  color: #005CCC;
+}
+
+.wp-thankyou-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px;
+}
+
+.wp-thankyou-text {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.7;
+  margin: 0 0 36px;
+}
+
+.wp-thankyou-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.wp-thankyou-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.wp-thankyou-btn--primary {
+  background: #005CCC;
+  color: #ffffff;
+}
+
+.wp-thankyou-btn--primary:hover {
+  background: #004ba3;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.wp-thankyou-btn--secondary {
+  background: transparent;
+  color: #005CCC;
+  border: 1.5px solid #e5e7eb;
+}
+
+.wp-thankyou-btn--secondary:hover {
+  border-color: #005CCC;
+  background: #EFF5FF;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .wp-detail-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .wp-detail-hero-visual {
+    order: -1;
+  }
+
+  .wp-detail-grid {
+    flex-direction: column;
+  }
+
+  .wp-detail-sidebar {
+    width: 100%;
+    max-width: 480px;
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .wp-list-page,
+  .wp-detail-page {
+    padding-top: 80px;
+  }
+
+  .wp-hero-section {
+    padding: 40px 0 32px;
+  }
+
+  .wp-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .wp-detail-hero {
+    padding: 96px 0 48px;
+  }
+
+  .wp-detail-body {
+    padding: 48px 0 64px;
+  }
+
+  .wp-cover-stack {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 340 / 240;
+  }
+
+  .wp-form-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .wp-card-visual {
+    height: 150px;
+  }
+
+  .wp-list-section {
+    padding-bottom: 64px;
+  }
+}

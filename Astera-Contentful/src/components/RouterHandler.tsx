@@ -13,8 +13,8 @@ export function RouterHandler() {
 
   useEffect(() => {
     // Check if we're on a blog post route but the router hasn't matched it
-    if (pathname && pathname.startsWith('/blog/') && pathname !== '/blog') {
-      const slug = pathname.replace('/blog/', '');
+    if (pathname && pathname.startsWith('/type/blog/') && pathname !== '/type/blog') {
+      const slug = pathname.replace('/type/blog/', '').replace('author/', '');
       // If we have a valid slug, ensure the route is recognized
       if (slug && slug.length > 0) {
         console.log('[RouterHandler] Detected blog post route:', pathname, 'slug:', slug);

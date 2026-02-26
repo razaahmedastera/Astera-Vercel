@@ -1,18 +1,42 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import IndustryScreen from '@/components/screens/IndustryScreen/IndustryScreen';
-import { getIndustryBySlug } from '@/lib/contentful/api';
+import { getIndustryBySlug, getAllIndustries } from '@/lib/contentful/api';
 import type { IndustryData } from '@/data/industries';
 
-// ISR: Cache for 1 hour, webhooks can trigger instant revalidation
-export const revalidate = 3600; // 1 hour fallback (webhooks handle instant updates)
+export const revalidate = 3600;
 
 type IndustryPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-/**
- * Convert Industry (Contentful) to IndustryData (component format)
- */
+export async function generateStaticParams() {
+  try {
+    const industries = await getAllIndustries();
+    return industries.map((i) => ({ slug: i.slug }));
+  } catch {
+    return [];
+  }
+}
+
+export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const industry = await getIndustryBySlug(slug);
+
+  if (!industry) return { title: 'Industry Not Found' };
+
+  return {
+    title: `${industry.name} Solutions | Astera`,
+    description: industry.subtitle || `Data management solutions for ${industry.name}`,
+    openGraph: {
+      title: `${industry.name} Solutions | Astera`,
+      description: industry.subtitle || `Data management solutions for ${industry.name}`,
+      type: 'website',
+      siteName: 'Astera',
+    },
+  };
+}
+
 function convertToIndustryData(industry: any): IndustryData {
   return {
     slug: industry.slug,
@@ -39,9 +63,7 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
   const { slug } = await params;
   const industry = await getIndustryBySlug(slug);
 
-  if (!industry) {
-    notFound();
-  }
+  if (!industry) notFound();
 
   return <IndustryScreen industry={convertToIndustryData(industry)} />;
 }

@@ -574,14 +574,17 @@ export interface Ebook {
   id: string;
   title: string;
   slug: string;
-  description: Document | string; // Rich Text Document or plain string
-  pdfUrl: string; // URL to the PDF file for download
+  description: Document | string;
+  pdfUrl: string;
   coverImage?: string;
   topics?: string[];
   hubspotFormId?: string;
+  heroLabel?: string;
+  conclusion?: string;
+  formTitle?: string;
+  formSubtitle?: string;
   createdAt: string;
   updatedAt: string;
-  // SEO Fields
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;
@@ -599,9 +602,86 @@ export interface EbookSkeleton extends EntrySkeletonType {
   contentTypeId: 'eBook';
   fields: {
     eBookTitle: string;
+    slug: string;
     eBookDescription: string;
-    eBookURL: string; // PDF URL
-    slug: string; // Required slug field (like blogs) - defines the URL
+    eBookUrl: string;
+    coverImage?: any;
+    topics?: string[];
+    conclusion?: string;
+    hubspotFormId?: string;
+    heroLabel?: string;
+    formTitle?: string;
+    formSubtitle?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    focusKeyword?: string;
+    ogImage?: any;
+    canonicalUrl?: string;
+    metaRobots?: string;
+    schemaType?: string;
+  };
+}
+
+/**
+ * Whitepaper interface
+ */
+export interface Whitepaper {
+  id: string;
+  title: string;
+  slug: string;
+  description: Document | string;
+  pdfUrl: string;
+  coverImage?: string;
+  hubspotFormId?: string;
+  createdAt: string;
+  updatedAt: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
+}
+
+/**
+ * Contentful Whitepaper Skeleton
+ */
+export interface WhitepaperSkeleton extends EntrySkeletonType {
+  contentTypeId: 'whitepaper';
+  fields: {
+    title: string;
+    slug: string;
+    description: string;
+    pdfUrl: string;
+  };
+}
+
+/**
+ * Datasheet interface
+ */
+export interface Datasheet {
+  id: string;
+  title: string;
+  slug: string;
+  description: Document | string;
+  pdfUrl: string;
+  coverImage?: string;
+  hubspotFormId?: string;
+  createdAt: string;
+  updatedAt: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
+}
+
+/**
+ * Contentful Datasheet Skeleton
+ */
+export interface DatasheetSkeleton extends EntrySkeletonType {
+  contentTypeId: 'dataSheet';
+  fields: {
+    title: string;
+    slug: string;
+    description: string;
+    pdfUrl: string;
   };
 }
 
@@ -1036,5 +1116,183 @@ export interface WebinarSkeleton extends EntrySkeletonType {
     badges?: WebinarBadge[];
     seoTitle?: string;
     seoDescription?: string;
+  };
+}
+
+/**
+ * =============================================
+ * ABOUT US PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  title: string;
+  bio?: string;
+  photo?: string;
+  linkedin?: string;
+  order?: number;
+}
+
+export interface TeamMemberSkeleton extends EntrySkeletonType {
+  contentTypeId: 'teamMember';
+  fields: {
+    name: string;
+    title: string;
+    bio?: string;
+    photo?: any;
+    linkedin?: string;
+    order?: number;
+  };
+}
+
+export interface AboutUsStat {
+  id: string;
+  label: string;
+  value: number;
+  suffix?: string;
+  unit?: string;
+  order?: number;
+}
+
+export interface AboutUsStatSkeleton extends EntrySkeletonType {
+  contentTypeId: 'aboutUsStat';
+  fields: {
+    label: string;
+    value: number;
+    suffix?: string;
+    unit?: string;
+    order?: number;
+  };
+}
+
+export interface AboutUsAward {
+  id: string;
+  title: string;
+  image?: string;
+  accentColor?: string;
+  order?: number;
+}
+
+export interface AboutUsAwardSkeleton extends EntrySkeletonType {
+  contentTypeId: 'award';
+  fields: {
+    title: string;
+    image?: any;
+    accentColor?: string;
+    order?: number;
+  };
+}
+
+export interface AboutUsPageContent {
+  id: string;
+  pageTitle: string;
+  heroBadge?: string;
+  heroHeading?: string;
+  heroDescription?: string;
+  heroImages: string[];
+  stats: AboutUsStat[];
+  visionTitle?: string;
+  visionDescription?: string;
+  storyTitle?: string;
+  storyContent?: Document;
+  storyImages: string[];
+  awardsTitle?: string;
+  awardsSubtitle?: string;
+  awards: AboutUsAward[];
+  teamTitle?: string;
+  teamSubtitle?: string;
+  teamMembers: TeamMember[];
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface AboutUsPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'aboutUsPage';
+  fields: {
+    pageTitle: string;
+    heroBadge?: string;
+    heroHeading?: string;
+    heroDescription?: string;
+    heroImages?: any[];
+    stats?: any[];
+    visionTitle?: string;
+    visionDescription?: string;
+    storyTitle?: string;
+    storyContent?: Document;
+    storyImages?: any[];
+    awardsTitle?: string;
+    awardsSubtitle?: string;
+    awards?: any[];
+    teamTitle?: string;
+    teamSubtitle?: string;
+    teamMembers?: any[];
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+/**
+ * =============================================
+ * NEWS & EVENTS CONTENT TYPES
+ * =============================================
+ */
+
+export interface NewsPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  content?: Document;
+  featuredImage?: string;
+  category?: string;
+  publishedDate: string;
+  isFeatured?: boolean;
+  externalUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NewsPostSkeleton extends EntrySkeletonType {
+  contentTypeId: 'newsPost';
+  fields: {
+    title: string;
+    slug: string;
+    excerpt?: string;
+    content?: Document;
+    featuredImage?: any;
+    category?: string;
+    publishedDate: string;
+    isFeatured?: boolean;
+    externalUrl?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+export interface NewsEvent {
+  id: string;
+  title: string;
+  subtitle?: string;
+  image?: string;
+  eventDate?: string;
+  location?: string;
+  externalUrl?: string;
+  order?: number;
+}
+
+export interface NewsEventSkeleton extends EntrySkeletonType {
+  contentTypeId: 'newsEvent';
+  fields: {
+    title: string;
+    subtitle?: string;
+    image?: any;
+    eventDate?: string;
+    location?: string;
+    externalUrl?: string;
+    order?: number;
   };
 }

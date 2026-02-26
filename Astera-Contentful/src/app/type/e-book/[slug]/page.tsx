@@ -3,8 +3,7 @@ import type { Metadata } from 'next';
 import EbookDetailScreen from '@/components/screens/EbookScreen/EbookDetailScreen';
 import { getEbookBySlug } from '@/lib/contentful/api';
 
-// ISR: Pages are cached for 1 hour, but webhooks can trigger instant revalidation
-export const revalidate = 3600; // 1 hour fallback (webhooks handle instant updates)
+export const revalidate = 3600;
 
 type EbookPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,14 +17,13 @@ export async function generateMetadata({ params }: EbookPageProps): Promise<Meta
     return { title: 'eBook Not Found' };
   }
 
-  // Use environment variable or fallback to localhost for development
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 
                   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 
                   'http://localhost:3000';
   const seoTitle = ebook.seoTitle || `${ebook.title} | Astera eBook`;
   const seoDescription = ebook.seoDescription || (typeof ebook.description === 'string' ? ebook.description.substring(0, 160) : '');
   const ogImage = ebook.ogImage || `${baseUrl}/og-default.jpg`;
-  const canonicalUrl = ebook.canonicalUrl || `${baseUrl}/ebook/${ebook.slug}`;
+  const canonicalUrl = ebook.canonicalUrl || `${baseUrl}/type/e-book/${ebook.slug}`;
 
   return {
     title: seoTitle,

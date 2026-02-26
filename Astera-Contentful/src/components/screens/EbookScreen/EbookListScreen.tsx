@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Ebook } from '@/types/contentful';
 import type { Document } from '@contentful/rich-text-types';
 import './EbookScreen.css';
@@ -51,22 +52,32 @@ export default function EbookListScreen({ ebooks }: Props) {
         <div className="section-container">
           <div className="ebook-grid">
             {ebooks.map((ebook) => (
-              <Link key={ebook.id} href={`/ebook/${ebook.slug}`} prefetch={true} className="ebook-card">
+              <Link key={ebook.id} href={`/type/e-book/${ebook.slug}`} prefetch={true} className="ebook-card">
                 <div className="ebook-card-image-wrapper">
-                  <div className="ebook-card-image-placeholder">
-                    <svg
-                      width="80"
-                      height="80"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="ebook-card-icon"
-                    >
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                    </svg>
-                  </div>
+                  {ebook.coverImage ? (
+                    <Image
+                      src={ebook.coverImage}
+                      alt={ebook.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="ebook-card-image-placeholder">
+                      <svg
+                        width="80"
+                        height="80"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        className="ebook-card-icon"
+                      >
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 <div className="ebook-card-content">
                   <h3 className="ebook-card-title">{ebook.title}</h3>

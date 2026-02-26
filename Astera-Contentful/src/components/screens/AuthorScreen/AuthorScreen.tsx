@@ -189,7 +189,7 @@ export function AuthorScreen({ author, posts }: Props) {
               {posts.map((post) => (
                 <Link
                   key={post.id}
-                  href={`/blog/${post.slug}`}
+                  href={`/type/blog/${post.slug}`}
                   className="author-post-card"
                   prefetch={true}
                 >

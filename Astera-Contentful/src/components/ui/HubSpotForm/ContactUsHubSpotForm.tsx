@@ -78,9 +78,18 @@ export default function ContactUsHubSpotForm({
           margin: 0 !important;
         }
         #${containerId} .hs-form fieldset.form-columns-1 .hs-form-field,
-        #${containerId} .hs-form fieldset.form-columns-1 .input {
+        #${containerId} .hs-form fieldset.form-columns-1 .input,
+        #${containerId} .hs-form fieldset.form-columns-2 .hs-form-field,
+        #${containerId} .hs-form fieldset.form-columns-2 .input,
+        #${containerId} .hs-form fieldset .hs-form-field {
           width: 100% !important;
           max-width: 100% !important;
+          float: none !important;
+          display: block !important;
+        }
+        #${containerId} .hs-form fieldset.form-columns-2 {
+          display: flex !important;
+          flex-direction: column !important;
         }
         
         /* Labels - ${showLabels ? 'Show' : 'Hide'} */
@@ -104,6 +113,35 @@ export default function ContactUsHubSpotForm({
           margin-left: 2px !important;
         }
         
+        /* Hide HubSpot tracking/hidden fields */
+        #${containerId} .hs_utm_source,
+        #${containerId} .hs_utm_campaign,
+        #${containerId} .hs_utm_content,
+        #${containerId} .hs_utm_medium,
+        #${containerId} .hs_utm_term,
+        #${containerId} .hs_personyze_session_id,
+        #${containerId} .hs_personyze_audience,
+        #${containerId} .hs_personyze_interests,
+        #${containerId} .hs_personyze_campaign,
+        #${containerId} .hs_site_registration_source,
+        #${containerId} [class*="utm_"],
+        #${containerId} [class*="personyze"],
+        #${containerId} [class*="site_registration"],
+        #${containerId} .hs-form-field[style*="display:none"],
+        #${containerId} .hs-form-field[style*="display: none"],
+        #${containerId} .hs_context,
+        #${containerId} .hs-fieldtype-hidden {
+          display: none !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          width: 0 !important;
+          overflow: hidden !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          position: absolute !important;
+          left: -9999px !important;
+        }
+
         /* Field containers */
         #${containerId} .hs-form-field {
           margin-bottom: ${showLabels ? '20px' : '12px'} !important;
@@ -273,17 +311,22 @@ export default function ContactUsHubSpotForm({
           ${showLabels ? '' : 'display: block !important; visibility: visible !important;'}
         }
         
-        /* Two column for names - Desktop */
-        @media (min-width: 640px) {
-          #${containerId} .hs_firstname,
-          #${containerId} .hs_lastname {
-            display: inline-block !important;
-            width: calc(50% - 8px) !important;
-            vertical-align: top !important;
-          }
-          #${containerId} .hs_firstname {
-            margin-right: 16px !important;
-          }
+        /* All fields full width - one per row */
+        #${containerId} .hs_firstname,
+        #${containerId} .hs_lastname,
+        #${containerId} .hs-email,
+        #${containerId} .hs_email,
+        #${containerId} .hs_company,
+        #${containerId} .hs-company {
+          display: block !important;
+          width: 100% !important;
+          margin-right: 0 !important;
+        }
+        
+        /* Middle fields in multi-column fieldsets (e.g. country code text field) */
+        #${containerId} fieldset.form-columns-3 .hs-fieldtype-text.field {
+          margin: 0 !important;
+          padding: 0 !important;
         }
         
         /* Phone field layout - Country code and phone in one unified field */
@@ -293,7 +336,7 @@ export default function ContactUsHubSpotForm({
           width: 100% !important;
           display: block !important;
         }
-        /* Fieldset containing phone field - make it flex */
+        /* Fieldset containing phone field - stack vertically */
         #${containerId} fieldset.form-columns-3,
         #${containerId} fieldset.form-columns-3:has(.hs-fieldtype-phonenumber),
         #${containerId} fieldset.form-columns-3:has(.hs_phone),
@@ -302,11 +345,18 @@ export default function ContactUsHubSpotForm({
         #${containerId} fieldset:has(.hs_phone),
         #${containerId} fieldset:has([class*="hs_phone"]) {
           display: flex !important;
-          flex-direction: row !important;
+          flex-direction: column !important;
           flex-wrap: nowrap !important;
           gap: 0 !important;
           align-items: stretch !important;
           width: 100% !important;
+        }
+        /* Each field in the phone fieldset takes full width */
+        #${containerId} fieldset.form-columns-3 .hs-form-field,
+        #${containerId} fieldset:has(.hs_phone) .hs-form-field {
+          width: 100% !important;
+          display: block !important;
+          float: none !important;
         }
         /* Phone field form field wrapper - ensure horizontal layout */
         #${containerId} .hs-fieldtype-phonenumber.hs-form-field,
@@ -315,85 +365,48 @@ export default function ContactUsHubSpotForm({
           display: block !important;
           width: 100% !important;
         }
-        /* Phone field container - single unified border with flex display */
+        /* Phone field container - full width single row */
         #${containerId} .hs-fieldtype-phonenumber .input,
         #${containerId} .hs_phone .input,
         #${containerId} [class*="hs_phone"] .input {
           display: flex !important;
           flex-direction: row !important;
           flex-wrap: nowrap !important;
-          gap: 0 !important;
+          gap: 10px !important;
           align-items: stretch !important;
           width: 100% !important;
-          border: 1px solid #e5e7eb !important;
-          border-radius: 6px !important;
-          overflow: hidden !important;
-          background-color: #fff !important;
+          border: none !important;
+          border-radius: 0 !important;
+          overflow: visible !important;
+          background-color: transparent !important;
           box-sizing: border-box !important;
         }
-        /* Ensure all direct children use flex display */
-        #${containerId} .hs-fieldtype-phonenumber .input > *,
-        #${containerId} .hs_phone .input > *,
-        #${containerId} [class*="hs_phone"] .input > * {
-          display: flex !important;
-          flex-shrink: 0 !important;
-        }
-        /* Country dropdown - first part of unified field */
+        /* Country dropdown */
         #${containerId} .hs-fieldtype-phonenumber select,
         #${containerId} .hs_phone select,
         #${containerId} [class*="hs_phone"] select {
-          width: 140px !important;
-          min-width: 140px !important;
-          max-width: 140px !important;
-          flex-shrink: 0 !important;
-          border: none !important;
-          border-right: none !important;
-          border-radius: 0 !important;
+          flex: 1 !important;
+          width: auto !important;
+          min-width: 0 !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
           padding: 12px 16px !important;
           background-color: #fff !important;
           font-size: 15px !important;
           font-family: 'Poppins', sans-serif !important;
           color: #1f2937 !important;
-          -webkit-appearance: none !important;
-          -moz-appearance: none !important;
-          appearance: none !important;
           box-shadow: none !important;
-          display: block !important;
+          box-sizing: border-box !important;
         }
-        /* Country code input - second part of unified field with margin */
-        .contact-us-hubspot-form #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:first-of-type,
-        .contact-us-hubspot-form #${containerId} .hs_phone input[type="tel"]:first-of-type,
-        .contact-us-hubspot-form #${containerId} [class*="hs_phone"] input[type="tel"]:first-of-type {
-          width: 80px !important;
-          min-width: 80px !important;
-          max-width: 80px !important;
-          flex-shrink: 0 !important;
-          border: none !important;
-          border-right: none !important;
-          border-radius: 0 !important;
-          padding: 12px 16px !important;
-          margin: 0 10px !important;
-          background-color: #f9fafb !important;
-          font-size: 15px !important;
-          font-family: 'Poppins', sans-serif !important;
-          color: #1f2937 !important;
-          box-shadow: none !important;
-          display: block !important;
-        }
-        /* Middle field (country code) form field wrapper - add margin */
-        .contact-us-hubspot-form #${containerId} .hs-fieldtype-phonenumber.hs-form-field.field,
-        .contact-us-hubspot-form #${containerId} .hs_phone.hs-form-field.field,
-        .contact-us-hubspot-form #${containerId} [class*="hs_phone"].hs-form-field.field {
-          margin: 0px !important;
-        }
-        /* Phone number input - third part of unified field */
-        .contact-us-hubspot-form #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:last-of-type,
-        .contact-us-hubspot-form #${containerId} .hs_phone input[type="tel"]:last-of-type,
-        .contact-us-hubspot-form #${containerId} [class*="hs_phone"] input[type="tel"]:last-of-type {
+        /* Country code input */
+        #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:first-of-type,
+        #${containerId} .hs_phone input[type="tel"]:first-of-type,
+        #${containerId} [class*="hs_phone"] input[type="tel"]:first-of-type {
           flex: 1 !important;
-          min-width: 100% !important;
-          border: none !important;
-          border-radius: 0 !important;
+          width: auto !important;
+          min-width: 0 !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
           padding: 12px 16px !important;
           margin: 0 !important;
           background-color: #fff !important;
@@ -401,79 +414,61 @@ export default function ContactUsHubSpotForm({
           font-family: 'Poppins', sans-serif !important;
           color: #1f2937 !important;
           box-shadow: none !important;
-          display: block !important;
+          box-sizing: border-box !important;
         }
-        /* Remove hover/focus effects from individual phone inputs */
+        /* Phone number input */
+        #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:last-of-type,
+        #${containerId} .hs_phone input[type="tel"]:last-of-type,
+        #${containerId} [class*="hs_phone"] input[type="tel"]:last-of-type {
+          flex: 1 !important;
+          width: auto !important;
+          min-width: 0 !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
+          padding: 12px 16px !important;
+          margin: 0 !important;
+          background-color: #fff !important;
+          font-size: 15px !important;
+          font-family: 'Poppins', sans-serif !important;
+          color: #1f2937 !important;
+          box-shadow: none !important;
+          box-sizing: border-box !important;
+        }
+        /* Middle field wrapper */
+        #${containerId} .hs-fieldtype-phonenumber.hs-form-field.field,
+        #${containerId} .hs_phone.hs-form-field.field,
+        #${containerId} [class*="hs_phone"].hs-form-field.field {
+          margin: 0 !important;
+        }
+        /* Hover state for phone inputs */
         #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:hover,
         #${containerId} .hs_phone input[type="tel"]:hover,
         #${containerId} [class*="hs_phone"] input[type="tel"]:hover,
         #${containerId} .hs-fieldtype-phonenumber select:hover,
         #${containerId} .hs_phone select:hover,
         #${containerId} [class*="hs_phone"] select:hover {
-          border-color: transparent !important;
-          box-shadow: none !important;
+          border-color: #d1d5db !important;
         }
+        /* Focus state for phone inputs */
         #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:focus,
         #${containerId} .hs_phone input[type="tel"]:focus,
         #${containerId} [class*="hs_phone"] input[type="tel"]:focus,
         #${containerId} .hs-fieldtype-phonenumber select:focus,
         #${containerId} .hs_phone select:focus,
         #${containerId} [class*="hs_phone"] select:focus {
-          border-color: transparent !important;
-          box-shadow: none !important;
-          outline: none !important;
-        }
-        /* Focus state for the combined field */
-        #${containerId} .hs-fieldtype-phonenumber .input:focus-within,
-        #${containerId} .hs_phone .input:focus-within,
-        #${containerId} [class*="hs_phone"] .input:focus-within {
           border-color: #005CCC !important;
           box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08) !important;
+          outline: none !important;
         }
         
-        /* Mobile - Stack all fields */
+        /* Mobile - ensure all fields stacked */
         @media (max-width: 639px) {
-          #${containerId} .hs_firstname,
-          #${containerId} .hs_lastname {
-            display: block !important;
-            width: 100% !important;
-            margin-right: 0 !important;
-          }
           #${containerId} .hs-fieldtype-phonenumber .input,
           #${containerId} .hs_phone .input,
           #${containerId} [class*="hs_phone"] .input {
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            gap: 0 !important;
-          }
-          #${containerId} .hs-fieldtype-phonenumber .input > *,
-          #${containerId} .hs_phone .input > *,
-          #${containerId} [class*="hs_phone"] .input > * {
-            display: inline-block !important;
-          }
-          #${containerId} .hs-fieldtype-phonenumber select,
-          #${containerId} .hs_phone select,
-          #${containerId} [class*="hs_phone"] select {
-            width: 120px !important;
-            min-width: 120px !important;
-            max-width: 120px !important;
-            border-right: 1px solid #e5e7eb !important;
-            border-radius: 0 !important;
-          }
-          #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:first-of-type,
-          #${containerId} .hs_phone input[type="tel"]:first-of-type,
-          #${containerId} [class*="hs_phone"] input[type="tel"]:first-of-type {
-            width: 70px !important;
-            min-width: 70px !important;
-            max-width: 70px !important;
-            border-right: 1px solid #e5e7eb !important;
-            border-radius: 0 !important;
-          }
-          #${containerId} .hs-fieldtype-phonenumber input[type="tel"]:last-of-type,
-          #${containerId} .hs_phone input[type="tel"]:last-of-type,
-          #${containerId} [class*="hs_phone"] input[type="tel"]:last-of-type {
-            flex: 1 !important;
-            border-radius: 0 !important;
+            gap: 8px !important;
           }
         }
         

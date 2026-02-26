@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import type { Ebook } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, type Document } from '@contentful/rich-text-types';
@@ -198,50 +199,15 @@ export default function EbookDetailScreen({ ebook }: Props) {
     const form = document.getElementById('hubspot-ebook-form');
     if (!form) return;
 
-    // First Name + Last Name - Two columns
-    const firstNameField = form.querySelector('.hs_firstname, [class*="firstname"]');
-    const lastNameField = form.querySelector('.hs_lastname, [class*="lastname"]');
-    if (firstNameField && lastNameField) {
-      (firstNameField as HTMLElement).style.cssText = 'display: inline-block !important; width: calc(50% - 8px) !important; margin-right: 16px !important; vertical-align: top !important;';
-      (lastNameField as HTMLElement).style.cssText = 'display: inline-block !important; width: calc(50% - 8px) !important; vertical-align: top !important;';
-    }
+    const allFields = form.querySelectorAll('.hs-form-field');
+    allFields.forEach((field) => {
+      (field as HTMLElement).style.cssText = 'display: block !important; width: 100% !important; float: none !important; margin-right: 0 !important;';
+    });
 
-    // Business Email + Company Name - Two columns
-    const emailField = form.querySelector('.hs_email, .hs-email, [class*="email"]');
-    const companyField = form.querySelector('.hs_company, .hs-company, [class*="company"]');
-    if (emailField && companyField) {
-      (emailField as HTMLElement).style.cssText = 'display: inline-block !important; width: calc(50% - 8px) !important; margin-right: 16px !important; vertical-align: top !important;';
-      (companyField as HTMLElement).style.cssText = 'display: inline-block !important; width: calc(50% - 8px) !important; vertical-align: top !important;';
-    }
-
-    // Country + Code + Phone - Three fields in one row
-    const phoneField = form.querySelector('.hs_phone, .hs-fieldtype-phonenumber, [class*="phone"]');
-    if (phoneField) {
-      // Ensure the phone field container is flex
-      (phoneField as HTMLElement).style.cssText = 'display: flex !important; flex-direction: row !important; gap: 8px !important; width: 100% !important; align-items: flex-start !important;';
-      
-      const inputContainer = phoneField.querySelector('.input');
-      if (inputContainer) {
-        (inputContainer as HTMLElement).style.cssText = 'display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; align-items: flex-start !important; width: 100% !important;';
-        
-        const selects = inputContainer.querySelectorAll('select');
-        const inputs = inputContainer.querySelectorAll('input[type="tel"]');
-        
-        // Country dropdown - first field (120px)
-        if (selects.length > 0) {
-          (selects[0] as HTMLElement).style.cssText = 'width: 120px !important; min-width: 120px !important; max-width: 120px !important; flex-shrink: 0 !important;';
-        }
-        
-        // Country code - second field (70px), Phone number - third field (flex: 1.5)
-        if (inputs.length >= 2) {
-          (inputs[0] as HTMLElement).style.cssText = 'width: 70px !important; min-width: 70px !important; max-width: 70px !important; flex-shrink: 0 !important;';
-          (inputs[inputs.length - 1] as HTMLElement).style.cssText = 'flex: 1.5 !important; min-width: 150px !important;';
-        } else if (inputs.length === 1) {
-          // If only one input, it's the phone number (takes remaining space)
-          (inputs[0] as HTMLElement).style.cssText = 'flex: 1.5 !important; min-width: 150px !important;';
-        }
-      }
-    }
+    const fieldsets = form.querySelectorAll('fieldset');
+    fieldsets.forEach((fs) => {
+      (fs as HTMLElement).style.cssText = 'display: flex !important; flex-direction: column !important; width: 100% !important;';
+    });
   }, []);
 
   // Handle form submit - trigger PDF download
@@ -298,7 +264,7 @@ export default function EbookDetailScreen({ ebook }: Props) {
     name: ebook.title,
     description: typeof ebook.description === 'string' ? ebook.description.substring(0, 200) : '',
     image: ebook.ogImage || ebook.coverImage || '',
-    url: `${baseUrl}/ebook/${ebook.slug}`,
+    url: `${baseUrl}/type/e-book/${ebook.slug}`,
     datePublished: ebook.createdAt,
     dateModified: ebook.updatedAt,
     publisher: {
@@ -332,13 +298,13 @@ export default function EbookDetailScreen({ ebook }: Props) {
         '@type': 'ListItem',
         position: 2,
         name: 'eBooks',
-        item: `${baseUrl}/ebook`,
+        item: `${baseUrl}/e-book`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: ebook.title,
-        item: `${baseUrl}/ebook/${ebook.slug}`,
+        item: `${baseUrl}/type/e-book/${ebook.slug}`,
       },
     ],
   };
@@ -362,22 +328,33 @@ export default function EbookDetailScreen({ ebook }: Props) {
           <div className="ebook-detail-hero-layout">
             {/* Left: Title Only */}
             <div className="ebook-detail-hero-content">
-              <span className="ebook-detail-label">Download</span>
+              <span className="ebook-detail-label">{ebook.heroLabel || 'Download'}</span>
               <h1 className="ebook-detail-title">{ebook.title}</h1>
             </div>
 
             {/* Right: eBook Cover */}
             <div className="ebook-detail-hero-cover">
-              <div className="ebook-cover-stack">
-                {/* Back page (lighter blue, peeking from right) */}
-                <div className="ebook-cover-back"></div>
-                {/* Main cover */}
-                <div className="ebook-cover-main">
-                  <div className="ebook-cover-label">e-BOOK</div>
-                  <div className="ebook-cover-gradient"></div>
-                  <div className="ebook-cover-shapes"></div>
+              {ebook.coverImage ? (
+                <div className="ebook-cover-image-wrapper">
+                  <Image
+                    src={ebook.coverImage}
+                    alt={ebook.title}
+                    width={464}
+                    height={300}
+                    className="ebook-cover-image"
+                    priority
+                  />
                 </div>
-              </div>
+              ) : (
+                <div className="ebook-cover-stack">
+                  <div className="ebook-cover-back"></div>
+                  <div className="ebook-cover-main">
+                    <div className="ebook-cover-label">e-BOOK</div>
+                    <div className="ebook-cover-gradient"></div>
+                    <div className="ebook-cover-shapes"></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -386,9 +363,8 @@ export default function EbookDetailScreen({ ebook }: Props) {
       {/* Main Content Section */}
       <section className="ebook-detail-main">
         <div className="section-container">
-          <div className="flex flex-col lg:flex-row gap-10">
-            {/* Left: Content - 60% */}
-            <div className="w-full lg:w-[60%] ebook-detail-content">
+          <div className="ebook-detail-grid">
+            <div className="ebook-detail-content">
               {isRichTextDocument(ebook.description) ? (
                 <div className="ebook-detail-description">
                   {(() => {
@@ -417,14 +393,19 @@ export default function EbookDetailScreen({ ebook }: Props) {
                   </ul>
                 </div>
               )}
-              <p className="ebook-detail-conclusion">
-                Download the guide to explore what modern, efficient mortgage operations look like in 2025 and beyond.
-              </p>
+              {ebook.conclusion && (
+                <p className="ebook-detail-conclusion">
+                  {ebook.conclusion}
+                </p>
+              )}
             </div>
 
-            {/* Right: HubSpot Form - 40% */}
-            <div className="w-full lg:w-[40%] ebook-detail-sidebar">
+            <div className="ebook-detail-sidebar">
               <div className="ebook-form-wrapper">
+                <div className="ebook-form-header">
+                  <h2 className="ebook-form-title">{ebook.formTitle || 'Download this eBook'}</h2>
+                  <p className="ebook-form-subtitle">{ebook.formSubtitle || 'Fill in your details to get instant access'}</p>
+                </div>
                 {!ebook.pdfUrl && (
                   <div className="ebook-pdf-warning" style={{
                     padding: '16px',

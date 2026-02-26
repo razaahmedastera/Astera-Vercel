@@ -194,7 +194,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
         {/* Featured hero */}
         {featured && (
           <Link
-            href={`/blog/${featured.slug}`}
+            href={`/type/blog/${featured.slug}`}
             prefetch={true}
             className="group grid grid-cols-1 md:grid-cols-[460px_1fr] gap-8 items-center bg-white rounded-2xl border border-slate-100 shadow-[0_30px_70px_-55px_rgba(0,0,0,0.45)] p-6 sm:p-8 mb-10"
           >
@@ -227,7 +227,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
                     {(featured.authorName || 'A').slice(0, 1).toUpperCase()}
                   </span>
                   <Link
-                    href={`/blog/author/${getAuthorSlug(featured)}`}
+                    href={`/type/blog/author/${getAuthorSlug(featured)}`}
                     className="text-slate-600 hover:text-[#005CCC] transition-colors"
                     style={{ textDecoration: 'none' }}
                     onClick={(e) => e.stopPropagation()}
@@ -328,7 +328,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
             {current.map((post) => (
               <Link
                 key={post.id}
-                href={`/blog/${post.slug}`}
+                href={`/type/blog/${post.slug}`}
                 prefetch={true}
                 className="group grid grid-cols-[160px_1fr] sm:grid-cols-[220px_1fr] gap-6 bg-white rounded-2xl border border-slate-100 shadow-[0_18px_55px_-45px_rgba(0,0,0,0.35)] p-5 hover:-translate-y-0.5 transition-all duration-300"
               >
@@ -357,7 +357,7 @@ export function BlogListClient({ initialPosts, categories, pageSize = 9 }: Props
                   <div className="mt-2 text-xs text-slate-500">
                     By{' '}
                     <Link
-                      href={`/blog/author/${getAuthorSlug(post)}`}
+                      href={`/type/blog/author/${getAuthorSlug(post)}`}
                       className="text-slate-500 hover:text-[#005CCC] transition-colors"
                       style={{ textDecoration: 'none' }}
                       onClick={(e) => e.stopPropagation()}

@@ -788,6 +788,7 @@
 
 .final-cta-button:hover {
   background: linear-gradient(135deg, #004ba3 0%, #003d8f 100%);
+  color: #ffffff;
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 16px 40px rgba(0, 92, 204, 0.4);
 }

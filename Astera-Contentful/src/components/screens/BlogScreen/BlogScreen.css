@@ -81,6 +81,7 @@
 #hubspot-asterabytes-form .hs-form .hs-button.primary:hover,
 #hubspot-asterabytes-form .hs-form .hs-button:hover {
   background: var(--azure-blue-hover) !important;
+  color: #ffffff !important;
   transform: translateY(-1px);
 }
 

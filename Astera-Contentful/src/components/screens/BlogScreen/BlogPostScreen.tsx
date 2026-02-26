@@ -846,11 +846,11 @@ export function BlogPostScreen({ post }: Props) {
 
             {/* Author and Date Section - After title in one row */}
             <div className="blog-author-section-main">
-              <Link href={`/blog/author/${authorSlug}`} className="blog-author-avatar blog-author-avatar-link" prefetch={true}>
+              <Link href={`/type/blog/author/${authorSlug}`} className="blog-author-avatar blog-author-avatar-link" prefetch={true}>
                 {(authorName || 'A').slice(0, 1).toUpperCase()}
               </Link>
               <div className="blog-author-info">
-                <Link href={`/blog/author/${authorSlug}`} className="blog-author-name blog-author-name-link" prefetch={true}>
+                <Link href={`/type/blog/author/${authorSlug}`} className="blog-author-name blog-author-name-link" prefetch={true}>
                   {authorName}
                 </Link>
                 <div className="blog-author-role">{authorRole}</div>

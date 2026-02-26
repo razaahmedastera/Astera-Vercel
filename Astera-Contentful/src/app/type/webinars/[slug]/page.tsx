@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       title: seoTitle,
       description: seoDescription,
-      url: `${baseUrl}/webinars/${webinar.slug}`,
+      url: `${baseUrl}/type/webinars/${webinar.slug}`,
       siteName: 'Astera',
       images: webinar.featuredImage ? [{ url: webinar.featuredImage, width: 1200, height: 630, alt: webinar.title }] : [],
     },
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: webinar.featuredImage ? [webinar.featuredImage] : [],
     },
     alternates: {
-      canonical: `${baseUrl}/webinars/${webinar.slug}`,
+      canonical: `${baseUrl}/type/webinars/${webinar.slug}`,
     },
   };
 }

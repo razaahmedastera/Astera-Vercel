@@ -48,7 +48,7 @@ function WebinarCard({ webinar }: { webinar: Webinar }) {
   const cardImage = getCardImage(webinar);
 
   return (
-    <Link href={`/webinars/${webinar.slug}`} className="webinar-card">
+    <Link href={`/type/webinars/${webinar.slug}`} className="webinar-card">
       <div className="webinar-card-image">
         {cardImage ? (
           <Image

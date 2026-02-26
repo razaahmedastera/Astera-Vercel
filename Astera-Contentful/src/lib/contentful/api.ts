@@ -22,6 +22,14 @@ import type {
   Webinar,
   WebinarSkeleton,
   WebinarSpeaker,
+  Whitepaper,
+  Datasheet,
+  AboutUsPageContent,
+  TeamMember,
+  AboutUsStat,
+  AboutUsAward,
+  NewsPost,
+  NewsEvent,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -298,11 +306,6 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
         }) as any;
 
         return response.items.map((entry: any) => {
-          // Debug: Log raw entry structure
-          console.log('[DEBUG getAllBlogPosts] Raw entry sys:', entry.sys);
-          console.log('[DEBUG getAllBlogPosts] Raw entry fields keys:', Object.keys(entry.fields || {}));
-          console.log('[DEBUG getAllBlogPosts] Raw entry fields:', entry.fields);
-          
           const fields = entry.fields || {};
           const category = fields.category as Entry<BlogCategorySkeleton> | undefined;
           const author = fields.author as Entry<BlogAuthorSkeleton> | undefined;
@@ -850,12 +853,15 @@ export async function getAllEbooks(): Promise<Ebook[]> {
         slug: fields.slug || generateSlugFromTitle(fields.eBookTitle || ''),
         description: description,
         pdfUrl: pdfUrl,
-        coverImage: undefined,
-        topics: undefined,
-        hubspotFormId: '3e8efa89-ed65-4c01-9a0f-8d1c84cf5a7b',
+        coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+        topics: fields.topics || undefined,
+        conclusion: fields.conclusion || undefined,
+        hubspotFormId: fields.hubspotFormId || '3e8efa89-ed65-4c01-9a0f-8d1c84cf5a7b',
+        heroLabel: fields.heroLabel || undefined,
+        formTitle: fields.formTitle || undefined,
+        formSubtitle: fields.formSubtitle || undefined,
         createdAt: entry.sys.createdAt,
         updatedAt: entry.sys.updatedAt,
-        // SEO Fields (if they exist)
         seoTitle: fields.seoTitle || '',
         seoDescription: fields.seoDescription || '',
         seoKeywords: fields.seoKeywords || '',
@@ -906,46 +912,24 @@ export async function getEbookBySlug(slug: string): Promise<Ebook | null> {
     const entry = response.items[0];
     const fields = entry.fields || {};
     
-    // Debug: Log all available fields to help diagnose field name issues
-    console.log(`[getEbookBySlug] Available fields for "${fields.eBookTitle || 'Untitled'}":`, Object.keys(fields));
-    
-    // Extract PDF URL from eBookURL field (can be Asset or string)
-    // Try multiple possible field names (case variations)
     let pdfUrl = '';
     const pdfAsset = fields.eBookURL || fields.ebookURL || fields.eBookUrl || fields.ebookUrl || fields.pdfUrl || fields.pdfURL;
-    
-    console.log(`[getEbookBySlug] PDF Asset found:`, !!pdfAsset);
+
     if (pdfAsset) {
-      console.log(`[getEbookBySlug] PDF Asset type:`, typeof pdfAsset);
-      console.log(`[getEbookBySlug] PDF Asset structure:`, JSON.stringify(pdfAsset, null, 2).substring(0, 500));
-      
       if (typeof pdfAsset === 'string') {
         pdfUrl = pdfAsset;
-        console.log(`[getEbookBySlug] PDF URL extracted as string:`, pdfUrl);
       } else {
-        // It's an Asset link - resolve from includes if needed
         pdfUrl = extractAssetUrl(pdfAsset, response.includes);
-        console.log(`[getEbookBySlug] PDF URL after extractAssetUrl:`, pdfUrl || '(empty)');
-        
-        // If still empty, try to resolve from sys.id
+
         if (!pdfUrl && pdfAsset.sys?.id && response.includes?.Asset) {
-          console.log(`[getEbookBySlug] Attempting to resolve asset from includes with ID:`, pdfAsset.sys.id);
           const resolvedAsset = response.includes.Asset.find((a: any) => a.sys.id === pdfAsset.sys.id);
           if (resolvedAsset) {
-            console.log(`[getEbookBySlug] Resolved asset found:`, !!resolvedAsset);
             pdfUrl = extractAssetUrl(resolvedAsset);
-            console.log(`[getEbookBySlug] PDF URL after resolving from includes:`, pdfUrl || '(empty)');
-          } else {
-            console.warn(`[getEbookBySlug] Asset with ID ${pdfAsset.sys.id} not found in includes.Asset array`);
-            console.log(`[getEbookBySlug] Available asset IDs in includes:`, response.includes?.Asset?.map((a: any) => a.sys?.id) || []);
           }
         }
       }
-    } else {
-      console.warn(`[getEbookBySlug] No PDF asset field found. Tried: eBookURL, ebookURL, eBookUrl, ebookUrl, pdfUrl, pdfURL`);
     }
 
-    // Extract description (can be Rich Text or string)
     let description: any = '';
     if (fields.eBookDescription) {
       if (typeof fields.eBookDescription === 'string') {
@@ -955,20 +939,10 @@ export async function getEbookBySlug(slug: string): Promise<Ebook | null> {
       }
     }
 
-    // Extract OG Image URL
     let ogImageUrl = '';
     if (fields.ogImage) {
       ogImageUrl = extractAssetUrl(fields.ogImage, response.includes);
     }
-
-    // Log warning if no PDF URL found (for debugging)
-    if (!pdfUrl) {
-        console.warn(`[getEbookBySlug] ⚠️ No PDF URL found for eBook "${fields.eBookTitle || 'Untitled'}"`);
-        console.warn(`[getEbookBySlug] Available fields:`, Object.keys(fields));
-        if (pdfAsset) {
-          console.warn(`[getEbookBySlug] PDF Asset structure:`, JSON.stringify(pdfAsset, null, 2));
-        }
-      }
       
       return {
         id: entry.sys.id,
@@ -976,12 +950,15 @@ export async function getEbookBySlug(slug: string): Promise<Ebook | null> {
         slug: fields.slug || '',
         description: description,
         pdfUrl: pdfUrl,
-        coverImage: undefined,
-        topics: undefined,
-        hubspotFormId: '3e8efa89-ed65-4c01-9a0f-8d1c84cf5a7b',
+        coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+        topics: fields.topics || undefined,
+        conclusion: fields.conclusion || undefined,
+        hubspotFormId: fields.hubspotFormId || '3e8efa89-ed65-4c01-9a0f-8d1c84cf5a7b',
+        heroLabel: fields.heroLabel || undefined,
+        formTitle: fields.formTitle || undefined,
+        formSubtitle: fields.formSubtitle || undefined,
         createdAt: entry.sys.createdAt,
         updatedAt: entry.sys.updatedAt,
-        // SEO Fields
         seoTitle: fields.seoTitle || '',
         seoDescription: fields.seoDescription || '',
         seoKeywords: fields.seoKeywords || '',
@@ -1004,6 +981,292 @@ export async function getEbookBySlug(slug: string): Promise<Ebook | null> {
     {
       revalidate: 3600,
       tags: ['ebooks', 'ebook', `ebook-${slug}`],
+    }
+  )();
+}
+
+/**
+ * =============================================
+ * WHITEPAPER API FUNCTIONS
+ * =============================================
+ */
+
+export async function getAllWhitepapers(): Promise<Whitepaper[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'whitepaper',
+          order: ['-sys.createdAt'],
+          include: 2,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+
+          let pdfUrl = '';
+          if (fields.pdfUrl) {
+            if (typeof fields.pdfUrl === 'string') {
+              pdfUrl = fields.pdfUrl;
+            } else {
+              pdfUrl = extractAssetUrl(fields.pdfUrl, response.includes);
+              if (!pdfUrl && fields.pdfUrl.sys?.id && response.includes?.Asset) {
+                const resolved = response.includes.Asset.find((a: any) => a.sys.id === fields.pdfUrl.sys.id);
+                if (resolved) pdfUrl = extractAssetUrl(resolved);
+              }
+            }
+          }
+
+          let description: any = '';
+          if (fields.description) {
+            if (typeof fields.description === 'string') {
+              description = fields.description;
+            } else if (fields.description.nodeType === 'document') {
+              description = fields.description;
+            }
+          }
+
+          return {
+            id: entry.sys.id,
+            title: fields.title || 'Untitled Whitepaper',
+            slug: fields.slug || generateSlugFromTitle(fields.title || ''),
+            description,
+            pdfUrl,
+            coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+            hubspotFormId: fields.hubspotFormId || '',
+            createdAt: entry.sys.createdAt,
+            updatedAt: entry.sys.updatedAt,
+            seoTitle: fields.seoTitle || '',
+            seoDescription: fields.seoDescription || '',
+            ogImage: fields.ogImage ? extractAssetUrl(fields.ogImage, response.includes) : '',
+          } as Whitepaper;
+        });
+      } catch (error) {
+        console.error('Error fetching whitepapers:', error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] Whitepaper content type not found.');
+          return [];
+        }
+        return [];
+      }
+    },
+    ['whitepapers'],
+    {
+      revalidate: 3600,
+      tags: ['whitepapers', 'whitepaper'],
+    }
+  )();
+}
+
+export async function getWhitepaperBySlug(slug: string): Promise<Whitepaper | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'whitepaper',
+          'fields.slug': slug,
+          limit: 1,
+          include: 2,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+
+        let pdfUrl = '';
+        const pdfAsset = fields.pdfUrl || fields.pdfURL;
+        if (pdfAsset) {
+          if (typeof pdfAsset === 'string') {
+            pdfUrl = pdfAsset;
+          } else {
+            pdfUrl = extractAssetUrl(pdfAsset, response.includes);
+            if (!pdfUrl && pdfAsset.sys?.id && response.includes?.Asset) {
+              const resolved = response.includes.Asset.find((a: any) => a.sys.id === pdfAsset.sys.id);
+              if (resolved) pdfUrl = extractAssetUrl(resolved);
+            }
+          }
+        }
+
+        let description: any = '';
+        if (fields.description) {
+          if (typeof fields.description === 'string') {
+            description = fields.description;
+          } else if (fields.description.nodeType === 'document') {
+            description = fields.description;
+          }
+        }
+
+        return {
+          id: entry.sys.id,
+          title: fields.title || '',
+          slug: fields.slug || '',
+          description,
+          pdfUrl,
+          coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+          hubspotFormId: fields.hubspotFormId || '',
+          createdAt: entry.sys.createdAt,
+          updatedAt: entry.sys.updatedAt,
+          seoTitle: fields.seoTitle || '',
+          seoDescription: fields.seoDescription || '',
+          ogImage: fields.ogImage ? extractAssetUrl(fields.ogImage, response.includes) : '',
+        } as Whitepaper;
+      } catch (error) {
+        console.error(`Error fetching whitepaper with slug "${slug}":`, error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] Whitepaper content type not found.');
+          return null;
+        }
+        return null;
+      }
+    },
+    [`whitepaper-${slug}`],
+    {
+      revalidate: 3600,
+      tags: ['whitepapers', 'whitepaper', `whitepaper-${slug}`],
+    }
+  )();
+}
+
+/**
+ * =============================================
+ * DATASHEET API FUNCTIONS
+ * =============================================
+ */
+
+export async function getAllDatasheets(): Promise<Datasheet[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'dataSheet',
+          order: ['-sys.createdAt'],
+          include: 2,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+
+          let pdfUrl = '';
+          if (fields.pdfUrl) {
+            if (typeof fields.pdfUrl === 'string') {
+              pdfUrl = fields.pdfUrl;
+            } else {
+              pdfUrl = extractAssetUrl(fields.pdfUrl, response.includes);
+              if (!pdfUrl && fields.pdfUrl.sys?.id && response.includes?.Asset) {
+                const resolved = response.includes.Asset.find((a: any) => a.sys.id === fields.pdfUrl.sys.id);
+                if (resolved) pdfUrl = extractAssetUrl(resolved);
+              }
+            }
+          }
+
+          let description: any = '';
+          if (fields.description) {
+            if (typeof fields.description === 'string') {
+              description = fields.description;
+            } else if (fields.description.nodeType === 'document') {
+              description = fields.description;
+            }
+          }
+
+          return {
+            id: entry.sys.id,
+            title: fields.title || 'Untitled Data Sheet',
+            slug: fields.slug || generateSlugFromTitle(fields.title || ''),
+            description,
+            pdfUrl,
+            coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+            hubspotFormId: fields.hubspotFormId || '',
+            createdAt: entry.sys.createdAt,
+            updatedAt: entry.sys.updatedAt,
+            seoTitle: fields.seoTitle || '',
+            seoDescription: fields.seoDescription || '',
+            ogImage: fields.ogImage ? extractAssetUrl(fields.ogImage, response.includes) : '',
+          } as Datasheet;
+        });
+      } catch (error) {
+        console.error('Error fetching datasheets:', error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] dataSheet content type not found. Please create a "dataSheet" content type in Contentful.');
+          return [];
+        }
+        return [];
+      }
+    },
+    ['datasheets'],
+    {
+      revalidate: 3600,
+      tags: ['datasheets', 'datasheet'],
+    }
+  )();
+}
+
+export async function getDatasheetBySlug(slug: string): Promise<Datasheet | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'dataSheet',
+          'fields.slug': slug,
+          limit: 1,
+          include: 2,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+
+        let pdfUrl = '';
+        const pdfAsset = fields.pdfUrl || fields.pdfURL;
+        if (pdfAsset) {
+          if (typeof pdfAsset === 'string') {
+            pdfUrl = pdfAsset;
+          } else {
+            pdfUrl = extractAssetUrl(pdfAsset, response.includes);
+            if (!pdfUrl && pdfAsset.sys?.id && response.includes?.Asset) {
+              const resolved = response.includes.Asset.find((a: any) => a.sys.id === pdfAsset.sys.id);
+              if (resolved) pdfUrl = extractAssetUrl(resolved);
+            }
+          }
+        }
+
+        let description: any = '';
+        if (fields.description) {
+          if (typeof fields.description === 'string') {
+            description = fields.description;
+          } else if (fields.description.nodeType === 'document') {
+            description = fields.description;
+          }
+        }
+
+        return {
+          id: entry.sys.id,
+          title: fields.title || '',
+          slug: fields.slug || '',
+          description,
+          pdfUrl,
+          coverImage: fields.coverImage ? extractAssetUrl(fields.coverImage, response.includes) : undefined,
+          hubspotFormId: fields.hubspotFormId || '',
+          createdAt: entry.sys.createdAt,
+          updatedAt: entry.sys.updatedAt,
+          seoTitle: fields.seoTitle || '',
+          seoDescription: fields.seoDescription || '',
+          ogImage: fields.ogImage ? extractAssetUrl(fields.ogImage, response.includes) : '',
+        } as Datasheet;
+      } catch (error) {
+        console.error(`Error fetching datasheet with slug "${slug}":`, error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] dataSheet content type not found.');
+          return null;
+        }
+        return null;
+      }
+    },
+    [`datasheet-${slug}`],
+    {
+      revalidate: 3600,
+      tags: ['datasheets', 'datasheet', `datasheet-${slug}`],
     }
   )();
 }
@@ -1737,6 +2000,272 @@ export async function getWebinarBySlug(slug: string): Promise<Webinar | null> {
     {
       revalidate: 3600,
       tags: ['webinars', 'webinar', `webinar-${slug}`],
+    }
+  )();
+}
+
+/**
+ * =============================================
+ * ABOUT US PAGE API FUNCTIONS
+ * =============================================
+ */
+
+export async function getAboutUsPageContent(): Promise<AboutUsPageContent | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'aboutUsPage',
+          limit: 1,
+          include: 3,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+
+        // Parse hero images
+        const heroImages: string[] = [];
+        if (fields.heroImages && Array.isArray(fields.heroImages)) {
+          for (const img of fields.heroImages) {
+            const url = extractAssetUrl(img, response.includes);
+            if (url) heroImages.push(url);
+          }
+        }
+
+        // Parse story images
+        const storyImages: string[] = [];
+        if (fields.storyImages && Array.isArray(fields.storyImages)) {
+          for (const img of fields.storyImages) {
+            const url = extractAssetUrl(img, response.includes);
+            if (url) storyImages.push(url);
+          }
+        }
+
+        // Parse stats (linked entries)
+        const stats: AboutUsStat[] = [];
+        if (fields.stats && Array.isArray(fields.stats)) {
+          for (const ref of fields.stats) {
+            const f = ref.fields;
+            if (f) {
+              stats.push({
+                id: ref.sys.id,
+                label: f.label || '',
+                value: f.value || 0,
+                suffix: f.suffix || '',
+                unit: f.unit || '',
+                order: f.order || 0,
+              });
+            }
+          }
+          stats.sort((a, b) => (a.order || 0) - (b.order || 0));
+        }
+
+        // Parse awards (linked entries)
+        const awards: AboutUsAward[] = [];
+        if (fields.awards && Array.isArray(fields.awards)) {
+          for (const ref of fields.awards) {
+            const f = ref.fields;
+            if (f) {
+              awards.push({
+                id: ref.sys.id,
+                title: f.title || '',
+                image: f.image ? extractAssetUrl(f.image, response.includes) : undefined,
+                accentColor: f.accentColor || '#005CCC',
+                order: f.order || 0,
+              });
+            }
+          }
+          awards.sort((a, b) => (a.order || 0) - (b.order || 0));
+        }
+
+        // Parse team members (linked entries)
+        const teamMembers: TeamMember[] = [];
+        if (fields.teamMembers && Array.isArray(fields.teamMembers)) {
+          for (const ref of fields.teamMembers) {
+            const f = ref.fields;
+            if (f) {
+              teamMembers.push({
+                id: ref.sys.id,
+                name: f.name || '',
+                title: f.title || '',
+                bio: f.bio || undefined,
+                photo: f.photo ? extractAssetUrl(f.photo, response.includes) : undefined,
+                linkedin: f.linkedin || undefined,
+                order: f.order || 0,
+              });
+            }
+          }
+          teamMembers.sort((a, b) => (a.order || 0) - (b.order || 0));
+        }
+
+        return {
+          id: entry.sys.id,
+          pageTitle: fields.pageTitle || 'About Us',
+          heroBadge: fields.heroBadge || undefined,
+          heroHeading: fields.heroHeading || undefined,
+          heroDescription: fields.heroDescription || undefined,
+          heroImages,
+          stats,
+          visionTitle: fields.visionTitle || undefined,
+          visionDescription: fields.visionDescription || undefined,
+          storyTitle: fields.storyTitle || undefined,
+          storyContent: fields.storyContent && fields.storyContent.nodeType === 'document'
+            ? fields.storyContent
+            : undefined,
+          storyImages,
+          awardsTitle: fields.awardsTitle || undefined,
+          awardsSubtitle: fields.awardsSubtitle || undefined,
+          awards,
+          teamTitle: fields.teamTitle || undefined,
+          teamSubtitle: fields.teamSubtitle || undefined,
+          teamMembers,
+          seoTitle: fields.seoTitle || undefined,
+          seoDescription: fields.seoDescription || undefined,
+        } as AboutUsPageContent;
+      } catch (error) {
+        console.error('Error fetching About Us page content:', error);
+        return null;
+      }
+    },
+    ['about-us-page'],
+    {
+      revalidate: 3600,
+      tags: ['about-us', 'aboutUsPage'],
+    }
+  )();
+}
+
+/**
+ * =============================================
+ * NEWS & EVENTS API FUNCTIONS
+ * =============================================
+ */
+
+export async function getAllNewsPosts(): Promise<NewsPost[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'newsPost',
+          order: ['-fields.publishedDate'],
+          include: 2,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+          return {
+            id: entry.sys.id,
+            title: fields.title || 'Untitled',
+            slug: fields.slug || '',
+            excerpt: fields.excerpt || undefined,
+            content: fields.content && fields.content.nodeType === 'document' ? fields.content : undefined,
+            featuredImage: fields.featuredImage ? extractAssetUrl(fields.featuredImage, response.includes) : undefined,
+            category: fields.category || undefined,
+            publishedDate: fields.publishedDate || entry.sys.createdAt,
+            isFeatured: fields.isFeatured ?? false,
+            externalUrl: fields.externalUrl || undefined,
+            seoTitle: fields.seoTitle || undefined,
+            seoDescription: fields.seoDescription || undefined,
+            createdAt: entry.sys.createdAt,
+            updatedAt: entry.sys.updatedAt,
+          } as NewsPost;
+        });
+      } catch (error) {
+        console.error('Error fetching news posts:', error);
+        if (error instanceof Error && error.message.includes('unknownContentType')) {
+          console.warn('[Contentful] newsPost content type not found.');
+          return [];
+        }
+        return [];
+      }
+    },
+    ['news-posts'],
+    {
+      revalidate: 3600,
+      tags: ['news-posts', 'newsPost'],
+    }
+  )();
+}
+
+export async function getNewsPostBySlug(slug: string): Promise<NewsPost | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'newsPost',
+          'fields.slug': slug,
+          limit: 1,
+          include: 2,
+        }) as any;
+
+        if (response.items.length === 0) return null;
+
+        const entry = response.items[0];
+        const fields = entry.fields || {};
+
+        return {
+          id: entry.sys.id,
+          title: fields.title || '',
+          slug: fields.slug || '',
+          excerpt: fields.excerpt || undefined,
+          content: fields.content && fields.content.nodeType === 'document' ? fields.content : undefined,
+          featuredImage: fields.featuredImage ? extractAssetUrl(fields.featuredImage, response.includes) : undefined,
+          category: fields.category || undefined,
+          publishedDate: fields.publishedDate || entry.sys.createdAt,
+          isFeatured: fields.isFeatured ?? false,
+          externalUrl: fields.externalUrl || undefined,
+          seoTitle: fields.seoTitle || undefined,
+          seoDescription: fields.seoDescription || undefined,
+          createdAt: entry.sys.createdAt,
+          updatedAt: entry.sys.updatedAt,
+        } as NewsPost;
+      } catch (error) {
+        console.error(`Error fetching news post with slug "${slug}":`, error);
+        return null;
+      }
+    },
+    [`news-post-${slug}`],
+    {
+      revalidate: 3600,
+      tags: ['news-posts', 'newsPost', `news-${slug}`],
+    }
+  )();
+}
+
+export async function getAllNewsEvents(): Promise<NewsEvent[]> {
+  return unstable_cache(
+    async () => {
+      try {
+        const response = await contentfulClient.getEntries({
+          content_type: 'newsEvent',
+          order: ['fields.order'],
+          include: 2,
+        }) as any;
+
+        return response.items.map((entry: any) => {
+          const fields = entry.fields || {};
+          return {
+            id: entry.sys.id,
+            title: fields.title || '',
+            subtitle: fields.subtitle || undefined,
+            image: fields.image ? extractAssetUrl(fields.image, response.includes) : undefined,
+            eventDate: fields.eventDate || undefined,
+            location: fields.location || undefined,
+            externalUrl: fields.externalUrl || undefined,
+            order: fields.order || 0,
+          } as NewsEvent;
+        });
+      } catch (error) {
+        console.error('Error fetching news events:', error);
+        return [];
+      }
+    },
+    ['news-events'],
+    {
+      revalidate: 3600,
+      tags: ['news-events', 'newsEvent'],
     }
   )();
 }

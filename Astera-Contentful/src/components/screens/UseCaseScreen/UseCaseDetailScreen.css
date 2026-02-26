@@ -169,6 +169,7 @@
 .use-case-hero-btn-primary:hover {
   background: #004ba3;
   border-color: #004ba3;
+  color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 92, 204, 0.3);
 }

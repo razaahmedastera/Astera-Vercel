@@ -31,27 +31,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch products and industries server-side for Navigation (SSR)
-  let products: ProductPageSummary[];
-  let industries: Industry[];
+  let products: ProductPageSummary[] = [];
+  let industries: Industry[] = [];
+
   try {
-    products = await getAllProductPages();
-  } catch (error) {
-    console.error('[Layout] Failed to fetch products for navigation:', error);
-    // Continue with empty array - Navigation will handle gracefully
-    products = [];
-  }
-  
-  try {
-    industries = await getAllIndustries();
-  } catch (error) {
-    console.error('[Layout] Failed to fetch industries for navigation:', error);
-    industries = [];
+    [products, industries] = await Promise.all([
+      getAllProductPages().catch(() => [] as ProductPageSummary[]),
+      getAllIndustries().catch(() => [] as Industry[]),
+    ]);
+  } catch {
+    // Navigation will render gracefully with empty arrays
   }
 
   return (
     <html lang="en" className={poppins.variable}>
-      <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} className={poppins.className}>
+      <body className={`${poppins.className} flex flex-col min-h-screen`}>
         <RouterHandler />
         <Suspense fallback={<div style={{ height: '64px' }} />}>
           <Header products={products} industries={industries} />

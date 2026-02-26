@@ -3,11 +3,11 @@ import Image from 'next/image';
 
 export function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400 pt-16 pb-8 px-8 mt-auto">
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1.5fr_2fr] gap-16 mb-8">
+    <footer className="bg-slate-900 text-slate-400 pt-16 pb-8 mt-auto">
+      <div className="section-container grid grid-cols-1 lg:grid-cols-[1.5fr_2fr] gap-16 mb-8">
         <div className="flex flex-col gap-4">
           <div className="flex items-center mb-2">
-            <a href="https://www.astera.com/" target="_blank" rel="noopener noreferrer">
+            <Link href="/">
               <Image 
                 src="/images/astera-logo.svg" 
                 alt="Astera Logo" 
@@ -16,16 +16,17 @@ export function Footer() {
                 className="h-8 w-auto object-contain brightness-0 invert opacity-90 cursor-pointer transition-opacity hover:opacity-100"
                 loading="lazy"
               />
-            </a>
+            </Link>
           </div>
           <p className="text-sm m-0">© 2026 Astera Software. All rights reserved.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="flex flex-col gap-3">
             <h4 className="text-base font-semibold text-white m-0 mb-2">Company</h4>
-            <a href="https://www.astera.com/company/about-us/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">About Astera</a>
+            <Link href="/company/about-us" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">About Astera</Link>
+            <Link href="/news" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">News</Link>
+            <Link href="/contact-us" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Contact</Link>
             <a href="https://careers.astera.com/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Careers</a>
-            <a href="https://www.astera.com/contact/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Contact</a>
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="text-base font-semibold text-white m-0 mb-2">Partners</h4>
@@ -51,7 +52,7 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="max-w-[1400px] mx-auto pt-8 px-8 border-t border-white/10 flex justify-between items-center flex-wrap gap-4">
+      <div className="section-container pt-8 border-t border-white/10 flex justify-between items-center flex-wrap gap-4">
         <div className="flex items-center gap-4 flex-wrap">
           <a href="https://www.astera.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Privacy Policy</a>
           <span className="text-slate-600 text-sm">|</span>
