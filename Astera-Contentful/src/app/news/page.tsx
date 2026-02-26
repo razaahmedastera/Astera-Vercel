@@ -1,6 +1,11 @@
-import NewsListScreen from '@/components/screens/NewsScreen/NewsListScreen';
+import dynamic from 'next/dynamic';
 import { getAllNewsPosts, getAllNewsEvents } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
+
+const NewsListScreen = dynamic(
+  () => import('@/components/screens/NewsScreen/NewsListScreen'),
+  { loading: () => <div className="min-h-screen" /> }
+);
 
 export const revalidate = 3600;
 

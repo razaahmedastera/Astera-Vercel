@@ -6,10 +6,9 @@ import { Header } from '@/components/ui/Navigation';
 import { Footer } from '@/components/ui/Footer';
 import { getAllProductPages, getAllIndustries } from '@/lib/contentful/api';
 import type { ProductPageSummary, Industry } from '@/types/contentful';
-import { RouterHandler } from '@/components/RouterHandler';
 
 const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-poppins',
@@ -26,11 +25,17 @@ export const viewport = {
   initialScale: 1,
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+function NavFallback() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-[1000] border-b border-gray-200 py-3 sm:py-4 shadow-sm bg-white">
+      <div className="section-container flex items-center h-10">
+        <div className="h-8 w-28 bg-gray-100 rounded animate-pulse" />
+      </div>
+    </header>
+  );
+}
+
+async function NavigationWrapper() {
   let products: ProductPageSummary[] = [];
   let industries: Industry[] = [];
 
@@ -40,15 +45,28 @@ export default async function RootLayout({
       getAllIndustries().catch(() => [] as Industry[]),
     ]);
   } catch {
-    // Navigation will render gracefully with empty arrays
+    // renders with empty arrays
   }
 
+  return <Header products={products} industries={industries} />;
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en" className={poppins.variable}>
+      <head>
+        <link rel="preconnect" href="https://images.ctfassets.net" />
+        <link rel="dns-prefetch" href="https://images.ctfassets.net" />
+        <link rel="preconnect" href="https://cdn.contentful.com" />
+        <link rel="dns-prefetch" href="https://cdn.contentful.com" />
+      </head>
       <body className={`${poppins.className} flex flex-col min-h-screen`}>
-        <RouterHandler />
-        <Suspense fallback={<div style={{ height: '64px' }} />}>
-          <Header products={products} industries={industries} />
+        <Suspense fallback={<NavFallback />}>
+          <NavigationWrapper />
         </Suspense>
         <main className="flex-1 pt-12 sm:pt-16">{children}</main>
         <Footer />
@@ -56,4 +74,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

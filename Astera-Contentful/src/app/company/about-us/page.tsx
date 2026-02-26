@@ -1,6 +1,11 @@
-import AboutUsScreen from '@/components/screens/AboutUsScreen/AboutUsScreen';
+import dynamic from 'next/dynamic';
 import { getAboutUsPageContent } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
+
+const AboutUsScreen = dynamic(
+  () => import('@/components/screens/AboutUsScreen/AboutUsScreen'),
+  { loading: () => <div className="min-h-screen" /> }
+);
 
 export const revalidate = 3600;
 

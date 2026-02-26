@@ -161,7 +161,7 @@ export default function AboutUsScreen({ data }: AboutUsScreenProps) {
             <div className="hidden lg:block w-full">
               <div className="grid grid-rows-2 gap-3 w-full h-full">
                 <div className="row-span-2 relative w-full rounded-2xl overflow-hidden min-h-[380px]">
-                  <Image src={heroImages[0]} alt="Team" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 30vw" />
+                  <Image src={heroImages[0]} alt="Team" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 30vw" priority />
                 </div>
                 {heroImages[1] && (
                   <div className="relative w-full rounded-2xl overflow-hidden">

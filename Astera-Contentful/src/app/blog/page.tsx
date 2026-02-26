@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
-import BlogListClient from '@/components/screens/BlogScreen/BlogListClient';
+import dynamic from 'next/dynamic';
 import { getAllBlogPosts, getAllBlogCategories } from '@/lib/contentful/api';
+
+const BlogListClient = dynamic(
+  () => import('@/components/screens/BlogScreen/BlogListClient'),
+  { loading: () => <div className="min-h-screen" /> }
+);
 
 export const revalidate = 3600;
 
