@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { ProductPageContent } from '@/types/contentful';
@@ -28,6 +28,14 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const resourcesData = content.resources || [];
   const whyAsteraCards = content.whyThisProductSectionCards || [];
 
+  // Memoize rich text rendering to avoid re-computation on state changes
+  const renderedHeroHeading = useMemo(() => content.heroSectionHeading ? documentToReactComponents(content.heroSectionHeading) : null, [content.heroSectionHeading]);
+  const renderedWhyTitle = useMemo(() => content.whyThisProductSectionTitle ? documentToReactComponents(content.whyThisProductSectionTitle) : null, [content.whyThisProductSectionTitle]);
+  const renderedTestimonialsTitle = useMemo(() => content.testimonialsSectionTitle ? documentToReactComponents(content.testimonialsSectionTitle) : null, [content.testimonialsSectionTitle]);
+  const renderedUseCasesTitle = useMemo(() => content.useCasesSectionTitle ? documentToReactComponents(content.useCasesSectionTitle) : null, [content.useCasesSectionTitle]);
+  const renderedFaqTitle = useMemo(() => content.faqSectionTitle ? documentToReactComponents(content.faqSectionTitle) : null, [content.faqSectionTitle]);
+  const renderedContactTitle = useMemo(() => content.contactFormSectionTitle ? documentToReactComponents(content.contactFormSectionTitle) : null, [content.contactFormSectionTitle]);
+
   // Initialize counters state dynamically from metricsData
   const initialCounters = metricsData.reduce((acc, metric) => {
     acc[metric.id] = 0;
@@ -36,28 +44,32 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   
   const [counters, setCounters] = useState(initialCounters);
 
-  // Intersection Observer for metrics section - triggers counter when section is visible
+  // Defer IntersectionObserver to avoid blocking main thread during hydration
   useEffect(() => {
-    const metricsSection = document.getElementById('product-metrics');
-    if (!metricsSection || isMetricsVisible) return;
+    if (isMetricsVisible) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setIsMetricsVisible(true);
-          observer.disconnect(); // Disconnect after triggering once
-        }
-      },
-      { 
-        threshold: 0.2, // Trigger when 20% of section is visible
-        rootMargin: '0px 0px -50px 0px' // Trigger slightly before section fully enters viewport
-      }
-    );
+    const timerId = setTimeout(() => {
+      const metricsSection = document.getElementById('product-metrics');
+      if (!metricsSection) return;
 
-    observer.observe(metricsSection);
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            setIsMetricsVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+      );
 
+      observer.observe(metricsSection);
+      cleanupRef.current = () => observer.disconnect();
+    }, 0);
+
+    const cleanupRef = { current: () => {} };
     return () => {
-      observer.disconnect();
+      clearTimeout(timerId);
+      cleanupRef.current();
     };
   }, [isMetricsVisible]);
 
@@ -189,7 +201,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             
             {/* Main Heading */}
             <h1 className="font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
-              {documentToReactComponents(content.heroSectionHeading)}
+              {renderedHeroHeading}
             </h1>
             
             {/* Paragraph */}
@@ -297,7 +309,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             <div className="text-center mb-12 sm:mb-16 lg:mb-18">
               {content.whyThisProductSectionTitle && (
                 <h2 className="section-title mb-3">
-                  {documentToReactComponents(content.whyThisProductSectionTitle)}
+                  {renderedWhyTitle}
                 </h2>
               )}
               {content.whyThisProductSectionDescription && (
@@ -541,7 +553,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         <div className="section-container">
           {/* Section Header */}
           <h2 className="section-title mb-8 sm:mb-10">
-            {documentToReactComponents(content.testimonialsSectionTitle)}
+            {renderedTestimonialsTitle}
           </h2>
 
           {/* Testimonial Slider */}
@@ -682,7 +694,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
         <div className="section-container mb-12">
           {/* Section Header */}
           <h2 className="section-title mb-4">
-            {documentToReactComponents(content.useCasesSectionTitle)}
+            {renderedUseCasesTitle}
           </h2>
           <p className="section-desc">
             {content.useCasesSectionDescription}
@@ -896,7 +908,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
               {content.faqSectionBadge}
             </span>
             <h2 className="section-title">
-              {documentToReactComponents(content.faqSectionTitle)}
+              {renderedFaqTitle}
             </h2>
             <p className="section-desc mt-4">
               {content.faqSectionDescription}
@@ -1076,7 +1088,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             {/* Left Column - Content */}
             <div className="lg:sticky lg:top-8">
               <h2 className="section-title-left mb-4">
-                {documentToReactComponents(content.contactFormSectionTitle)}
+                {renderedContactTitle}
               </h2>
               
               <h3 className="text-xl sm:text-2xl lg:text-[28px] font-semibold text-[#005CCC] mb-6">

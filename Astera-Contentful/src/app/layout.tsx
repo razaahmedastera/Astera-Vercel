@@ -59,6 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <head>
+        <link rel="preload" href="/lottie/headerv2.json" as="fetch" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://images.ctfassets.net" />
         <link rel="dns-prefetch" href="https://images.ctfassets.net" />
         <link rel="preconnect" href="https://cdn.contentful.com" />

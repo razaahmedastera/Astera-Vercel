@@ -46,6 +46,11 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
 
   const [counters, setCounters] = useState(initialCounters);
 
+  const heroHeading = useMemo(
+    () => documentToReactComponents(content.heroSectionHeading),
+    [content.heroSectionHeading]
+  );
+
   // Optimize Lottie loading - only load when component mounts
   useEffect(() => {
     let isMounted = true;
@@ -65,26 +70,32 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
     };
   }, []);
 
-  // Optimize Intersection Observer - only create once
+  // Defer IntersectionObserver setup to avoid blocking main thread during hydration
   useEffect(() => {
-    if (isMetricsVisible) return; // Already visible, no need to observe
+    if (isMetricsVisible) return;
 
-    const metricsSection = document.getElementById('achieve-more');
-    if (!metricsSection) return;
+    const timerId = setTimeout(() => {
+      const metricsSection = document.getElementById('achieve-more');
+      if (!metricsSection) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting && !isMetricsVisible) {
-          setIsMetricsVisible(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            setIsMetricsVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.3 }
+      );
 
-    observer.observe(metricsSection);
+      observer.observe(metricsSection);
+      cleanupRef.current = () => observer.disconnect();
+    }, 0);
 
+    const cleanupRef = { current: () => {} };
     return () => {
-      observer.disconnect();
+      clearTimeout(timerId);
+      cleanupRef.current();
     };
   }, [isMetricsVisible]);
 
@@ -128,13 +139,15 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
       <section 
         id="hero-section"
         className="hero-section py-12 sm:py-16 lg:py-20 flex items-center relative"
-        style={{
-          backgroundImage: "url('/images/hero-background.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
       >
+        <Image
+          src="/images/hero-background.png"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-primary-50/95 to-white/90 z-0"></div>
         <div className="hero-section-container section-container grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 lg:gap-16 items-center relative z-10">
           <div className="hero-section-content animate-[fadeInLeft_0.6s_ease-out]">
@@ -142,7 +155,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
               {content.heroSectionBadge}
             </div>
             <h1 className="hero-section-heading font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
-              {documentToReactComponents(content.heroSectionHeading)}
+              {heroHeading}
             </h1>
             <p className="hero-section-description text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 mb-6 sm:mb-8 lg:mb-10 max-w-[600px] text-left">
               {content.heroSectionDescription}
@@ -202,6 +215,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                     title={content.aiStackSectionTitle || 'Product Tour'}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    loading="lazy"
                   ></iframe>
                 </div>
               </div>
