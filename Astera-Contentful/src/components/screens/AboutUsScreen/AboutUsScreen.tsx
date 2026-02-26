@@ -158,20 +158,22 @@ export default function AboutUsScreen({ data }: AboutUsScreenProps) {
                 </p>
               )}
             </div>
-            <div className="hidden lg:grid grid-cols-5 gap-3 w-full">
-              <div className="col-span-3 row-span-2 relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-xl shadow-[#005CCC]/10">
-                <Image src={heroImages[0]} alt="Team" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <div className="hidden lg:block w-full">
+              <div className="grid grid-rows-2 gap-3 w-full h-full">
+                <div className="row-span-2 relative w-full rounded-2xl overflow-hidden min-h-[380px]">
+                  <Image src={heroImages[0]} alt="Team" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 30vw" />
+                </div>
+                {heroImages[1] && (
+                  <div className="relative w-full rounded-2xl overflow-hidden">
+                    <Image src={heroImages[1]} alt="Office" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 20vw" />
+                  </div>
+                )}
+                {heroImages[2] && (
+                  <div className="relative w-full rounded-2xl overflow-hidden">
+                    <Image src={heroImages[2]} alt="Collaboration" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 20vw" />
+                  </div>
+                )}
               </div>
-              {heroImages[1] && (
-                <div className="col-span-2 relative w-full aspect-square rounded-2xl overflow-hidden shadow-lg shadow-[#005CCC]/10">
-                  <Image src={heroImages[1]} alt="Office" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 25vw" />
-                </div>
-              )}
-              {heroImages[2] && (
-                <div className="col-span-2 relative w-full aspect-square rounded-2xl overflow-hidden shadow-lg shadow-[#005CCC]/10">
-                  <Image src={heroImages[2]} alt="Collaboration" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 25vw" />
-                </div>
-              )}
             </div>
           </div>
         </div>
