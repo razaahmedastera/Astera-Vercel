@@ -1,13 +1,8 @@
-import dynamic from 'next/dynamic';
+import NewsListScreen from '@/components/screens/NewsScreen/NewsListScreen';
 import { getAllNewsPosts, getAllNewsEvents } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-const NewsListScreen = dynamic(
-  () => import('@/components/screens/NewsScreen/NewsListScreen'),
-  { loading: () => <div className="min-h-screen" /> }
-);
-
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'News & Events | Astera',

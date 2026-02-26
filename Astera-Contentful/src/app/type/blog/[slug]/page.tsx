@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import BlogPostScreen from '@/components/screens/BlogScreen/BlogPostScreen';
 import { getBlogPostBySlug } from '@/lib/contentful/api';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;

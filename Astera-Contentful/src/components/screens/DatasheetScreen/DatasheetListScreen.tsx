@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import type { Datasheet } from '@/types/contentful';
 import type { Document } from '@contentful/rich-text-types';

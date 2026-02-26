@@ -1,13 +1,8 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import { ProductScreenNew } from '@/components/screens/ProductScreen/ProductScreenNew';
 import { getProductPageContent } from '@/lib/contentful/api';
 
-const ProductScreenNew = dynamic(
-  () => import('@/components/screens/ProductScreen/ProductScreenNew').then(m => m.ProductScreenNew),
-  { loading: () => <div className="min-h-screen" /> }
-);
-
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type ProductPageProps = {
   searchParams?: Promise<{ slug?: string }>;

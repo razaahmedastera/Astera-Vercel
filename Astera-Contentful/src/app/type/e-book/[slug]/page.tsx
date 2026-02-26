@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import EbookDetailScreen from '@/components/screens/EbookScreen/EbookDetailScreen';
 import { getEbookBySlug } from '@/lib/contentful/api';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type EbookPageProps = {
   params: Promise<{ slug: string }>;

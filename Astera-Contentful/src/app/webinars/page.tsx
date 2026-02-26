@@ -1,7 +1,7 @@
 import WebinarListScreen from '@/components/screens/WebinarScreen/WebinarListScreen';
 import { getAllWebinars } from '@/lib/contentful/api';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Webinars | Astera',

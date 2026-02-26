@@ -1,13 +1,8 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import BlogListClient from '@/components/screens/BlogScreen/BlogListClient';
 import { getAllBlogPosts, getAllBlogCategories } from '@/lib/contentful/api';
 
-const BlogListClient = dynamic(
-  () => import('@/components/screens/BlogScreen/BlogListClient'),
-  { loading: () => <div className="min-h-screen" /> }
-);
-
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Blog | Astera',

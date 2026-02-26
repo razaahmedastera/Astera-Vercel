@@ -1,23 +1,14 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import IndustryScreen from '@/components/screens/IndustryScreen/IndustryScreen';
-import { getIndustryBySlug, getAllIndustries } from '@/lib/contentful/api';
+import { getIndustryBySlug } from '@/lib/contentful/api';
 import type { IndustryData } from '@/data/industries';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type IndustryPageProps = {
   params: Promise<{ slug: string }>;
 };
-
-export async function generateStaticParams() {
-  try {
-    const industries = await getAllIndustries();
-    return industries.map((i) => ({ slug: i.slug }));
-  } catch {
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
   const { slug } = await params;

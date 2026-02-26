@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import type { Whitepaper } from '@/types/contentful';
 import type { Document } from '@contentful/rich-text-types';

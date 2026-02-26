@@ -1,30 +1,14 @@
-'use client';
-
 import Image from 'next/image';
 import type { BlogCta } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
-import { useEffect } from 'react';
 
 type Props = {
   cta: BlogCta;
 };
 
 export function BlogCtaSection({ cta }: Props) {
-  // Debug: Log what we receive
-  useEffect(() => {
-    console.log('[BlogCtaSection] Received CTA props:', {
-      id: cta.id,
-      title: cta.title,
-      description: cta.description,
-      text: cta.text,
-      link: cta.link,
-      fullCta: cta
-    });
-  }, [cta]);
-
   if (!cta.title && !cta.text) {
-    console.warn('[BlogCtaSection] No title or text found, not rendering CTA');
     return null;
   }
 
@@ -36,7 +20,6 @@ export function BlogCtaSection({ cta }: Props) {
     },
   };
 
-  // Ensure we have text or link to show button
   const hasButton = cta.text || cta.link;
   const buttonText = cta.text || 'Learn More';
   const buttonLink = cta.link || '#';
@@ -67,11 +50,6 @@ export function BlogCtaSection({ cta }: Props) {
                   {buttonText}
                 </a>
               )}
-            {!hasButton && (
-              <div style={{ color: 'red', fontSize: '12px', marginTop: '10px' }}>
-                [DEBUG] Button not rendered - text: &quot;{cta.text}&quot;, link: &quot;{cta.link}&quot;
-              </div>
-            )}
             </div>
             <div className="blog-cta-image-section">
               <Image

@@ -2,7 +2,7 @@ import DatasheetListScreen from '@/components/screens/DatasheetScreen/DatasheetL
 import { getAllDatasheets } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Data Sheets - Astera',

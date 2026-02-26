@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import DatasheetDetailScreen from '@/components/screens/DatasheetScreen/DatasheetDetailScreen';
 import { getDatasheetBySlug } from '@/lib/contentful/api';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ slug: string }>;

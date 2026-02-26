@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import WebinarDetailScreen from '@/components/screens/WebinarScreen/WebinarDetailScreen';
 import { getWebinarBySlug } from '@/lib/contentful/api';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type PageProps = {
   params: Promise<{ slug: string }>;

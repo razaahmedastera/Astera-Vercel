@@ -1,26 +1,13 @@
 import UseCaseDetailScreen from '@/components/screens/UseCaseScreen/UseCaseDetailScreen';
-import { getUseCaseBySlug, getAllUseCases } from '@/lib/contentful/api';
+import { getUseCaseBySlug } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export const revalidate = 3600; // Revalidate every hour
+export const dynamic = 'force-dynamic';
 
 type UseCasePageProps = {
   params: Promise<{ slug: string }>;
 };
-
-// Generate static params for all use cases at build time
-export async function generateStaticParams() {
-  try {
-    const useCases = await getAllUseCases();
-    return useCases.map((useCase) => ({
-      slug: useCase.slug,
-    }));
-  } catch (error) {
-    console.error('Error generating static params for use cases:', error);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: UseCasePageProps): Promise<Metadata> {
   const { slug } = await params;

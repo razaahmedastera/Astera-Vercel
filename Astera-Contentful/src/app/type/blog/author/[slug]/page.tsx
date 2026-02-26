@@ -1,18 +1,13 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAuthorBySlug, getBlogPostsByAuthor, getAllAuthors } from '@/lib/contentful/api';
+import { getAuthorBySlug, getBlogPostsByAuthor } from '@/lib/contentful/api';
 import { AuthorScreen } from '@/components/screens/AuthorScreen/AuthorScreen';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
-
-export async function generateStaticParams() {
-  const authors = await getAllAuthors();
-  return authors.map((author) => ({ slug: author.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

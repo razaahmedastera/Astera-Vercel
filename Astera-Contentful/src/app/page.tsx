@@ -1,13 +1,8 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import { HomeScreenNew } from '@/components/screens/HomeScreen/HomeScreenNew';
 import { getHomePageContent } from '@/lib/contentful/api';
 
-const HomeScreenNew = dynamic(
-  () => import('@/components/screens/HomeScreen/HomeScreenNew').then(m => m.HomeScreenNew),
-  { loading: () => <div className="min-h-screen" /> }
-);
-
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Astera - AI-Powered Data Platform',
