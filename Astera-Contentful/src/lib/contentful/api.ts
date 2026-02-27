@@ -400,6 +400,24 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
 }
 
 /**
+ * Fetch blog posts that contain a specific tag value.
+ * Used by /category/[slug] pages to filter posts by WordPress category slugs.
+ * @param tag - The tag slug to filter by (matches values in the `tags` field)
+ * @returns Array of matching blog posts, sorted by creation date
+ */
+export async function getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
+  const allPosts = await getAllBlogPosts();
+  return allPosts.filter((post) => {
+    const tags = post.tags || [];
+    const categorySlug = post.category?.slug || '';
+    return (
+      tags.some((t) => t.toLowerCase() === tag.toLowerCase()) ||
+      categorySlug.toLowerCase() === tag.toLowerCase()
+    );
+  });
+}
+
+/**
  * Fetch a single blog post by slug
  * @param slug - The blog post slug
  * @returns Blog post or null if not found

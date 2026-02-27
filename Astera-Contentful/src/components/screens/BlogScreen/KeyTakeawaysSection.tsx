@@ -1,13 +1,12 @@
 import type { Document } from '@contentful/rich-text-types';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { BLOCKS, MARKS } from '@contentful/rich-text-types';
+import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types';
 
 interface KeyTakeawaysSectionProps {
   keyTakeaways: Document;
-  authorName?: string;
 }
 
-export function KeyTakeawaysSection({ keyTakeaways, authorName }: KeyTakeawaysSectionProps) {
+export function KeyTakeawaysSection({ keyTakeaways }: KeyTakeawaysSectionProps) {
   if (!keyTakeaways || !keyTakeaways.nodeType || keyTakeaways.nodeType !== 'document') {
     return null;
   }
@@ -94,10 +93,25 @@ export function KeyTakeawaysSection({ keyTakeaways, authorName }: KeyTakeawaysSe
     },
   };
 
+  // Add hyperlink renderer
+  (renderOptions.renderNode as any)[INLINES.HYPERLINK] = (node: any, children: any) => {
+    const url = node.data?.uri || '#';
+    return (
+      <a
+        href={url}
+        className="text-[#005CCC] underline hover:text-[#004aad] transition-colors"
+        target={url.startsWith('http') ? '_blank' : undefined}
+        rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    );
+  };
+
   return (
     <div className="key-takeaways-container">
       <h3 className="key-takeaways-title">
-        Key Takeaways {authorName ? authorName : ''}
+        Key Takeaways
       </h3>
       <div className="key-takeaways-content">
         {documentToReactComponents(keyTakeaways, renderOptions)}

@@ -419,124 +419,106 @@ export function BlogPostScreen({ post }: Props) {
   const sidebarRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Add class to aside when scrolling and maintain horizontal position
+  // Make sidebar follow the user's scroll, fixed to the right grid column
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let initialLeft: number | null = null;
     let isFixed = false;
+    let isHiddenPastBottom = false;
     let thresholdScroll = 0;
+    let originalSidebarRight = 0;
+    let sidebarWidth = 360;
 
-    const updatePosition = (): number | null => {
+    const captureOriginalPosition = () => {
       const sidebar = sidebarRef.current;
-      if (!sidebar) return null;
-
-      // Get the grid container to calculate proper position
-      const gridContainer = sidebar.closest('.grid') || sidebar.closest('.section-container');
-      if (!gridContainer) return null;
-
-      const gridRect = gridContainer.getBoundingClientRect();
-      const sidebarRect = sidebar.getBoundingClientRect();
-      
-      // Calculate left position relative to viewport
-      // The sidebar is in the second column of the grid
-      const gridLeft = gridRect.left;
-      const gridWidth = gridRect.width;
-      // Sidebar is in the right column, so calculate its position
-      const sidebarLeft = gridLeft + (gridWidth - sidebarRect.width - 40); // 40px for gap
-      
-      return sidebarLeft;
+      if (!sidebar || isFixed) return;
+      const rect = sidebar.getBoundingClientRect();
+      originalSidebarRight = rect.right + window.scrollX;
+      sidebarWidth = rect.width;
     };
 
     const calculateThreshold = (): number => {
       const sidebar = sidebarRef.current;
       if (!sidebar) return 0;
-
-      // Get the TOC container inside the sidebar
       const tocContainer = sidebar.querySelector('.blog-toc-container');
-      if (!tocContainer) {
-        // Fallback: use sidebar's own position
-        const rect = sidebar.getBoundingClientRect();
-        return Math.max(0, rect.top + window.scrollY - 100); // 100px for header height
-      }
-
-      // Calculate when header (100px from top) would touch the TOC
-      const tocRect = tocContainer.getBoundingClientRect();
-      const tocTop = tocRect.top + window.scrollY;
-      // When TOC top reaches 100px from viewport top (header position)
-      // This is the scroll position where header will touch TOC
-      return Math.max(0, tocTop - 100);
+      const el = tocContainer || sidebar;
+      const rect = el.getBoundingClientRect();
+      return Math.max(0, rect.top + window.scrollY - 100);
     };
 
     const handleScroll = () => {
       const sidebar = sidebarRef.current;
+      const contentEl = contentRef.current;
       if (!sidebar) return;
 
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
-      // Calculate threshold on first scroll or if not set
+
       if (thresholdScroll === 0) {
+        captureOriginalPosition();
         thresholdScroll = calculateThreshold();
       }
-      
-      // Add 'is-fixed' class when header touches TOC - keep it fixed throughout scroll
-      if (scrollTop > thresholdScroll) {
+
+      // Bottom boundary: hide TOC when past content area
+      let bottomLimit = Infinity;
+      if (contentEl) {
+        const contentRect = contentEl.getBoundingClientRect();
+        const contentBottom = contentRect.bottom + scrollTop;
+        const tocContainer = sidebar.querySelector('.blog-toc-container');
+        const sidebarH = tocContainer
+          ? tocContainer.getBoundingClientRect().height
+          : sidebar.getBoundingClientRect().height;
+        bottomLimit = contentBottom - sidebarH - 100;
+      }
+
+      const inRange = scrollTop > thresholdScroll && scrollTop < bottomLimit;
+      const pastTop = scrollTop > thresholdScroll;
+
+      if (inRange) {
+        // Show and fix the sidebar
         if (!isFixed) {
-          // Capture position before adding class
-          const leftPos = updatePosition();
-          if (leftPos !== null) {
-            initialLeft = leftPos;
-            
-            sidebar.classList.add('is-fixed');
-            
-            // Set position with smooth transition
-            sidebar.style.setProperty('left', `${initialLeft}px`, 'important');
-            sidebar.style.setProperty('top', '100px', 'important');
-            sidebar.style.setProperty('position', 'fixed', 'important');
-            sidebar.style.setProperty('right', 'auto', 'important');
-            
-            // Hide promo container when TOC becomes sticky
-            const promoContainer = sidebar.querySelector('.blog-promo-container');
-            if (promoContainer) {
-              (promoContainer as HTMLElement).style.display = 'none';
-            }
-            
-            isFixed = true;
-          }
-        } else {
-          // Update position if already fixed (for resize or scroll) - keep it fixed smoothly
-          const leftPos = updatePosition();
-          if (leftPos !== null && initialLeft !== leftPos) {
-            initialLeft = leftPos;
-            sidebar.style.setProperty('left', `${initialLeft}px`, 'important');
-          }
-          // Keep promo container hidden when already fixed
-          const promoContainer = sidebar.querySelector('.blog-promo-container');
-          if (promoContainer) {
-            (promoContainer as HTMLElement).style.display = 'none';
-          }
+          captureOriginalPosition();
+          const leftPos = originalSidebarRight - sidebarWidth;
+          sidebar.classList.add('is-fixed');
+          sidebar.style.setProperty('left', `${leftPos}px`, 'important');
+          sidebar.style.setProperty('width', `${sidebarWidth}px`, 'important');
+          isFixed = true;
+        }
+        if (isHiddenPastBottom) {
+          sidebar.style.setProperty('visibility', 'visible');
+          sidebar.style.setProperty('pointer-events', 'auto');
+          isHiddenPastBottom = false;
+        }
+      } else if (pastTop && !inRange) {
+        // Scrolled past content bottom: keep it fixed (no layout reflow)
+        // but hide it visually so it doesn't overlap the footer
+        if (!isFixed) {
+          captureOriginalPosition();
+          const leftPos = originalSidebarRight - sidebarWidth;
+          sidebar.classList.add('is-fixed');
+          sidebar.style.setProperty('left', `${leftPos}px`, 'important');
+          sidebar.style.setProperty('width', `${sidebarWidth}px`, 'important');
+          isFixed = true;
+        }
+        if (!isHiddenPastBottom) {
+          sidebar.style.setProperty('visibility', 'hidden');
+          sidebar.style.setProperty('pointer-events', 'none');
+          isHiddenPastBottom = true;
         }
       } else {
+        // Scrolled back above the threshold — return to normal flow
         if (isFixed) {
           sidebar.classList.remove('is-fixed');
           sidebar.style.removeProperty('left');
-          sidebar.style.removeProperty('top');
-          sidebar.style.removeProperty('position');
-          sidebar.style.removeProperty('right');
-          initialLeft = null;
+          sidebar.style.removeProperty('width');
+          sidebar.style.removeProperty('visibility');
+          sidebar.style.removeProperty('pointer-events');
           isFixed = false;
-          thresholdScroll = 0; // Reset to recalculate on next scroll
-          
-          // Show promo container when TOC is not sticky
-          const promoContainer = sidebar.querySelector('.blog-promo-container');
-          if (promoContainer) {
-            (promoContainer as HTMLElement).style.display = '';
-          }
+          isHiddenPastBottom = false;
+          thresholdScroll = 0;
         }
       }
     };
 
-    // Throttle scroll events for better performance
     let ticking = false;
     const throttledScroll = () => {
       if (!ticking) {
@@ -548,22 +530,23 @@ export function BlogPostScreen({ post }: Props) {
       }
     };
 
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    
     const handleResize = () => {
-      // Recalculate position on resize
+      // On resize, unfix so we can re-measure the natural position
       if (isFixed && sidebarRef.current) {
-        const leftPos = updatePosition();
-        if (leftPos !== null) {
-          initialLeft = leftPos;
-          sidebarRef.current.style.setProperty('left', `${initialLeft}px`, 'important');
-        }
+        sidebarRef.current.classList.remove('is-fixed');
+        sidebarRef.current.style.removeProperty('left');
+        sidebarRef.current.style.removeProperty('width');
+        isFixed = false;
+        thresholdScroll = 0;
       }
+      // Re-trigger on next frame
+      requestAnimationFrame(handleScroll);
     };
-    
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
-    handleScroll(); // Check initial state
-    
+    handleScroll();
+
     return () => {
       window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('resize', handleResize);
@@ -882,10 +865,7 @@ export function BlogPostScreen({ post }: Props) {
 
             {/* Key Takeaways Section - Add after hero image, before content */}
             {post.keyTakeaways && (
-              <KeyTakeawaysSection 
-                keyTakeaways={post.keyTakeaways} 
-                authorName={authorName}
-              />
+              <KeyTakeawaysSection keyTakeaways={post.keyTakeaways} />
             )}
 
             {/* Content */}

@@ -666,101 +666,55 @@ article.bg-white > section {
 
 /* Sidebar - Sticky on scroll (becomes fixed when scrolling down) */
 @media (min-width: 1024px) {
-  /* Ensure ALL parent containers don't block sticky */
   article.bg-white {
     overflow-x: hidden !important;
     overflow-y: visible !important;
-    width: 100%;
-    max-width: 100%;
   }
 
   article > section {
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  /* Ensure the wrapper section with background gradient doesn't block sticky */
-  article > section[style*="background"] {
     overflow: visible !important;
-    position: relative;
   }
 
-  /* Ensure grid allows sticky positioning */
   .section-container > .grid {
     align-items: start !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
+    overflow: visible !important;
   }
 
-  /* Sticky positioning - fixes when scrolling down */
   aside.blog-sidebar,
-  .blog-sidebar,
-  .section-container > .grid > aside.blog-sidebar,
-  .section-container aside,
-  article aside.blog-sidebar {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    top: 20px !important; /* Sticks when scrolling down */
-    align-self: start !important;
-    height: fit-content !important;
-    max-height: calc(100vh - 40px) !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    z-index: 10 !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    transition: opacity 0.3s ease, top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
+  .blog-sidebar {
+    position: relative;
+    align-self: start;
+    height: fit-content;
+    z-index: 10;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  /* When is-fixed class is added via JavaScript - use higher specificity */
-  article.bg-white > section > div.section-container > .grid > aside.blog-sidebar.is-fixed,
-  article > section > div.section-container > .grid > aside.blog-sidebar.is-fixed,
-  .section-container > .grid > aside.blog-sidebar.is-fixed,
-  aside.blog-sidebar.is-fixed,
   .blog-sidebar.is-fixed {
     position: fixed !important;
     top: 100px !important;
-    /* Horizontal position will be set via inline style (JavaScript) */
     width: 360px !important;
     z-index: 10 !important;
-    /* Ensure these styles override everything */
-    left: auto !important;
-    right: auto !important;
-    /* Smooth transition */
-    transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease !important;
   }
 
-  /* Hide promo container when sidebar is fixed */
   .blog-sidebar.is-fixed .blog-promo-container {
     display: none !important;
   }
 
-
-  /* Custom scrollbar for sticky sidebar */
-  .blog-sidebar::-webkit-scrollbar,
-  .section-container > aside::-webkit-scrollbar {
+  .blog-sidebar::-webkit-scrollbar {
     width: 6px;
   }
 
-  .blog-sidebar::-webkit-scrollbar-track,
-  .section-container > aside::-webkit-scrollbar-track {
+  .blog-sidebar::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .blog-sidebar::-webkit-scrollbar-thumb,
-  .section-container > aside::-webkit-scrollbar-thumb {
+  .blog-sidebar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
 
-  .blog-sidebar::-webkit-scrollbar-thumb:hover,
-  .section-container > aside::-webkit-scrollbar-thumb:hover {
+  .blog-sidebar::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 }
@@ -986,10 +940,6 @@ article.bg-white > section {
     height: 40px;
   }
 }
-.blog-sidebar.is-fixed {
-    position: fixed;
-    top: 100px;
-    width: 360px; /* MUST match grid column */}
 
 /* ========================================
    BLOG CTA SECTION STYLES

@@ -343,7 +343,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
             >
               <button
                 className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                  isCompanyOpen || pathname === '/company/about-us' || pathname === '/news' || pathname?.startsWith('/news/')
+                  isCompanyOpen || pathname === '/company/about-us' || pathname === '/news' || pathname?.startsWith('/news/') || pathname === '/awards-and-recognitions'
                     ? 'text-[#005CCC] bg-[#EFF5FF]' 
                     : 'text-gray-600 hover:text-[#005CCC]'
                 } px-3 py-2 rounded-md`}
@@ -390,6 +390,18 @@ export function Header({ products, industries = [] }: HeaderProps) {
                       onClick={() => setIsCompanyOpen(false)}
                     >
                       News
+                    </Link>
+                    <Link 
+                      href="/awards-and-recognitions" 
+                      prefetch={true}
+                      className={`block px-4 py-2 text-sm transition-colors ${
+                        pathname === '/awards-and-recognitions'
+                          ? 'text-[#005CCC] bg-[#EFF5FF]' 
+                          : 'text-gray-600 hover:text-[#005CCC] hover:bg-gray-50'
+                      }`}
+                      onClick={() => setIsCompanyOpen(false)}
+                    >
+                      Awards & Recognitions
                     </Link>
                   </div>
                 </div>
