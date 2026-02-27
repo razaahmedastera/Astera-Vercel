@@ -1296,3 +1296,68 @@ export interface NewsEventSkeleton extends EntrySkeletonType {
     order?: number;
   };
 }
+
+export interface AwardsPageSettings {
+  heroTitle: string;
+  heroHighlightWord?: string;
+  heroBadgeText?: string;
+  heroDescription?: string;
+  heroCtaText?: string;
+  heroCtaLink?: string;
+  gridTitle?: string;
+  gridSubtitle?: string;
+  ctaTitle?: string;
+  ctaDescription?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface AwardsPageSettingsSkeleton extends EntrySkeletonType {
+  contentTypeId: 'awardsPageSettings';
+  fields: {
+    heroTitle: string;
+    heroHighlightWord?: string;
+    heroBadgeText?: string;
+    heroDescription?: string;
+    heroCtaText?: string;
+    heroCtaLink?: string;
+    gridTitle?: string;
+    gridSubtitle?: string;
+    ctaTitle?: string;
+    ctaDescription?: string;
+    ctaPrimaryText?: string;
+    ctaPrimaryLink?: string;
+    ctaSecondaryText?: string;
+    ctaSecondaryLink?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+export interface AwardEntryItem {
+  id: string;
+  title: string;
+  organization: string;
+  description?: string;
+  image?: string;
+  learnMoreUrl?: string;
+  year?: string;
+  order?: number;
+}
+
+export interface AwardEntrySkeleton extends EntrySkeletonType {
+  contentTypeId: 'awardEntry';
+  fields: {
+    title: string;
+    organization: string;
+    description?: string;
+    image?: any;
+    learnMoreUrl?: string;
+    year?: string;
+    order?: number;
+  };
+}

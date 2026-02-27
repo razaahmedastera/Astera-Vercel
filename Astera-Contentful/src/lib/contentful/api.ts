@@ -29,6 +29,8 @@ import type {
   AboutUsAward,
   NewsPost,
   NewsEvent,
+  AwardsPageSettings,
+  AwardEntryItem,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -2041,5 +2043,69 @@ export async function getAllNewsEvents(): Promise<NewsEvent[]> {
   } catch (error) {
   console.error('Error fetching news events:', error);
   return [];
+  }
+}
+
+// ─── Awards & Recognitions Page ─────────────────────────────────────
+
+export async function getAwardsPageSettings(): Promise<AwardsPageSettings | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'awardsPageSettings',
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    const fields = response.items[0].fields || {};
+    return {
+      heroTitle: fields.heroTitle || 'Awards & Recognitions',
+      heroHighlightWord: fields.heroHighlightWord || undefined,
+      heroBadgeText: fields.heroBadgeText || undefined,
+      heroDescription: fields.heroDescription || undefined,
+      heroCtaText: fields.heroCtaText || undefined,
+      heroCtaLink: fields.heroCtaLink || undefined,
+      gridTitle: fields.gridTitle || undefined,
+      gridSubtitle: fields.gridSubtitle || undefined,
+      ctaTitle: fields.ctaTitle || undefined,
+      ctaDescription: fields.ctaDescription || undefined,
+      ctaPrimaryText: fields.ctaPrimaryText || undefined,
+      ctaPrimaryLink: fields.ctaPrimaryLink || undefined,
+      ctaSecondaryText: fields.ctaSecondaryText || undefined,
+      ctaSecondaryLink: fields.ctaSecondaryLink || undefined,
+      seoTitle: fields.seoTitle || undefined,
+      seoDescription: fields.seoDescription || undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching awards page settings:', error);
+    return null;
+  }
+}
+
+export async function getAllAwardEntries(): Promise<AwardEntryItem[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'awardEntry',
+      order: ['fields.order'],
+      include: 2,
+      limit: 100,
+    }) as any;
+
+    return response.items.map((entry: any) => {
+      const fields = entry.fields || {};
+      return {
+        id: entry.sys.id,
+        title: fields.title || '',
+        organization: fields.organization || '',
+        description: fields.description || undefined,
+        image: fields.image ? extractAssetUrl(fields.image, response.includes) : undefined,
+        learnMoreUrl: fields.learnMoreUrl || undefined,
+        year: fields.year || undefined,
+        order: fields.order || 0,
+      } as AwardEntryItem;
+    });
+  } catch (error) {
+    console.error('Error fetching award entries:', error);
+    return [];
   }
 }
