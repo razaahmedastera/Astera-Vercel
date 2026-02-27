@@ -31,6 +31,8 @@ import type {
   NewsEvent,
   AwardsPageSettings,
   AwardEntryItem,
+  ReviewPageSettings,
+  UserReviewItem,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -2106,6 +2108,74 @@ export async function getAllAwardEntries(): Promise<AwardEntryItem[]> {
     });
   } catch (error) {
     console.error('Error fetching award entries:', error);
+    return [];
+  }
+}
+
+// ─── User Reviews Page ──────────────────────────────────────────────
+
+export async function getReviewPageSettings(): Promise<ReviewPageSettings | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'reviewPageSettings',
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    const fields = response.items[0].fields || {};
+    return {
+      heroTitle: fields.heroTitle || 'User Reviews',
+      heroHighlightWord: fields.heroHighlightWord || undefined,
+      heroBadgeText: fields.heroBadgeText || undefined,
+      heroDescription: fields.heroDescription || undefined,
+      gartnerRating: fields.gartnerRating || undefined,
+      gartnerTotalReviews: fields.gartnerTotalReviews || undefined,
+      gartnerUrl: fields.gartnerUrl || undefined,
+      gridTitle: fields.gridTitle || undefined,
+      gridSubtitle: fields.gridSubtitle || undefined,
+      ctaTitle: fields.ctaTitle || undefined,
+      ctaDescription: fields.ctaDescription || undefined,
+      ctaPrimaryText: fields.ctaPrimaryText || undefined,
+      ctaPrimaryLink: fields.ctaPrimaryLink || undefined,
+      ctaSecondaryText: fields.ctaSecondaryText || undefined,
+      ctaSecondaryLink: fields.ctaSecondaryLink || undefined,
+      seoTitle: fields.seoTitle || undefined,
+      seoDescription: fields.seoDescription || undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching review page settings:', error);
+    return null;
+  }
+}
+
+export async function getAllUserReviews(): Promise<UserReviewItem[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'userReview',
+      order: ['fields.order'],
+      include: 2,
+      limit: 100,
+    }) as any;
+
+    return response.items.map((entry: any) => {
+      const fields = entry.fields || {};
+      return {
+        id: entry.sys.id,
+        reviewerName: fields.reviewerName || '',
+        jobTitle: fields.jobTitle || undefined,
+        company: fields.company || undefined,
+        reviewText: fields.reviewText || '',
+        companyLogo: fields.companyLogo ? extractAssetUrl(fields.companyLogo, response.includes) : undefined,
+        sourceUrl: fields.sourceUrl || undefined,
+        sourcePlatform: fields.sourcePlatform || undefined,
+        rating: fields.rating || undefined,
+        isFeatured: fields.isFeatured ?? false,
+        order: fields.order || 0,
+      } as UserReviewItem;
+    });
+  } catch (error) {
+    console.error('Error fetching user reviews:', error);
     return [];
   }
 }

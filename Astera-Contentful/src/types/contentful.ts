@@ -1361,3 +1361,76 @@ export interface AwardEntrySkeleton extends EntrySkeletonType {
     order?: number;
   };
 }
+
+export interface ReviewPageSettings {
+  heroTitle: string;
+  heroHighlightWord?: string;
+  heroBadgeText?: string;
+  heroDescription?: string;
+  gartnerRating?: string;
+  gartnerTotalReviews?: string;
+  gartnerUrl?: string;
+  gridTitle?: string;
+  gridSubtitle?: string;
+  ctaTitle?: string;
+  ctaDescription?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface ReviewPageSettingsSkeleton extends EntrySkeletonType {
+  contentTypeId: 'reviewPageSettings';
+  fields: {
+    heroTitle: string;
+    heroHighlightWord?: string;
+    heroBadgeText?: string;
+    heroDescription?: string;
+    gartnerRating?: string;
+    gartnerTotalReviews?: string;
+    gartnerUrl?: string;
+    gridTitle?: string;
+    gridSubtitle?: string;
+    ctaTitle?: string;
+    ctaDescription?: string;
+    ctaPrimaryText?: string;
+    ctaPrimaryLink?: string;
+    ctaSecondaryText?: string;
+    ctaSecondaryLink?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+export interface UserReviewItem {
+  id: string;
+  reviewerName: string;
+  jobTitle?: string;
+  company?: string;
+  reviewText: string;
+  companyLogo?: string;
+  sourceUrl?: string;
+  sourcePlatform?: string;
+  rating?: number;
+  isFeatured?: boolean;
+  order?: number;
+}
+
+export interface UserReviewSkeleton extends EntrySkeletonType {
+  contentTypeId: 'userReview';
+  fields: {
+    reviewerName: string;
+    jobTitle?: string;
+    company?: string;
+    reviewText: string;
+    companyLogo?: any;
+    sourceUrl?: string;
+    sourcePlatform?: string;
+    rating?: number;
+    isFeatured?: boolean;
+    order?: number;
+  };
+}

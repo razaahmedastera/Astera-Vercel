@@ -22,6 +22,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isIndustriesOpen, setIsIndustriesOpen] = useState(false);
   const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+  const [isCustomersOpen, setIsCustomersOpen] = useState(false);
   
   const currentSlug = searchParams.get('slug') || 'reportminer';
 
@@ -334,6 +335,55 @@ export function Header({ products, industries = [] }: HeaderProps) {
             >
               Use Cases
             </Link>
+
+            {/* Customers Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsCustomersOpen(true)}
+              onMouseLeave={() => setIsCustomersOpen(false)}
+            >
+              <button
+                className={`text-sm font-medium transition-colors flex items-center gap-1 ${
+                  isCustomersOpen || pathname?.startsWith('/customers/')
+                    ? 'text-[#005CCC] bg-[#EFF5FF]' 
+                    : 'text-gray-600 hover:text-[#005CCC]'
+                } px-3 py-2 rounded-md`}
+              >
+                Customers
+                <svg 
+                  className={`w-4 h-4 transition-transform ${isCustomersOpen ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isCustomersOpen && (
+                <div 
+                  className="absolute top-full left-0 pt-2 w-48 z-50"
+                  onMouseEnter={() => setIsCustomersOpen(true)}
+                  onMouseLeave={() => setIsCustomersOpen(false)}
+                >
+                  <div className="h-2 w-full"></div>
+                  <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                    <Link 
+                      href="/customers/user-reviews" 
+                      prefetch={true}
+                      className={`block px-4 py-2 text-sm transition-colors ${
+                        pathname === '/customers/user-reviews'
+                          ? 'text-[#005CCC] bg-[#EFF5FF]' 
+                          : 'text-gray-600 hover:text-[#005CCC] hover:bg-gray-50'
+                      }`}
+                      onClick={() => setIsCustomersOpen(false)}
+                    >
+                      User Reviews
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Company Dropdown (About Us, News) */}
             <div 
