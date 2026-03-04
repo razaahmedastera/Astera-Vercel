@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     } else if (contentType === 'awardsPageSettings' || contentType === 'awardEntry') {
       revalidateTag('awards');
       revalidatePath('/awards-and-recognitions', 'page');
-    } else if (contentType === 'reviewPageSettings' || contentType === 'userReview') {
+    } else if (contentType === 'reviewPageSettings') {
       revalidateTag('reviews');
       revalidatePath('/customers/user-reviews', 'page');
     } else if (contentType === 'partnersPage') {
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
       revalidateTag('datasheet');
       revalidatePath('/data-sheet', 'page');
       revalidatePath('/type/data-sheet/[slug]', 'page');
-    } else if (contentType === 'aboutUsPage' || contentType === 'teamMember' || contentType === 'award' || contentType === 'aboutUsStat') {
+    } else if (contentType === 'aboutUsPage' || contentType === 'teamMember' || contentType === 'award') {
       revalidateTag('about-us');
       revalidateTag('aboutUsPage');
       revalidatePath('/company/about-us', 'page');
@@ -132,10 +132,6 @@ export async function POST(request: NextRequest) {
       revalidateTag('newsPost');
       revalidatePath('/news', 'page');
       revalidatePath('/news/[slug]', 'page');
-    } else if (contentType === 'newsEvent') {
-      revalidateTag('news-events');
-      revalidateTag('newsEvent');
-      revalidatePath('/news', 'page');
     } else {
       console.warn('[Revalidate] Unknown content type or missing contentType, revalidating all pages');
       revalidateTag('home-page');
@@ -157,8 +153,6 @@ export async function POST(request: NextRequest) {
       revalidateTag('aboutUsPage');
       revalidateTag('news-posts');
       revalidateTag('newsPost');
-      revalidateTag('news-events');
-      revalidateTag('newsEvent');
       revalidateTag('technology-partners');
       revalidatePath('/', 'layout');
       revalidatePath('/company/about-us', 'page');
@@ -239,9 +233,6 @@ export async function GET(request: NextRequest) {
     revalidateTag('aboutUsPage');
     revalidateTag('news-posts');
     revalidateTag('newsPost');
-    revalidateTag('news-events');
-    revalidateTag('newsEvent');
-    
     revalidatePath('/', 'layout');
     revalidatePath('/product', 'layout');
     revalidatePath('/blog', 'layout');

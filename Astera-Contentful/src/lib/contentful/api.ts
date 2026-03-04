@@ -1866,21 +1866,19 @@ export async function getAboutUsPageContent(): Promise<AboutUsPageContent | null
     }
   }
 
-  // Parse stats (linked entries)
+  // Parse stats from JSON field (statsData) — consolidated from aboutUsStat content type
   const stats: AboutUsStat[] = [];
-  if (fields.stats && Array.isArray(fields.stats)) {
-    for (const ref of fields.stats) {
-      const f = ref.fields;
-      if (f) {
-        stats.push({
-          id: ref.sys.id,
-          label: f.label || '',
-          value: f.value || 0,
-          suffix: f.suffix || '',
-          unit: f.unit || '',
-          order: f.order || 0,
-        });
-      }
+  if (fields.statsData && Array.isArray(fields.statsData)) {
+    for (let i = 0; i < fields.statsData.length; i++) {
+      const s = fields.statsData[i];
+      stats.push({
+        id: `stat-${i}`,
+        label: s.label || '',
+        value: s.value || 0,
+        suffix: s.suffix || '',
+        unit: s.unit || '',
+        order: s.order || i,
+      });
     }
     stats.sort((a, b) => (a.order || 0) - (b.order || 0));
   }
@@ -2033,31 +2031,27 @@ export async function getNewsPostBySlug(slug: string): Promise<NewsPost | null> 
   }
 }
 
+/**
+ * Returns news events. Data consolidated from the newsEvent content type (only 2 legacy entries from 2022).
+ * If new events need to be added, update this array or migrate to a JSON field on a settings entry.
+ */
 export async function getAllNewsEvents(): Promise<NewsEvent[]> {
-  try {
-  const response = await contentfulClient.getEntries({
-    content_type: 'newsEvent',
-    order: ['fields.order'],
-    include: 2,
-  }) as any;
-
-  return response.items.map((entry: any) => {
-    const fields = entry.fields || {};
-    return {
-      id: entry.sys.id,
-      title: fields.title || '',
-      subtitle: fields.subtitle || undefined,
-      image: fields.image ? extractAssetUrl(fields.image, response.includes) : undefined,
-      eventDate: fields.eventDate || undefined,
-      location: fields.location || undefined,
-      externalUrl: fields.externalUrl || undefined,
-      order: fields.order || 0,
-    } as NewsEvent;
-  });
-  } catch (error) {
-  console.error('Error fetching news events:', error);
-  return [];
-  }
+  return [
+    {
+      id: 'event-1',
+      title: 'Big Data LDN 2022',
+      subtitle: 'Astera | Booth #800',
+      eventDate: 'Conference & Expo | London | September 21-22',
+      order: 1,
+    },
+    {
+      id: 'event-2',
+      title: 'AIRI 2022 IT Summit',
+      subtitle: 'Astera Software | United States',
+      eventDate: 'AIRI 2022 IT Summit | Kansas City, Missouri | June 08 and 09',
+      order: 2,
+    },
+  ];
 }
 
 // ─── Awards & Recognitions Page ─────────────────────────────────────
@@ -2163,32 +2157,40 @@ export async function getReviewPageSettings(): Promise<ReviewPageSettings | null
   }
 }
 
+/**
+ * Fetch all user reviews from the reviewsData JSON field in reviewPageSettings.
+ * Consolidated from the separate userReview content type.
+ */
 export async function getAllUserReviews(): Promise<UserReviewItem[]> {
   try {
     const response = await contentfulClient.getEntries({
-      content_type: 'userReview',
-      order: ['fields.order'],
-      include: 2,
-      limit: 100,
+      content_type: 'reviewPageSettings',
+      limit: 1,
     }) as any;
 
-    return response.items.map((entry: any) => {
-      const fields = entry.fields || {};
-      return {
-        id: entry.sys.id,
-        reviewerName: fields.reviewerName || '',
-        jobTitle: fields.jobTitle || undefined,
-        company: fields.company || undefined,
-        reviewText: fields.reviewText || '',
-        companyLogo: fields.companyLogo ? extractAssetUrl(fields.companyLogo, response.includes) : undefined,
-        sourceUrl: fields.sourceUrl || undefined,
-        sourcePlatform: fields.sourcePlatform || undefined,
-        product: fields.product || undefined,
-        rating: fields.rating || undefined,
-        isFeatured: fields.isFeatured ?? false,
-        order: fields.order || 0,
-      } as UserReviewItem;
-    });
+    if (response.items.length === 0) return [];
+
+    const fields = response.items[0].fields || {};
+    const reviewsData = fields.reviewsData;
+
+    if (!reviewsData || !Array.isArray(reviewsData)) return [];
+
+    return reviewsData
+      .map((r: any, i: number) => ({
+        id: `review-${i}`,
+        reviewerName: r.reviewerName || '',
+        jobTitle: r.jobTitle || undefined,
+        company: r.company || undefined,
+        reviewText: r.reviewText || '',
+        companyLogo: r.companyLogo || undefined,
+        sourceUrl: r.sourceUrl || undefined,
+        sourcePlatform: r.sourcePlatform || undefined,
+        product: r.product || undefined,
+        rating: r.rating || undefined,
+        isFeatured: r.isFeatured ?? false,
+        order: r.order || 0,
+      } as UserReviewItem))
+      .sort((a: UserReviewItem, b: UserReviewItem) => (a.order || 0) - (b.order || 0));
   } catch (error) {
     console.error('Error fetching user reviews:', error);
     return [];
