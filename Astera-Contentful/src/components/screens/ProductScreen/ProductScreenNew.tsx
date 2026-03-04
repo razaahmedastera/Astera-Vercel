@@ -6,6 +6,24 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import type { ProductPageContent } from '@/types/contentful';
 import ContactUsHubSpotForm from '@/components/ui/HubSpotForm/ContactUsHubSpotForm';
 
+function getYouTubeVideoId(url: string): string {
+  if (!url) return '';
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+  return '';
+}
+
+function getYouTubeThumbnail(url: string): string {
+  const id = getYouTubeVideoId(url);
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : '';
+}
+
 interface ProductScreenNewProps {
   content: ProductPageContent;
 }
@@ -35,6 +53,12 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const renderedUseCasesTitle = useMemo(() => content.useCasesSectionTitle ? documentToReactComponents(content.useCasesSectionTitle) : null, [content.useCasesSectionTitle]);
   const renderedFaqTitle = useMemo(() => content.faqSectionTitle ? documentToReactComponents(content.faqSectionTitle) : null, [content.faqSectionTitle]);
   const renderedContactTitle = useMemo(() => content.contactFormSectionTitle ? documentToReactComponents(content.contactFormSectionTitle) : null, [content.contactFormSectionTitle]);
+
+  // Hero thumbnail: prefer Contentful hero image, else YouTube thumbnail from video URL
+  const heroThumbnailUrl = useMemo(
+    () => content.heroImage || getYouTubeThumbnail(content.heroSectionVideoUrl || ''),
+    [content.heroImage, content.heroSectionVideoUrl]
+  );
 
   // Initialize counters state dynamically from metricsData
   const initialCounters = metricsData.reduce((acc, metric) => {
@@ -245,11 +269,11 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
           {/* Right Side - Media */}
           <div className="product-hero-visual">
             <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] flex items-center justify-center">
-              {/* Image - Hidden when video is playing */}
+              {/* Image - Hidden when video is playing; use heroImage or YouTube thumbnail from video URL */}
               <div className={`absolute inset-0 transition-opacity duration-0 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                {content.heroImage && (
+                {heroThumbnailUrl && (
                   <Image 
-                    src={content.heroImage}
+                    src={heroThumbnailUrl}
                     alt={content.productName}
                     fill
                     className="object-contain"

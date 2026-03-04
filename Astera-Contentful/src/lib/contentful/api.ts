@@ -135,19 +135,29 @@ export async function getAllProductPages(): Promise<ProductPageSummary[]> {
 
 /**
  * Fetch product page content from productPage content type by slug
- * @param slug - The page slug (default: 'reportminer')
+ * @param slug - The page slug (default: 'reportminer'). Matching is case-insensitive if exact match fails.
  * @returns Product page content with all sections
  */
 export async function getProductPageContent(slug: string = 'reportminer'): Promise<ProductPageContent> {
+  const normalizedSlug = (slug || '').trim() || 'reportminer';
   try {
-  const response = await contentfulClient.getEntries({
+  let response = await contentfulClient.getEntries({
     content_type: 'productPage',
-    'fields.slug': slug,
+    'fields.slug': normalizedSlug,
     limit: 1,
   }) as any;
 
+  // If no exact match, try lowercase (Contentful slug might be stored lowercase)
+  if (response.items.length === 0 && normalizedSlug !== normalizedSlug.toLowerCase()) {
+    response = await contentfulClient.getEntries({
+      content_type: 'productPage',
+      'fields.slug': normalizedSlug.toLowerCase(),
+      limit: 1,
+    }) as any;
+  }
+
   if (response.items.length === 0) {
-    throw new Error(`Product page content with slug "${slug}" not found`);
+    throw new Error(`Product page content with slug "${normalizedSlug}" not found`);
   }
 
   const entry = response.items[0];
@@ -225,7 +235,7 @@ export async function getProductPageContent(slug: string = 'reportminer'): Promi
     updatedAt: entry.sys.updatedAt,
   };
   } catch (error) {
-  console.error(`Error fetching product page content with slug "${slug}":`, error);
+  console.error(`Error fetching product page content with slug "${normalizedSlug}":`, error);
   throw error;
   }
 }
@@ -1706,6 +1716,7 @@ export async function getVideoPageContent(): Promise<VideoPageContent | null> {
 
   return {
     id: entry.sys.id,
+    slug: fields.slug || 'videos',
     pageTitle: fields.pageTitle || 'Videos',
     pageSubtitle: fields.pageSubtitle || undefined,
     featuredVideoUrl: fields.featuredVideoUrl || undefined,
@@ -1914,6 +1925,7 @@ export async function getAboutUsPageContent(): Promise<AboutUsPageContent | null
 
   return {
     id: entry.sys.id,
+    slug: fields.slug || 'about-us',
     pageTitle: fields.pageTitle || 'About Us',
     heroBadge: fields.heroBadge || undefined,
     heroHeading: fields.heroHeading || undefined,
@@ -2061,6 +2073,7 @@ export async function getAwardsPageSettings(): Promise<AwardsPageSettings | null
 
     const fields = response.items[0].fields || {};
     return {
+      slug: fields.slug || 'awards-and-recognitions',
       heroTitle: fields.heroTitle || 'Awards & Recognitions',
       heroHighlightWord: fields.heroHighlightWord || undefined,
       heroBadgeText: fields.heroBadgeText || undefined,
@@ -2125,6 +2138,7 @@ export async function getReviewPageSettings(): Promise<ReviewPageSettings | null
 
     const fields = response.items[0].fields || {};
     return {
+      slug: fields.slug || 'user-reviews',
       heroTitle: fields.heroTitle || 'User Reviews',
       heroHighlightWord: fields.heroHighlightWord || undefined,
       heroBadgeText: fields.heroBadgeText || undefined,
@@ -2169,6 +2183,7 @@ export async function getAllUserReviews(): Promise<UserReviewItem[]> {
         companyLogo: fields.companyLogo ? extractAssetUrl(fields.companyLogo, response.includes) : undefined,
         sourceUrl: fields.sourceUrl || undefined,
         sourcePlatform: fields.sourcePlatform || undefined,
+        product: fields.product || undefined,
         rating: fields.rating || undefined,
         isFeatured: fields.isFeatured ?? false,
         order: fields.order || 0,
@@ -2177,5 +2192,99 @@ export async function getAllUserReviews(): Promise<UserReviewItem[]> {
   } catch (error) {
     console.error('Error fetching user reviews:', error);
     return [];
+  }
+}
+
+// ─── Partners Page & Technology Partners Page ───────────────────────
+
+import type { PartnersPageContent, TechnologyPartnersPageContent, TechnologyPartner } from '@/types/contentful';
+
+export async function getTechnologyPartnersPageContent(): Promise<TechnologyPartnersPageContent | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'partnersPage',
+      limit: 1,
+      include: 2,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    const fields = response.items[0].fields || {};
+
+    let heroImage: string | undefined;
+    if (fields.techPartnersHeroImage) {
+      heroImage = extractAssetUrl(fields.techPartnersHeroImage, response.includes) || undefined;
+    }
+
+    let partners: TechnologyPartner[] = [];
+    if (fields.techPartners && Array.isArray(fields.techPartners)) {
+      partners = fields.techPartners.map((p: any) => ({
+        name: p.name || '',
+        logo: p.logo || '',
+        detailUrl: p.detailUrl || '#',
+      }));
+    }
+
+    return {
+      slug: 'technology-partners',
+      heroBadge: fields.techPartnersBadge || undefined,
+      heroTitle: fields.techPartnersTitle || 'Technology Partners',
+      heroImage,
+      sectionTitle: fields.techPartnersSectionTitle || undefined,
+      sectionDescription: fields.techPartnersSectionDesc || undefined,
+      partners,
+      ctaTitle: fields.techPartnersCtaTitle || undefined,
+      ctaDescription: fields.techPartnersCtaDesc || undefined,
+      seoTitle: fields.techPartnersSeoTitle || undefined,
+      seoDescription: fields.techPartnersSeoDesc || undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching technology partners page content:', error);
+    return null;
+  }
+}
+
+export async function getPartnersPageContent(): Promise<PartnersPageContent | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'partnersPage',
+      limit: 1,
+      include: 2,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    const fields = response.items[0].fields || {};
+
+    let heroImage: string | undefined;
+    if (fields.heroImage) {
+      heroImage = extractAssetUrl(fields.heroImage, response.includes) || undefined;
+    }
+
+    return {
+      slug: fields.slug || 'partners',
+      heroTitle: fields.heroTitle || 'Partners',
+      heroHighlightWord: fields.heroHighlightWord || undefined,
+      heroBadgeText: fields.heroBadgeText || undefined,
+      heroDescription: fields.heroDescription || undefined,
+      heroCtaText: fields.heroCtaText || undefined,
+      heroCtaLink: fields.heroCtaLink || undefined,
+      heroImage,
+      partnerTypes: fields.partnerTypes || [],
+      tiers: fields.tiers || [],
+      benefitCategories: fields.benefitCategories || [],
+      benefitsTitle: fields.benefitsTitle || undefined,
+      ctaTitle: fields.ctaTitle || undefined,
+      ctaDescription: fields.ctaDescription || undefined,
+      ctaPrimaryText: fields.ctaPrimaryText || undefined,
+      ctaPrimaryLink: fields.ctaPrimaryLink || undefined,
+      ctaSecondaryText: fields.ctaSecondaryText || undefined,
+      ctaSecondaryLink: fields.ctaSecondaryLink || undefined,
+      seoTitle: fields.seoTitle || undefined,
+      seoDescription: fields.seoDescription || undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching partners page content:', error);
+    return null;
   }
 }

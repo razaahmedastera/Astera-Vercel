@@ -11,6 +11,7 @@ interface UserReviewsScreenProps {
 }
 
 const DEFAULTS = {
+  slug: 'user-reviews',
   heroTitle: 'Read what our customers are saying about us',
   heroHighlightWord: 'customers',
   heroBadgeText: 'User Reviews',
@@ -144,10 +145,15 @@ function ReviewCard({ review }: { review: UserReviewItem }) {
         {review.jobTitle}{review.jobTitle && review.company ? ' | ' : ''}{review.company}
       </p>
 
-      {/* Rating + Platform */}
-      <div className="flex items-center gap-3 mb-4">
+      {/* Rating + Platform + Product */}
+      <div className="flex items-center gap-2 flex-wrap mb-4">
         {review.rating && <StarRating rating={review.rating} size={14} />}
         {review.sourcePlatform && <PlatformBadge platform={review.sourcePlatform} />}
+        {review.product && (
+          <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-[#005CCC] bg-[#005CCC]/5 border border-[#005CCC]/15">
+            {review.product}
+          </span>
+        )}
       </div>
 
       {/* Review text */}
@@ -171,10 +177,16 @@ export default function UserReviewsScreen({ settings, reviews }: UserReviewsScre
   const s = { ...DEFAULTS, ...settings };
   const [search, setSearch] = useState('');
   const [platformFilter, setPlatformFilter] = useState('All');
+  const [productFilter, setProductFilter] = useState('All');
 
   const platforms = useMemo(() => {
     const set = new Set(reviews.map((r) => r.sourcePlatform).filter(Boolean));
     return ['All', ...Array.from(set)] as string[];
+  }, [reviews]);
+
+  const products = useMemo(() => {
+    const set = new Set(reviews.map((r) => r.product).filter(Boolean));
+    return ['All', ...Array.from(set).sort()] as string[];
   }, [reviews]);
 
   const filtered = useMemo(() => {
@@ -184,9 +196,10 @@ export default function UserReviewsScreen({ settings, reviews }: UserReviewsScre
         || r.company?.toLowerCase().includes(search.toLowerCase())
         || r.reviewText.toLowerCase().includes(search.toLowerCase());
       const matchesPlatform = platformFilter === 'All' || r.sourcePlatform === platformFilter;
-      return matchesSearch && matchesPlatform;
+      const matchesProduct = productFilter === 'All' || r.product === productFilter;
+      return matchesSearch && matchesPlatform && matchesProduct;
     });
-  }, [reviews, search, platformFilter]);
+  }, [reviews, search, platformFilter, productFilter]);
 
   const heroTitleParts = s.heroHighlightWord
     ? s.heroTitle.split(s.heroHighlightWord)
@@ -254,37 +267,70 @@ export default function UserReviewsScreen({ settings, reviews }: UserReviewsScre
       {/* ───── FILTERS ───── */}
       <section className="py-8 border-b border-[#e5e7eb] bg-[#fafbfc]">
         <div className="section-container">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            {/* Platform filter pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              {platforms.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPlatformFilter(p)}
-                  className={`px-4 py-2 rounded-full text-[13px] font-medium border transition-all duration-200 cursor-pointer ${
-                    platformFilter === p
-                      ? 'bg-[#005CCC] text-white border-[#005CCC] shadow-sm'
-                      : 'bg-white text-[#4b5563] border-[#e5e7eb] hover:border-[#005CCC]/30 hover:text-[#005CCC]'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-col gap-4">
+            {/* Top row: Platform pills + Search */}
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex flex-wrap items-center gap-2">
+                {platforms.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPlatformFilter(p)}
+                    className={`px-4 py-2 rounded-full text-[13px] font-medium border transition-all duration-200 cursor-pointer ${
+                      platformFilter === p
+                        ? 'bg-[#005CCC] text-white border-[#005CCC] shadow-sm'
+                        : 'bg-white text-[#4b5563] border-[#e5e7eb] hover:border-[#005CCC]/30 hover:text-[#005CCC]'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
 
-            {/* Search */}
-            <div className="relative sm:ml-auto w-full sm:w-auto">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="7" cy="7" r="5" />
-                <path d="M14 14l-3.5-3.5" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search reviews..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full sm:w-[240px] h-10 pl-9 pr-4 rounded-lg border border-[#e5e7eb] text-sm text-[#1a1a1a] placeholder-[#9ca3af] focus:outline-none focus:border-[#005CCC] focus:ring-2 focus:ring-[#005CCC]/10 transition-all bg-white"
-              />
+              <div className="flex items-center gap-3 sm:ml-auto w-full sm:w-auto">
+                {/* Product dropdown */}
+                {products.length > 2 && (
+                  <div className="relative">
+                    <select
+                      value={productFilter}
+                      onChange={(e) => setProductFilter(e.target.value)}
+                      className="appearance-none h-10 pl-4 pr-9 rounded-lg border border-[#e5e7eb] text-[13px] text-[#1a1a1a] bg-white cursor-pointer focus:outline-none focus:border-[#005CCC] focus:ring-2 focus:ring-[#005CCC]/10 transition-all font-medium"
+                    >
+                      <option value="All">All Products</option>
+                      {products.filter((p) => p !== 'All').map((p) => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                    <svg
+                      className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#6b7280]"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 4.5l3 3 3-3" />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Search */}
+                <div className="relative flex-1 sm:flex-none">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="7" cy="7" r="5" />
+                    <path d="M14 14l-3.5-3.5" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search reviews..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full sm:w-[240px] h-10 pl-9 pr-4 rounded-lg border border-[#e5e7eb] text-sm text-[#1a1a1a] placeholder-[#9ca3af] focus:outline-none focus:border-[#005CCC] focus:ring-2 focus:ring-[#005CCC]/10 transition-all bg-white"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -315,7 +361,7 @@ export default function UserReviewsScreen({ settings, reviews }: UserReviewsScre
             <div className="text-center py-16">
               <p className="text-[#6b7280] text-lg">No reviews match your search.</p>
               <button
-                onClick={() => { setSearch(''); setPlatformFilter('All'); }}
+                onClick={() => { setSearch(''); setPlatformFilter('All'); setProductFilter('All'); }}
                 className="mt-4 text-[#005CCC] font-semibold text-sm hover:underline bg-transparent border-none cursor-pointer"
               >
                 Clear filters

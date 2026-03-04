@@ -97,11 +97,22 @@ export async function POST(request: NextRequest) {
       revalidateTag('video-page');
       revalidateTag('videoPage');
       revalidatePath('/videos', 'page');
-    } else if (contentType === 'webinar' || contentType === 'speaker') {
+    } else if (contentType === 'webinar') {
       revalidateTag('webinars');
       revalidateTag('webinar');
       revalidatePath('/webinars', 'page');
       revalidatePath('/type/webinars/[slug]', 'page');
+    } else if (contentType === 'awardsPageSettings' || contentType === 'awardEntry') {
+      revalidateTag('awards');
+      revalidatePath('/awards-and-recognitions', 'page');
+    } else if (contentType === 'reviewPageSettings' || contentType === 'userReview') {
+      revalidateTag('reviews');
+      revalidatePath('/customers/user-reviews', 'page');
+    } else if (contentType === 'partnersPage') {
+      revalidateTag('partners');
+      revalidateTag('technology-partners');
+      revalidatePath('/partners', 'page');
+      revalidatePath('/technology-partners', 'page');
     } else if (contentType === 'whitepaper') {
       revalidateTag('whitepapers');
       revalidateTag('whitepaper');
@@ -148,6 +159,7 @@ export async function POST(request: NextRequest) {
       revalidateTag('newsPost');
       revalidateTag('news-events');
       revalidateTag('newsEvent');
+      revalidateTag('technology-partners');
       revalidatePath('/', 'layout');
       revalidatePath('/company/about-us', 'page');
       revalidatePath('/news', 'page');
@@ -168,6 +180,10 @@ export async function POST(request: NextRequest) {
       revalidatePath('/type/webinars/[slug]', 'page');
       revalidatePath('/whitepaper', 'page');
       revalidatePath('/type/whitepaper/[slug]', 'page');
+      revalidatePath('/awards-and-recognitions', 'page');
+      revalidatePath('/customers/user-reviews', 'page');
+      revalidatePath('/partners', 'page');
+      revalidatePath('/technology-partners', 'page');
     }
 
     return NextResponse.json({
@@ -246,6 +262,9 @@ export async function GET(request: NextRequest) {
     revalidatePath('/type/whitepaper/[slug]', 'page');
     revalidatePath('/news', 'page');
     revalidatePath('/news/[slug]', 'page');
+    revalidatePath('/awards-and-recognitions', 'page');
+    revalidatePath('/customers/user-reviews', 'page');
+    revalidatePath('/partners', 'page');
 
     return NextResponse.json({
       revalidated: true,

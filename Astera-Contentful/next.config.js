@@ -10,9 +10,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.ctfassets.net' },
       { protocol: 'https', hostname: '**.contentful.com' },
       { protocol: 'https', hostname: 'i.ytimg.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
       { protocol: 'https', hostname: '**.youtube.com' },
       { protocol: 'https', hostname: '**.unsplash.com' },
       { protocol: 'https', hostname: '**.kindpng.com' },
+      { protocol: 'https', hostname: '**.nitrocdn.com' },
     ],
   },
   async redirects() {

@@ -9,7 +9,8 @@ type ProductPageProps = {
 };
 
 export async function generateMetadata({ searchParams }: ProductPageProps): Promise<Metadata> {
-  const slug = searchParams ? ((await searchParams).slug || 'reportminer') : 'reportminer';
+  const rawSlug = searchParams ? (await searchParams).slug : undefined;
+  const slug = (rawSlug || '').trim() || 'reportminer';
 
   try {
     const content = await getProductPageContent(slug);
@@ -27,7 +28,8 @@ export async function generateMetadata({ searchParams }: ProductPageProps): Prom
 }
 
 export default async function ProductPage({ searchParams }: ProductPageProps) {
-  const slug = searchParams ? ((await searchParams).slug || 'reportminer') : 'reportminer';
+  const rawSlug = searchParams ? (await searchParams).slug : undefined;
+  const slug = (rawSlug || '').trim() || 'reportminer';
 
   try {
     const content = await getProductPageContent(slug);
@@ -37,6 +39,11 @@ export default async function ProductPage({ searchParams }: ProductPageProps) {
     return (
       <div className="p-8 text-center">
         <p>Failed to load product page content.</p>
+        {slug && slug !== 'reportminer' && (
+          <p className="mt-2 text-sm text-gray-500">
+            No product found for slug &quot;{slug}&quot;. Check that the product exists in Contentful and the slug matches.
+          </p>
+        )}
       </div>
     );
   }

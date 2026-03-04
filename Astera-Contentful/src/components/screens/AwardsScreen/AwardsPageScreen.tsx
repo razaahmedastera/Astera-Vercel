@@ -92,6 +92,7 @@ function AwardCard({ award }: { award: AwardEntryItem }) {
 }
 
 const DEFAULTS = {
+  slug: 'awards-and-recognitions',
   heroTitle: 'Awards & Recognitions',
   heroHighlightWord: 'Recognitions',
   heroBadgeText: 'Recognition & Excellence',

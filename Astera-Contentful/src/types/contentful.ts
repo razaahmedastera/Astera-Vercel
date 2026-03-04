@@ -1027,6 +1027,7 @@ export interface VideoPlaylist {
 
 export interface VideoPageContent {
   id: string;
+  slug: string;
   pageTitle: string;
   pageSubtitle?: string;
   featuredVideoUrl?: string;
@@ -1041,6 +1042,7 @@ export interface VideoPageContent {
 export interface VideoPageSkeleton extends EntrySkeletonType {
   contentTypeId: 'videoPage';
   fields: {
+    slug: string;
     pageTitle: string;
     pageSubtitle?: string;
     featuredVideoUrl?: string;
@@ -1187,6 +1189,7 @@ export interface AboutUsAwardSkeleton extends EntrySkeletonType {
 
 export interface AboutUsPageContent {
   id: string;
+  slug: string;
   pageTitle: string;
   heroBadge?: string;
   heroHeading?: string;
@@ -1211,6 +1214,7 @@ export interface AboutUsPageContent {
 export interface AboutUsPageSkeleton extends EntrySkeletonType {
   contentTypeId: 'aboutUsPage';
   fields: {
+    slug: string;
     pageTitle: string;
     heroBadge?: string;
     heroHeading?: string;
@@ -1298,6 +1302,7 @@ export interface NewsEventSkeleton extends EntrySkeletonType {
 }
 
 export interface AwardsPageSettings {
+  slug: string;
   heroTitle: string;
   heroHighlightWord?: string;
   heroBadgeText?: string;
@@ -1319,6 +1324,7 @@ export interface AwardsPageSettings {
 export interface AwardsPageSettingsSkeleton extends EntrySkeletonType {
   contentTypeId: 'awardsPageSettings';
   fields: {
+    slug: string;
     heroTitle: string;
     heroHighlightWord?: string;
     heroBadgeText?: string;
@@ -1363,6 +1369,7 @@ export interface AwardEntrySkeleton extends EntrySkeletonType {
 }
 
 export interface ReviewPageSettings {
+  slug: string;
   heroTitle: string;
   heroHighlightWord?: string;
   heroBadgeText?: string;
@@ -1385,6 +1392,7 @@ export interface ReviewPageSettings {
 export interface ReviewPageSettingsSkeleton extends EntrySkeletonType {
   contentTypeId: 'reviewPageSettings';
   fields: {
+    slug: string;
     heroTitle: string;
     heroHighlightWord?: string;
     heroBadgeText?: string;
@@ -1414,6 +1422,7 @@ export interface UserReviewItem {
   companyLogo?: string;
   sourceUrl?: string;
   sourcePlatform?: string;
+  product?: string;
   rating?: number;
   isFeatured?: boolean;
   order?: number;
@@ -1429,8 +1438,121 @@ export interface UserReviewSkeleton extends EntrySkeletonType {
     companyLogo?: any;
     sourceUrl?: string;
     sourcePlatform?: string;
+    product?: string;
     rating?: number;
     isFeatured?: boolean;
     order?: number;
+  };
+}
+
+/**
+ * =============================================
+ * TECHNOLOGY PARTNERS PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface TechnologyPartner {
+  name: string;
+  logo: string;
+  detailUrl: string;
+}
+
+export interface TechnologyPartnersPageContent {
+  slug: string;
+  heroBadge?: string;
+  heroTitle: string;
+  heroImage?: string;
+  sectionTitle?: string;
+  sectionDescription?: string;
+  partners: TechnologyPartner[];
+  ctaTitle?: string;
+  ctaDescription?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+/**
+ * Technology partners data is stored as fields within the partnersPage content type
+ * (techPartnersBadge, techPartnersTitle, techPartnersHeroImage, techPartners, etc.)
+ * to stay within the Contentful free plan content type limit.
+ */
+
+/**
+ * =============================================
+ * PARTNERS PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface PartnerType {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface PartnerTier {
+  name: string;
+  priceRange: string;
+  color: string;
+}
+
+export interface PartnerBenefit {
+  name: string;
+  silver: boolean;
+  gold: boolean;
+  platinum: boolean;
+}
+
+export interface PartnerBenefitCategory {
+  category: string;
+  benefits: PartnerBenefit[];
+}
+
+export interface PartnersPageContent {
+  slug: string;
+  heroTitle: string;
+  heroHighlightWord?: string;
+  heroBadgeText?: string;
+  heroDescription?: string;
+  heroCtaText?: string;
+  heroCtaLink?: string;
+  heroImage?: string;
+  partnerTypes: PartnerType[];
+  tiers: PartnerTier[];
+  benefitCategories: PartnerBenefitCategory[];
+  benefitsTitle?: string;
+  ctaTitle?: string;
+  ctaDescription?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface PartnersPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'partnersPage';
+  fields: {
+    slug: string;
+    heroTitle: string;
+    heroHighlightWord?: string;
+    heroBadgeText?: string;
+    heroDescription?: string;
+    heroCtaText?: string;
+    heroCtaLink?: string;
+    heroImage?: any;
+    heroImages?: any[];
+    partnerTypes?: any;
+    tiers?: any;
+    benefitCategories?: any;
+    benefitsTitle?: string;
+    ctaTitle?: string;
+    ctaDescription?: string;
+    ctaPrimaryText?: string;
+    ctaPrimaryLink?: string;
+    ctaSecondaryText?: string;
+    ctaSecondaryLink?: string;
+    seoTitle?: string;
+    seoDescription?: string;
   };
 }
