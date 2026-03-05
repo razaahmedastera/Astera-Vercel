@@ -93,10 +93,6 @@ export async function POST(request: NextRequest) {
       revalidatePath('/type/blog/author/[slug]', 'page');
       revalidatePath('/blog', 'page');
       revalidatePath('/type/blog/[slug]', 'page');
-    } else if (contentType === 'videoPage') {
-      revalidateTag('video-page');
-      revalidateTag('videoPage');
-      revalidatePath('/videos', 'page');
     } else if (contentType === 'webinar') {
       revalidateTag('webinars');
       revalidateTag('webinar');
@@ -142,7 +138,6 @@ export async function POST(request: NextRequest) {
       revalidateTag('use-cases');
       revalidateTag('authors');
       revalidateTag('blogAuthor');
-      revalidateTag('video-page');
       revalidateTag('webinars');
       revalidateTag('webinar');
       revalidateTag('whitepapers');
@@ -169,7 +164,6 @@ export async function POST(request: NextRequest) {
       revalidatePath('/industry-solutions/[slug]', 'page');
       revalidatePath('/use-cases', 'page');
       revalidatePath('/use-cases/[slug]', 'page');
-      revalidatePath('/videos', 'page');
       revalidatePath('/webinars', 'page');
       revalidatePath('/type/webinars/[slug]', 'page');
       revalidatePath('/whitepaper', 'page');
@@ -222,7 +216,6 @@ export async function GET(request: NextRequest) {
     revalidateTag('use-cases');
     revalidateTag('authors');
     revalidateTag('blogAuthor');
-    revalidateTag('video-page');
     revalidateTag('webinars');
     revalidateTag('webinar');
     revalidateTag('whitepapers');
@@ -246,7 +239,6 @@ export async function GET(request: NextRequest) {
     revalidatePath('/use-cases', 'page');
     revalidatePath('/use-cases/[slug]', 'page');
     revalidatePath('/company/about-us', 'page');
-    revalidatePath('/videos', 'page');
     revalidatePath('/webinars', 'page');
     revalidatePath('/type/webinars/[slug]', 'page');
     revalidatePath('/whitepaper', 'page');

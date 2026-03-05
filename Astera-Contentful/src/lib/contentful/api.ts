@@ -1698,39 +1698,15 @@ export async function getBlogPostsByAuthor(authorId: string): Promise<BlogPost[]
 // ─── Video Page API Functions ───
 
 import type { VideoPageContent } from '@/types/contentful';
+import { videoPageContent } from '@/data/video-page';
 
 /**
- * Fetch video page content from Contentful
+ * Returns video page content from static data.
+ * Consolidated from the videoPage content type to free a content type slot.
+ * To update video content, edit src/data/video-page.ts
  */
 export async function getVideoPageContent(): Promise<VideoPageContent | null> {
-  try {
-  const response = await contentfulClient.getEntries({
-    content_type: 'videoPage',
-    limit: 1,
-  }) as any;
-
-  if (response.items.length === 0) return null;
-
-  const entry = response.items[0];
-  const fields = entry.fields || {};
-
-  return {
-    id: entry.sys.id,
-    slug: fields.slug || 'videos',
-    pageTitle: fields.pageTitle || 'Videos',
-    pageSubtitle: fields.pageSubtitle || undefined,
-    featuredVideoUrl: fields.featuredVideoUrl || undefined,
-    featuredVideoTitle: fields.featuredVideoTitle || undefined,
-    featuredVideoDescription: fields.featuredVideoDescription || undefined,
-    socialFacebook: fields.socialFacebook || undefined,
-    socialTwitter: fields.socialTwitter || undefined,
-    socialLinkedin: fields.socialLinkedin || undefined,
-    playlists: fields.playlists || [],
-  } as VideoPageContent;
-  } catch (error) {
-  console.error('Error fetching video page content:', error);
-  return null;
-  }
+  return videoPageContent;
 }
 
 /**
