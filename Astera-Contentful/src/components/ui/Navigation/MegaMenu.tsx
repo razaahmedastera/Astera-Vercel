@@ -121,7 +121,7 @@ export function MegaMenu({ solutions, featuredContent, whatsNew, isOpen, onClose
               {solutions.map((solution) => (
                 <li key={solution.slug}>
                   <Link 
-                    href={`/product?slug=${solution.slug}`}
+                    href={`/products/${solution.slug}`}
                     prefetch={true}
                     className="mega-menu-solution-item"
                     onClick={onClose}

@@ -438,7 +438,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
                     {solutions.map((sol) => (
                       <Link
                         key={sol.slug}
-                        href={`/product?slug=${sol.slug}`}
+                        href={`/products/${sol.slug}`}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-[#005CCC] hover:bg-gray-50 transition-colors"
                         onClick={closeMobile}
                       >
