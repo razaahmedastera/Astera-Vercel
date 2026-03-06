@@ -34,7 +34,9 @@ export default function ContactUsHubSpotForm({
   const uniqueEventName = eventName || `hubspot-${containerId}-loaded`;
 
   useEffect(() => {
-    // Inject HubSpot form styles
+    const customLayoutForms = ['trial-hubspot-form', 'ccp-hubspot-form'];
+    const hasCustomLayout = customLayoutForms.includes(containerId);
+
     const styleId = `hubspot-${containerId}-styles`;
     if (!document.getElementById(styleId)) {
       const style = document.createElement('style');
@@ -79,18 +81,20 @@ export default function ContactUsHubSpotForm({
         }
         #${containerId} .hs-form fieldset.form-columns-1 .hs-form-field,
         #${containerId} .hs-form fieldset.form-columns-1 .input,
+        ${!hasCustomLayout ? `
         #${containerId} .hs-form fieldset.form-columns-2 .hs-form-field,
-        #${containerId} .hs-form fieldset.form-columns-2 .input,
+        #${containerId} .hs-form fieldset.form-columns-2 .input,` : ''}
         #${containerId} .hs-form fieldset .hs-form-field {
           width: 100% !important;
           max-width: 100% !important;
           float: none !important;
           display: block !important;
         }
+        ${!hasCustomLayout ? `
         #${containerId} .hs-form fieldset.form-columns-2 {
           display: flex !important;
           flex-direction: column !important;
-        }
+        }` : ''}
         
         /* Labels - ${showLabels ? 'Show' : 'Hide'} */
         #${containerId} .hs-form-field > label {
@@ -323,12 +327,14 @@ export default function ContactUsHubSpotForm({
           margin-right: 0 !important;
         }
         
+        ${!hasCustomLayout ? `
         /* Middle fields in multi-column fieldsets (e.g. country code text field) */
         #${containerId} fieldset.form-columns-3 .hs-fieldtype-text.field {
           margin: 0 !important;
           padding: 0 !important;
-        }
+        }` : ''}
         
+        ${!hasCustomLayout ? `
         /* Phone field layout - Country code and phone in one unified field */
         #${containerId} .hs-fieldtype-phonenumber,
         #${containerId} .hs_phone,
@@ -460,7 +466,6 @@ export default function ContactUsHubSpotForm({
           box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.08) !important;
           outline: none !important;
         }
-        
         /* Mobile - ensure all fields stacked */
         @media (max-width: 639px) {
           #${containerId} .hs-fieldtype-phonenumber .input,
@@ -471,6 +476,7 @@ export default function ContactUsHubSpotForm({
             gap: 8px !important;
           }
         }
+        ` : ''}
         
         /* Privacy text */
         #${containerId} .hs-richtext {
@@ -500,22 +506,145 @@ export default function ContactUsHubSpotForm({
         #${containerId} .hs-form-field {
           width: 100% !important;
         }
+
+        /* Hide HubSpot-injected form headings and description text */
+        #${containerId} h1,
+        #${containerId} h2,
+        #${containerId} h3,
+        #${containerId} h4,
+        #${containerId} .hs-form > h1,
+        #${containerId} .hs-form > h2,
+        #${containerId} .hs-form > h3,
+        #${containerId} .hs-form > p:first-child,
+        #${containerId} .hs-form-private > h1,
+        #${containerId} .hs-form-private > h2,
+        #${containerId} .hs-form-private > h3,
+        #${containerId} .form-title,
+        #${containerId} .hs-form-title,
+        #${containerId} > h1,
+        #${containerId} > h2,
+        #${containerId} > h3,
+        #${containerId} > h4,
+        #${containerId} > p {
+          display: none !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+          font-size: 0 !important;
+          line-height: 0 !important;
+        }
+
+        ${!hasCustomLayout ? `
+        /* Fix phone: country code input sizing */
+        #${containerId} .hs-fieldtype-phonenumber .input,
+        #${containerId} .hs_phone .input,
+        #${containerId} [class*="hs_phone"] .input {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: nowrap !important;
+          gap: 10px !important;
+          align-items: stretch !important;
+          width: 100% !important;
+          border: none !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          box-sizing: border-box !important;
+          overflow: visible !important;
+          padding: 0 !important;
+        }
+        #${containerId} .hs-fieldtype-phonenumber select,
+        #${containerId} .hs_phone select,
+        #${containerId} [class*="hs_phone"] select {
+          flex: 0 0 130px !important;
+          min-width: 130px !important;
+          width: 130px !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
+          padding: 12px 16px !important;
+          background-color: #fff !important;
+          font-size: 15px !important;
+          font-family: 'Poppins', sans-serif !important;
+          color: #1f2937 !important;
+          box-sizing: border-box !important;
+        }
+        #${containerId} .hs-fieldtype-phonenumber input[type="tel"],
+        #${containerId} .hs_phone input[type="tel"],
+        #${containerId} [class*="hs_phone"] input[type="tel"] {
+          flex: 1 1 auto !important;
+          width: auto !important;
+          min-width: 0 !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 6px !important;
+          padding: 12px 16px !important;
+          background-color: #fff !important;
+          font-size: 15px !important;
+          font-family: 'Poppins', sans-serif !important;
+          color: #1f2937 !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+        }` : ''}
+        ${!hasCustomLayout ? `
+        /* 3-column fieldsets with phone — stack labels, keep inputs in row */
+        #${containerId} fieldset.form-columns-3 {
+          display: flex !important;
+          flex-direction: column !important;
+          width: 100% !important;
+        }
+        #${containerId} fieldset.form-columns-3 .hs-form-field {
+          width: 100% !important;
+          float: none !important;
+          display: block !important;
+        }` : ''}
+
       `;
       document.head.appendChild(style);
     }
 
-    // Function to create HubSpot form
+    const collapseElement = (el: HTMLElement) => {
+      el.style.display = 'none';
+      el.style.height = '0';
+      el.style.margin = '0';
+      el.style.padding = '0';
+      el.style.overflow = 'hidden';
+    };
+
+    const removeFormHeadings = () => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('h1, h2, h3, h4, .form-title, .hs-form-title').forEach((el) => {
+        collapseElement(el as HTMLElement);
+      });
+      container.querySelectorAll('.hs-richtext.hs-main-font-element, .hs-richtext').forEach((el) => {
+        collapseElement(el as HTMLElement);
+      });
+      container.querySelectorAll(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > p').forEach((el) => {
+        collapseElement(el as HTMLElement);
+      });
+      const form = container.querySelector('form');
+      if (form) {
+        const firstChild = form.firstElementChild;
+        if (firstChild && firstChild.tagName === 'P') {
+          collapseElement(firstChild as HTMLElement);
+        }
+      }
+    };
+
     const createHubSpotForm = () => {
       const container = document.getElementById(containerId);
       if (container && (window as any).hbspt) {
-        // Clear any existing form
         container.innerHTML = '';
         (window as any).hbspt.forms.create({
           portalId,
           formId,
           target: `#${containerId}`,
           onFormSubmit: onFormSubmit || undefined,
-          onFormReady: onFormReady || undefined,
+          onFormReady: ($form: any) => {
+            removeFormHeadings();
+            setTimeout(removeFormHeadings, 200);
+            if (onFormReady) onFormReady($form);
+          },
         });
       }
     };

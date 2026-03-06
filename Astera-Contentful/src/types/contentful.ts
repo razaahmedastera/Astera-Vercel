@@ -1556,3 +1556,142 @@ export interface PartnersPageSkeleton extends EntrySkeletonType {
     seoDescription?: string;
   };
 }
+
+
+/**
+ * =============================================
+ * TRIAL / DEMO PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface TrialDemoFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface TrialDemoTestimonial {
+  quote: string;
+  author: string;
+  title: string;
+  logo?: string;
+}
+
+export interface TrialDemoResource {
+  title: string;
+  type: string;
+  url: string;
+  image: string;
+}
+
+export interface TrialDemoTrustLogo {
+  src: string;
+  alt: string;
+}
+
+export interface TrialDemoFormAction {
+  type: 'redirect' | 'download';
+  triggerField: string;
+  triggerValue: string;
+  url: string;
+  downloadFilename?: string;
+}
+
+export interface TrialDemoPage {
+  id: string;
+  entryTitle: string;
+  slug: string;
+  pageType: 'trial' | 'demo';
+  productName: string;
+  eyebrow: string;
+  heading: string;
+  description: string;
+  heroImage?: string;
+  hubspotFormId: string;
+  onSubmitActions?: TrialDemoFormAction[];
+  trustHeading?: string;
+  trustLogos: TrialDemoTrustLogo[];
+  faqs: TrialDemoFaqItem[];
+  testimonialHeading?: string;
+  testimonials: TrialDemoTestimonial[];
+  resourcesBadge?: string;
+  resourcesHeading?: string;
+  resources: TrialDemoResource[];
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface TrialDemoPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'trialDemoPage';
+  fields: {
+    entryTitle: string;
+    slug: string;
+    pageType: string;
+    productName: string;
+    eyebrow: string;
+    heading: string;
+    description: string;
+    heroImage?: any;
+    hubspotFormId: string;
+    onSubmitActions?: TrialDemoFormAction[];
+    trustHeading?: string;
+    trustLogos?: TrialDemoTrustLogo[];
+    faqs?: TrialDemoFaqItem[];
+    testimonialHeading?: string;
+    testimonials?: TrialDemoTestimonial[];
+    resourcesBadge?: string;
+    resourcesHeading?: string;
+    resources?: TrialDemoResource[];
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}
+
+
+/**
+ * =============================================
+ * THANK YOU PAGE CONTENT TYPES
+ * =============================================
+ */
+
+export interface ThankYouNextStep {
+  title: string;
+  description: string;
+}
+
+export interface ThankYouContactCard {
+  icon: string;
+  title: string;
+  lines: string[];
+}
+
+export interface ThankYouPage {
+  id: string;
+  entryTitle: string;
+  slug: string;
+  productName: string;
+  heading: string;
+  description: string;
+  downloadUrl?: string;
+  downloadFilename?: string;
+  nextSteps: ThankYouNextStep[];
+  contactCards: ThankYouContactCard[];
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface ThankYouPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'thankYouPage';
+  fields: {
+    entryTitle: string;
+    slug: string;
+    productName: string;
+    heading: string;
+    description: string;
+    downloadUrl?: string;
+    downloadFilename?: string;
+    nextSteps?: ThankYouNextStep[];
+    contactCards?: ThankYouContactCard[];
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}

@@ -1,0 +1,316 @@
+/* ─── Contact Centerprise Page ─── */
+
+.ccp-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f8fafc 100%);
+  color: #0f1c2e;
+}
+
+.ccp-hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ccp-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ─── Badge ─── */
+
+.ccp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid rgba(79, 70, 229, 0.15);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f46e5;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Bullet Grid ─── */
+
+.ccp-bullets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 32px;
+  margin-top: 2rem;
+}
+
+.ccp-bullet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.ccp-bullet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4f46e5;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .ccp-bullets {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Form Card ─── */
+
+.ccp-form-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── HubSpot Form Overrides — scoped to .ccp-form-card ─── */
+
+.ccp-form-card .hs-richtext,
+.ccp-form-card .hs-richtext.hs-main-font-element {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ccp-form-card h1,
+.ccp-form-card h2,
+.ccp-form-card h3,
+.ccp-form-card h4,
+.ccp-form-card .form-title,
+.ccp-form-card .hs-form-title {
+  display: none !important;
+}
+
+.ccp-form-card .hs-form-field > label {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ccp-form-card form,
+.ccp-form-card .hs-form,
+.ccp-form-card .hs-form-private {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+.ccp-form-card fieldset {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 12px 0 !important;
+  width: 100% !important;
+}
+
+.ccp-form-card fieldset.form-columns-2 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+}
+
+.ccp-form-card fieldset.form-columns-2 .hs-form-field {
+  flex: 1 1 0% !important;
+  width: 50% !important;
+  float: none !important;
+  margin-bottom: 0 !important;
+}
+
+.ccp-form-card fieldset.form-columns-2 .hs-form-field .input {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field {
+  float: none !important;
+  margin-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field .input {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field select,
+.ccp-form-card fieldset.form-columns-3 .hs-form-field input[type="tel"],
+.ccp-form-card fieldset.form-columns-3 .hs-form-field input[type="text"] {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 48px !important;
+  padding: 12px 16px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  font-size: 15px !important;
+  font-family: 'Poppins', sans-serif !important;
+  color: #1f2937 !important;
+  background-color: #fff !important;
+  box-sizing: border-box !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field select:focus,
+.ccp-form-card fieldset.form-columns-3 .hs-form-field input[type="tel"]:focus,
+.ccp-form-card fieldset.form-columns-3 .hs-form-field input[type="text"]:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08) !important;
+  outline: none !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field:first-child {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field:nth-child(2) {
+  flex: 0 0 80px !important;
+  width: 80px !important;
+}
+
+.ccp-form-card fieldset.form-columns-3 .hs-form-field:nth-child(3) {
+  flex: 1 1 auto !important;
+  width: auto !important;
+}
+
+/* Error messages visible */
+.ccp-form-card .hs-error-msgs {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 4px 0 0 !important;
+}
+
+.ccp-form-card .hs-error-msgs label,
+.ccp-form-card .hs-error-msg {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  color: #dc2626 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+.ccp-form-card fieldset.form-columns-1 .hs-form-field {
+  width: 100% !important;
+  float: none !important;
+  margin-bottom: 0 !important;
+}
+
+.ccp-form-card fieldset.form-columns-1 .hs-form-field .input {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.ccp-form-card .hs-form-field {
+  margin-bottom: 0 !important;
+}
+
+.ccp-form-card .hs_submit {
+  margin-top: 8px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 480px) {
+  .ccp-form-card fieldset.form-columns-2 {
+    flex-direction: column !important;
+  }
+  .ccp-form-card fieldset.form-columns-2 .hs-form-field {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* ─── CTA Cards ─── */
+
+.ccp-cta-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 32px 28px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ccp-cta-card:hover {
+  border-color: rgba(79, 70, 229, 0.2);
+  box-shadow: 0 8px 30px rgba(79, 70, 229, 0.08);
+  transform: translateY(-2px);
+}
+
+.ccp-cta-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+
+.ccp-cta-icon.sales {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  color: #2563eb;
+}
+
+.ccp-cta-icon.support {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #16a34a;
+}
+
+.ccp-cta-icon.docs {
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  color: #7c3aed;
+}
+
+.ccp-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4f46e5;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: gap 0.2s ease;
+}
+
+.ccp-cta-link:hover {
+  gap: 10px;
+}

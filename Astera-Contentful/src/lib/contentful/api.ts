@@ -33,6 +33,10 @@ import type {
   AwardEntryItem,
   ReviewPageSettings,
   UserReviewItem,
+  TrialDemoPage,
+  TrialDemoPageSkeleton,
+  ThankYouPage,
+  ThankYouPageSkeleton,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -2263,6 +2267,146 @@ export async function getPartnersPageContent(): Promise<PartnersPageContent | nu
     };
   } catch (error) {
     console.error('Error fetching partners page content:', error);
+    return null;
+  }
+}
+
+
+/* =============================================
+ * TRIAL / DEMO PAGES
+ * ============================================= */
+
+function parseTrialDemoEntry(entry: any, includes?: any): TrialDemoPage {
+  const fields = entry.fields as TrialDemoPageSkeleton['fields'];
+
+  let heroImage: string | undefined;
+  if (fields.heroImage) {
+    heroImage = extractAssetUrl(fields.heroImage, includes) || undefined;
+  }
+
+  return {
+    id: entry.sys.id,
+    entryTitle: fields.entryTitle,
+    slug: fields.slug,
+    pageType: (fields.pageType as 'trial' | 'demo') || 'trial',
+    productName: fields.productName,
+    eyebrow: fields.eyebrow,
+    heading: fields.heading,
+    description: fields.description,
+    heroImage,
+    hubspotFormId: fields.hubspotFormId,
+    onSubmitActions: fields.onSubmitActions || undefined,
+    trustHeading: fields.trustHeading || undefined,
+    trustLogos: fields.trustLogos || [],
+    faqs: fields.faqs || [],
+    testimonialHeading: fields.testimonialHeading || undefined,
+    testimonials: fields.testimonials || [],
+    resourcesBadge: fields.resourcesBadge || undefined,
+    resourcesHeading: fields.resourcesHeading || undefined,
+    resources: fields.resources || [],
+    seoTitle: fields.seoTitle || undefined,
+    seoDescription: fields.seoDescription || undefined,
+  };
+}
+
+/**
+ * Fetch all published trial/demo pages (for generateStaticParams).
+ */
+export async function getAllTrialDemoPages(): Promise<TrialDemoPage[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'trialDemoPage',
+      limit: 100,
+      include: 2,
+    }) as any;
+
+    return response.items.map((entry: any) =>
+      parseTrialDemoEntry(entry, response.includes)
+    );
+  } catch (error) {
+    console.error('Error fetching trial/demo pages:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch a single trial/demo page by slug.
+ */
+export async function getTrialDemoPageBySlug(slug: string): Promise<TrialDemoPage | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'trialDemoPage',
+      'fields.slug': slug,
+      limit: 1,
+      include: 2,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    return parseTrialDemoEntry(response.items[0], response.includes);
+  } catch (error) {
+    console.error(`Error fetching trial/demo page "${slug}":`, error);
+    return null;
+  }
+}
+
+
+/* =============================================
+ * THANK YOU PAGES
+ * ============================================= */
+
+function parseThankYouEntry(entry: any): ThankYouPage {
+  const fields = entry.fields as ThankYouPageSkeleton['fields'];
+
+  return {
+    id: entry.sys.id,
+    entryTitle: fields.entryTitle,
+    slug: fields.slug,
+    productName: fields.productName,
+    heading: fields.heading,
+    description: fields.description,
+    downloadUrl: fields.downloadUrl || undefined,
+    downloadFilename: fields.downloadFilename || undefined,
+    nextSteps: fields.nextSteps || [],
+    contactCards: fields.contactCards || [],
+    seoTitle: fields.seoTitle || undefined,
+    seoDescription: fields.seoDescription || undefined,
+  };
+}
+
+/**
+ * Fetch all published thank-you pages (for generateStaticParams).
+ */
+export async function getAllThankYouPages(): Promise<ThankYouPage[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'thankYouPage',
+      limit: 100,
+    }) as any;
+
+    return response.items.map((entry: any) => parseThankYouEntry(entry));
+  } catch (error) {
+    console.error('Error fetching thank-you pages:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch a single thank-you page by slug.
+ */
+export async function getThankYouPageBySlug(slug: string): Promise<ThankYouPage | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'thankYouPage',
+      'fields.slug': slug,
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    return parseThankYouEntry(response.items[0]);
+  } catch (error) {
+    console.error(`Error fetching thank-you page "${slug}":`, error);
     return null;
   }
 }

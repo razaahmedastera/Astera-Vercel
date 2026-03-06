@@ -1,0 +1,143 @@
+/* ─── Thank You Page ─── */
+
+.ty-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f8fafc 100%);
+  text-align: center;
+}
+
+.ty-hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 92, 204, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ty-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 92, 204, 0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ─── Check Icon ─── */
+
+.ty-check-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #005CCC, #3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 92, 204, 0.2);
+}
+
+/* ─── Progress Bar ─── */
+
+.ty-progress-wrapper {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.ty-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.ty-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #005CCC, #3b82f6);
+  border-radius: 100px;
+  animation: ty-progress 5s ease-in-out forwards;
+}
+
+@keyframes ty-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* ─── Info Cards ─── */
+
+.ty-info-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ty-info-card:hover {
+  border-color: rgba(0, 92, 204, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 92, 204, 0.06);
+  transform: translateY(-2px);
+}
+
+.ty-info-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.ty-info-icon.phone {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  color: #2563eb;
+}
+
+.ty-info-icon.email {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #16a34a;
+}
+
+.ty-info-icon.location {
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  color: #7c3aed;
+}
+
+.ty-info-icon.support {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  color: #ea580c;
+}
+
+/* ─── Next Steps ─── */
+
+.ty-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  text-align: left;
+}
+
+.ty-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #005CCC;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}

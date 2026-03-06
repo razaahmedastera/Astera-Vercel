@@ -1,0 +1,417 @@
+/* ─── Trial Page ─── */
+
+.trial-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.trial-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 92, 204, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.trial-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 92, 204, 0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.trial-form-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.trial-form-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== HubSpot Form Overrides — scoped to .trial-form-card ===== */
+
+/* Kill ALL rich text blocks (headers, descriptions, spacing) */
+.trial-form-card .hs-richtext,
+.trial-form-card .hs-richtext.hs-main-font-element {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+}
+
+/* Kill all headings */
+.trial-form-card h1,
+.trial-form-card h2,
+.trial-form-card h3,
+.trial-form-card h4,
+.trial-form-card .form-title,
+.trial-form-card .hs-form-title {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide all field labels (fields use placeholders instead) */
+.trial-form-card .hs-form-field > label {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Form base: no extra gaps from fieldsets */
+.trial-form-card form,
+.trial-form-card .hs-form,
+.trial-form-card .hs-form-private {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+/* Fieldsets: reset all spacing */
+.trial-form-card fieldset {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 12px 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* 2-column fieldset: first name + last name side by side */
+.trial-form-card fieldset.form-columns-2 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+}
+
+.trial-form-card fieldset.form-columns-2 .hs-form-field {
+  flex: 1 1 0% !important;
+  width: 50% !important;
+  float: none !important;
+  margin-bottom: 0 !important;
+}
+
+.trial-form-card fieldset.form-columns-2 .hs-form-field .input {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* 3-column fieldset: country code + phone side by side */
+.trial-form-card fieldset.form-columns-3 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  align-items: flex-end !important;
+}
+
+.trial-form-card fieldset.form-columns-3 .hs-form-field {
+  float: none !important;
+  margin-bottom: 0 !important;
+}
+
+.trial-form-card fieldset.form-columns-3 .hs-form-field:first-child {
+  flex: 0 0 100px !important;
+  width: 100px !important;
+}
+
+.trial-form-card fieldset.form-columns-3 .hs-form-field:nth-child(2) {
+  flex: 1 1 auto !important;
+  width: auto !important;
+}
+
+.trial-form-card fieldset.form-columns-3 .hs-form-field:nth-child(3) {
+  flex: 0 0 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  display: none !important;
+}
+
+/* 1-column fieldset: full width, no extra margin */
+.trial-form-card fieldset.form-columns-1 {
+  display: block !important;
+}
+
+.trial-form-card fieldset.form-columns-1 .hs-form-field {
+  width: 100% !important;
+  float: none !important;
+  margin-bottom: 0 !important;
+}
+
+.trial-form-card fieldset.form-columns-1 .hs-form-field .input {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Field spacing */
+.trial-form-card .hs-form-field {
+  margin-bottom: 0 !important;
+}
+
+/* Submit row */
+.trial-form-card .hs_submit {
+  margin-top: 8px !important;
+  width: 100% !important;
+}
+
+/* Mobile: stack name fields */
+@media (max-width: 480px) {
+  .trial-form-card fieldset.form-columns-2 {
+    flex-direction: column !important;
+  }
+  .trial-form-card fieldset.form-columns-2 .hs-form-field {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* ===== End HubSpot Form Overrides ===== */
+
+
+/* ─── Trust Logos ─── */
+
+.trial-trust-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.trial-trust-logos img {
+  height: 28px;
+  width: auto;
+  filter: grayscale(100%);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.trial-trust-logos img:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .trial-trust-logos {
+    gap: 24px;
+  }
+  .trial-trust-logos img {
+    height: 22px;
+  }
+}
+
+/* ─── FAQ Section ─── */
+
+.trial-faq-section {
+  background: #fff;
+}
+
+.trial-faq-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.trial-faq-item:hover {
+  border-color: #d1d5db;
+}
+
+.trial-faq-item.active {
+  border-color: #005CCC20;
+  box-shadow: 0 2px 12px rgba(0, 92, 204, 0.05);
+}
+
+.trial-faq-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+  transition: color 0.2s ease;
+}
+
+.trial-faq-trigger:hover {
+  color: #005CCC;
+}
+
+.trial-faq-trigger svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.trial-faq-item.active .trial-faq-trigger svg {
+  transform: rotate(180deg);
+  color: #005CCC;
+}
+
+.trial-faq-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.trial-faq-item.active .trial-faq-content {
+  max-height: 300px;
+}
+
+.trial-faq-answer {
+  padding: 0 24px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #6b7280;
+}
+
+.trial-faq-answer a {
+  color: #005CCC;
+  text-decoration: underline;
+}
+
+/* ─── Testimonials Slider ─── */
+
+.trial-slider-wrapper {
+  position: relative;
+}
+
+.trial-slider-track {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.trial-slider-slides {
+  display: flex;
+  will-change: transform;
+}
+
+.trial-slider-slide {
+  min-width: 100%;
+}
+
+.trial-slider-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.trial-slider-arrow:hover {
+  border-color: #005CCC;
+  color: #005CCC;
+  box-shadow: 0 2px 8px rgba(0, 92, 204, 0.1);
+}
+
+.trial-slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #d1d5db;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.trial-slider-dot.active {
+  background: #005CCC;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.trial-testimonial-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 32px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.trial-testimonial-card:hover {
+  border-color: #005CCC15;
+  box-shadow: 0 4px 20px rgba(0, 92, 204, 0.06);
+}
+
+@media (max-width: 640px) {
+  .trial-slider-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  .trial-testimonial-card {
+    padding: 28px 20px;
+  }
+}
+
+/* ─── Resources ─── */
+
+.trial-resource-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.trial-resource-card:hover {
+  border-color: #005CCC20;
+  box-shadow: 0 8px 24px rgba(0, 92, 204, 0.08);
+  transform: translateY(-2px);
+}
+
+.trial-resource-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 1024px) {
+  .trial-faq-trigger {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+  .trial-faq-answer {
+    padding: 0 20px 16px;
+  }
+  .trial-testimonial-card {
+    padding: 24px;
+  }
+}
