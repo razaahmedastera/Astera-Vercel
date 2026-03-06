@@ -115,7 +115,7 @@ const reportMinerResources: TrialDemoPage['resources'] = [
  * All trial and demo landing pages.
  * Key = URL slug (the part after astera.com/ in the live URL).
  */
-export const landingPages: Record<string, Omit<TrialDemoPage, 'id' | 'entryTitle'>> = {
+export const landingPages: Record<string, Omit<TrialDemoPage, 'id' | 'entryTitle' | 'slug'>> = {
 
   /* ────────────────────────── TRIAL PAGES ────────────────────────── */
 
