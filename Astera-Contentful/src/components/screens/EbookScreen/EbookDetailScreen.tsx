@@ -298,7 +298,7 @@ export default function EbookDetailScreen({ ebook }: Props) {
         '@type': 'ListItem',
         position: 2,
         name: 'eBooks',
-        item: `${baseUrl}/e-book`,
+        item: `${baseUrl}/e-books`,
       },
       {
         '@type': 'ListItem',

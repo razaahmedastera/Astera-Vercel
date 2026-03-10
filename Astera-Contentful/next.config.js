@@ -19,7 +19,8 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      { source: '/ebook', destination: '/e-book', permanent: true },
+      { source: '/ebook', destination: '/e-books', permanent: true },
+      { source: '/e-book', destination: '/e-books', permanent: true },
       { source: '/ebook/:slug', destination: '/type/e-book/:slug', permanent: true },
       { source: '/whitepapers', destination: '/whitepaper', permanent: true },
       { source: '/whitepapers/:slug', destination: '/type/whitepaper/:slug', permanent: true },

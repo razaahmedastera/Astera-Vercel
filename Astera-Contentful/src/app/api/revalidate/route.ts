@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     } else if (contentType === 'eBook') {
       revalidateTag('ebooks');
       revalidateTag('ebook');
-      revalidatePath('/e-book', 'page');
+      revalidatePath('/e-books', 'page');
       revalidatePath('/type/e-book/[slug]', 'page');
     } else if (contentType === '21U5b9oci2lilctbzJrh4a') {
       // Industry page changed - revalidate cache tags and paths
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
       revalidatePath('/type/blog/author/[slug]', 'page');
       revalidatePath('/data-sheet', 'page');
       revalidatePath('/type/data-sheet/[slug]', 'page');
-      revalidatePath('/e-book', 'page');
+      revalidatePath('/e-books', 'page');
       revalidatePath('/type/e-book/[slug]', 'page');
       revalidatePath('/industry-solutions/[slug]', 'page');
       revalidatePath('/by-use-case', 'page');
@@ -233,7 +233,7 @@ export async function GET(request: NextRequest) {
     revalidatePath('/type/blog/author/[slug]', 'page');
     revalidatePath('/data-sheet', 'page');
     revalidatePath('/type/data-sheet/[slug]', 'page');
-    revalidatePath('/e-book', 'page');
+    revalidatePath('/e-books', 'page');
     revalidatePath('/type/e-book/[slug]', 'page');
     revalidatePath('/industry-solutions/[slug]', 'page');
     revalidatePath('/by-use-case', 'page');
