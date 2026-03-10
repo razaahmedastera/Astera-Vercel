@@ -84,8 +84,8 @@ export async function POST(request: NextRequest) {
       // Use case changed - revalidate cache tags and paths
       revalidateTag('use-cases');
       revalidateTag('use-case');
-      revalidatePath('/use-cases', 'page');
-      revalidatePath('/use-cases/[slug]', 'page');
+      revalidatePath('/by-use-case', 'page');
+      revalidatePath('/by-use-case/[slug]', 'page');
     } else if (contentType === 'blogAuthor') {
       revalidateTag('authors');
       revalidateTag('blogAuthor');
@@ -162,8 +162,8 @@ export async function POST(request: NextRequest) {
       revalidatePath('/e-book', 'page');
       revalidatePath('/type/e-book/[slug]', 'page');
       revalidatePath('/industry-solutions/[slug]', 'page');
-      revalidatePath('/use-cases', 'page');
-      revalidatePath('/use-cases/[slug]', 'page');
+      revalidatePath('/by-use-case', 'page');
+      revalidatePath('/by-use-case/[slug]', 'page');
       revalidatePath('/webinars', 'page');
       revalidatePath('/type/webinars/[slug]', 'page');
       revalidatePath('/whitepaper', 'page');
@@ -236,8 +236,8 @@ export async function GET(request: NextRequest) {
     revalidatePath('/e-book', 'page');
     revalidatePath('/type/e-book/[slug]', 'page');
     revalidatePath('/industry-solutions/[slug]', 'page');
-    revalidatePath('/use-cases', 'page');
-    revalidatePath('/use-cases/[slug]', 'page');
+    revalidatePath('/by-use-case', 'page');
+    revalidatePath('/by-use-case/[slug]', 'page');
     revalidatePath('/company/about-us', 'page');
     revalidatePath('/webinars', 'page');
     revalidatePath('/type/webinars/[slug]', 'page');

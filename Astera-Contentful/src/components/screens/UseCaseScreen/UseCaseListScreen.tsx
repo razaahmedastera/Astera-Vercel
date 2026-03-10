@@ -106,7 +106,7 @@ export default function UseCaseListScreen({ useCases = [] }: Props) {
               <div className="use-case-featured-content">
                 <h2 className="use-case-featured-title">{featuredUseCase.title}</h2>
                 <p className="use-case-featured-description">{featuredUseCase.description}</p>
-                <Link href={`/use-cases/${featuredUseCase.slug}`} prefetch={true} className="use-case-featured-link">
+                <Link href={`/by-use-case/${featuredUseCase.slug}`} prefetch={true} className="use-case-featured-link">
                   Read Use Case
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" />
@@ -145,7 +145,7 @@ export default function UseCaseListScreen({ useCases = [] }: Props) {
               {paginatedUseCases.map((useCase) => (
                 <Link
                   key={useCase.id}
-                  href={`/use-cases/${useCase.slug}`}
+                  href={`/by-use-case/${useCase.slug}`}
                   prefetch={true}
                   className="use-case-card"
                 >

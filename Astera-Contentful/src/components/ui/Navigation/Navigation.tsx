@@ -282,10 +282,10 @@ export function Header({ products, industries = [] }: HeaderProps) {
 
           {/* Use Cases */}
           <Link
-            href="/use-cases"
+            href="/by-use-case"
             prefetch={true}
             className={`text-[13px] xl:text-sm font-medium transition-colors px-2.5 xl:px-3 py-2 rounded-md whitespace-nowrap ${
-              pathname === '/use-cases' || pathname?.startsWith('/use-cases/')
+              pathname === '/by-use-case' || pathname?.startsWith('/by-use-case/')
                 ? 'text-[#005CCC] bg-[#EFF5FF]'
                 : 'text-gray-600 hover:text-[#005CCC]'
             }`}
@@ -513,9 +513,9 @@ export function Header({ products, industries = [] }: HeaderProps) {
 
               {/* Use Cases (direct link) */}
               <Link
-                href="/use-cases"
+                href="/by-use-case"
                 className={`block px-3 py-3 rounded-lg text-[15px] font-medium transition-colors ${
-                  pathname === '/use-cases' || pathname?.startsWith('/use-cases/')
+                  pathname === '/by-use-case' || pathname?.startsWith('/by-use-case/')
                     ? 'text-[#005CCC] bg-[#EFF5FF]'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
