@@ -1703,9 +1703,16 @@ export interface ThankYouPageSkeleton extends EntrySkeletonType {
  * =============================================
  */
 
+export interface CaseStudyQuote {
+  text: string;
+  author: string;
+}
+
 export interface CaseStudyBodySection {
   heading: string;
   content: string;
+  quotes?: CaseStudyQuote[];
+  image?: string;
 }
 
 export interface CaseStudy {
@@ -1718,6 +1725,7 @@ export interface CaseStudy {
   industry?: string;
   downloadUrl?: string;
   coverImage?: string;
+  logoImage?: string;
   profile?: string;
   useCase?: string;
   results?: string;
@@ -1740,6 +1748,7 @@ export interface CaseStudySkeleton extends EntrySkeletonType {
     industry?: string;
     downloadUrl?: string;
     coverImage?: string;
+    logoImage?: string;
     profile?: string;
     useCase?: string;
     results?: string;

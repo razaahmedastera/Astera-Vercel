@@ -2431,6 +2431,7 @@ function parseCaseStudyEntry(entry: any): CaseStudy {
     industry: fields.industry || undefined,
     downloadUrl: fields.downloadUrl || undefined,
     coverImage: fields.coverImage || undefined,
+    logoImage: fields.logoImage || undefined,
     profile: fields.profile || undefined,
     useCase: fields.useCase || undefined,
     results: fields.results || undefined,
