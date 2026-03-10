@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     } else if (contentType === 'whitepaper') {
       revalidateTag('whitepapers');
       revalidateTag('whitepaper');
-      revalidatePath('/whitepaper', 'page');
+      revalidatePath('/resources/whitepapers', 'page');
       revalidatePath('/type/whitepaper/[slug]', 'page');
     } else if (contentType === 'dataSheet') {
       revalidateTag('datasheets');
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
       revalidatePath('/by-use-case/[slug]', 'page');
       revalidatePath('/webinars', 'page');
       revalidatePath('/type/webinars/[slug]', 'page');
-      revalidatePath('/whitepaper', 'page');
+      revalidatePath('/resources/whitepapers', 'page');
       revalidatePath('/type/whitepaper/[slug]', 'page');
       revalidatePath('/awards-and-recognitions', 'page');
       revalidatePath('/customers/user-reviews', 'page');
@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
     revalidatePath('/company/about-us', 'page');
     revalidatePath('/webinars', 'page');
     revalidatePath('/type/webinars/[slug]', 'page');
-    revalidatePath('/whitepaper', 'page');
+    revalidatePath('/resources/whitepapers', 'page');
     revalidatePath('/type/whitepaper/[slug]', 'page');
     revalidatePath('/news', 'page');
     revalidatePath('/news/[slug]', 'page');

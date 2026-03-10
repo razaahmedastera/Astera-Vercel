@@ -24,7 +24,7 @@ function ThankYouContent() {
           If it doesn&apos;t, check your browser&apos;s popup blocker.
         </p>
         <div className="wp-thankyou-actions">
-          <Link href="/whitepaper" className="wp-thankyou-btn wp-thankyou-btn--primary">
+          <Link href="/resources/whitepapers" className="wp-thankyou-btn wp-thankyou-btn--primary">
             Browse More Whitepapers
           </Link>
           <Link href="/" className="wp-thankyou-btn wp-thankyou-btn--secondary">

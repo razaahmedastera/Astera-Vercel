@@ -118,7 +118,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
     setMobileAccordion((prev) => (prev === key ? null : key));
   };
 
-  const isResourceActive = pathname === '/blog' || pathname?.startsWith('/type/blog/') || pathname === '/data-sheet' || pathname?.startsWith('/type/data-sheet/') || pathname === '/e-books' || pathname?.startsWith('/type/e-book/') || pathname === '/videos' || pathname === '/webinars' || pathname?.startsWith('/type/webinars/') || pathname === '/whitepaper' || pathname?.startsWith('/type/whitepaper/');
+  const isResourceActive = pathname === '/blog' || pathname?.startsWith('/type/blog/') || pathname === '/data-sheet' || pathname?.startsWith('/type/data-sheet/') || pathname === '/e-books' || pathname?.startsWith('/type/e-book/') || pathname === '/videos' || pathname === '/webinars' || pathname?.startsWith('/type/webinars/') || pathname === '/resources/whitepapers' || pathname?.startsWith('/type/whitepaper/');
   const isCompanyActive = pathname === '/company/about-us' || pathname === '/news' || pathname?.startsWith('/news/') || pathname === '/awards-and-recognitions' || pathname === '/partners' || pathname === '/technology-partners';
 
   const resourceLinks = [
@@ -127,7 +127,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
     { href: '/e-books', label: 'eBooks', active: pathname === '/e-books' || pathname?.startsWith('/type/e-book/') },
     { href: '/videos', label: 'Videos', active: pathname === '/videos' },
     { href: '/webinars', label: 'Webinars', active: pathname === '/webinars' || pathname?.startsWith('/type/webinars/') },
-    { href: '/whitepaper', label: 'Whitepapers', active: pathname === '/whitepaper' || pathname?.startsWith('/type/whitepaper/') },
+    { href: '/resources/whitepapers', label: 'Whitepapers', active: pathname === '/resources/whitepapers' || pathname?.startsWith('/type/whitepaper/') },
   ];
 
   const companyLinks = [
