@@ -1,0 +1,181 @@
+/* ─── Case Study List ─── */
+.cs-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f4ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cs-featured-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cs-featured-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.cs-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 28px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cs-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  border-color: #c7d2fe;
+}
+
+.cs-industry-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.cs-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f1c2e;
+  margin: 12px 0 8px;
+  line-height: 1.4;
+}
+
+.cs-card-desc {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.cs-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4f46e5;
+  margin-top: 16px;
+  transition: gap 0.2s ease;
+}
+
+.cs-card-link:hover {
+  gap: 10px;
+}
+
+/* ─── Case Study Detail ─── */
+.cs-detail-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f4ff 100%);
+  position: relative;
+}
+
+.cs-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.cs-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+}
+
+.cs-highlight-card {
+  background: linear-gradient(135deg, #eef2ff 0%, #f0f4ff 100%);
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+}
+
+.cs-highlight-card p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+.cs-body-section {
+  margin-bottom: 32px;
+}
+
+.cs-body-section h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f1c2e;
+  margin-bottom: 12px;
+}
+
+.cs-body-section p {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.cs-sidebar-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.cs-sidebar-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4f46e5;
+  margin-bottom: 6px;
+}
+
+.cs-sidebar-card p {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.cs-cta-section {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+}
+
+.cs-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.cs-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+}

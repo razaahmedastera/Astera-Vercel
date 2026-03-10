@@ -37,6 +37,8 @@ import type {
   TrialDemoPageSkeleton,
   ThankYouPage,
   ThankYouPageSkeleton,
+  CaseStudy,
+  CaseStudySkeleton,
 } from '@/types/contentful';
 import { Entry } from 'contentful';
 
@@ -2407,6 +2409,67 @@ export async function getThankYouPageBySlug(slug: string): Promise<ThankYouPage 
     return parseThankYouEntry(response.items[0]);
   } catch (error) {
     console.error(`Error fetching thank-you page "${slug}":`, error);
+    return null;
+  }
+}
+
+
+/* =============================================
+ * CASE STUDIES
+ * ============================================= */
+
+function parseCaseStudyEntry(entry: any): CaseStudy {
+  const fields = entry.fields as CaseStudySkeleton['fields'];
+
+  return {
+    id: entry.sys.id,
+    entryTitle: fields.entryTitle,
+    slug: fields.slug,
+    title: fields.title,
+    subtitle: fields.subtitle || undefined,
+    featured: fields.featured || false,
+    industry: fields.industry || undefined,
+    downloadUrl: fields.downloadUrl || undefined,
+    coverImage: fields.coverImage || undefined,
+    profile: fields.profile || undefined,
+    useCase: fields.useCase || undefined,
+    results: fields.results || undefined,
+    learnMoreUrl: fields.learnMoreUrl || undefined,
+    bodySections: fields.bodySections || [],
+    highlights: fields.highlights || undefined,
+    author: fields.author || undefined,
+    seoTitle: fields.seoTitle || undefined,
+    seoDescription: fields.seoDescription || undefined,
+  };
+}
+
+export async function getAllCaseStudies(): Promise<CaseStudy[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'caseStudy',
+      limit: 100,
+    }) as any;
+
+    return response.items.map((entry: any) => parseCaseStudyEntry(entry));
+  } catch (error) {
+    console.error('Error fetching case studies:', error);
+    return [];
+  }
+}
+
+export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'caseStudy',
+      'fields.slug': slug,
+      limit: 1,
+    }) as any;
+
+    if (response.items.length === 0) return null;
+
+    return parseCaseStudyEntry(response.items[0]);
+  } catch (error) {
+    console.error(`Error fetching case study "${slug}":`, error);
     return null;
   }
 }

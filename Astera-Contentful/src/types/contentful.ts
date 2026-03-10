@@ -1695,3 +1695,59 @@ export interface ThankYouPageSkeleton extends EntrySkeletonType {
     seoDescription?: string;
   };
 }
+
+
+/**
+ * =============================================
+ * CASE STUDY CONTENT TYPES
+ * =============================================
+ */
+
+export interface CaseStudyBodySection {
+  heading: string;
+  content: string;
+}
+
+export interface CaseStudy {
+  id: string;
+  entryTitle: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  featured: boolean;
+  industry?: string;
+  downloadUrl?: string;
+  coverImage?: string;
+  profile?: string;
+  useCase?: string;
+  results?: string;
+  learnMoreUrl?: string;
+  bodySections: CaseStudyBodySection[];
+  highlights?: string[];
+  author?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface CaseStudySkeleton extends EntrySkeletonType {
+  contentTypeId: 'caseStudy';
+  fields: {
+    entryTitle: string;
+    slug: string;
+    title: string;
+    subtitle?: string;
+    featured?: boolean;
+    industry?: string;
+    downloadUrl?: string;
+    coverImage?: string;
+    profile?: string;
+    useCase?: string;
+    results?: string;
+    learnMoreUrl?: string;
+    bodySections?: CaseStudyBodySection[];
+    highlights?: string[];
+    author?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+  };
+}

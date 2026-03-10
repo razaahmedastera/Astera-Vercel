@@ -35,7 +35,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="text-base font-semibold text-white m-0 mb-2">Customers</h4>
-            <a href="https://www.astera.com/customers/case-studies/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Case Studies</a>
+            <a href="/customers/case-studies" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Case Studies</a>
             <a href="https://www.astera.com/customers/user-reviews/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">User Reviews</a>
             <a href="https://www.astera.com/customers/referral-program/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Referral Program</a>
           </div>
