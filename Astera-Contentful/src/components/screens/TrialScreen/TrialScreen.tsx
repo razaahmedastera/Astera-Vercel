@@ -79,7 +79,7 @@ export default function TrialScreen({ content }: TrialScreenProps) {
   return (
     <div>
       {/* ─── Hero Section ─── */}
-      <section className="trial-hero py-16 sm:py-20 lg:py-24">
+      <section className="trial-hero py-[70px] pb-16 sm:pb-20 lg:pb-24">
         <div className="section-container relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
             {/* Left: Content */}

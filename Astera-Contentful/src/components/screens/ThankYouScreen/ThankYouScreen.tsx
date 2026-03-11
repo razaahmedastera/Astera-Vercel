@@ -60,7 +60,7 @@ export default function ThankYouScreen({ content }: ThankYouScreenProps) {
   return (
     <div>
       {/* Hero */}
-      <section className="ty-hero py-16 sm:py-20 lg:py-28">
+      <section className="ty-hero py-[70px] pb-16 sm:pb-20 lg:pb-28">
         <div className="section-container relative z-10 max-w-2xl mx-auto">
           <div className="ty-check-circle">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

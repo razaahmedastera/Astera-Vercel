@@ -46,17 +46,17 @@ export function Footer() {
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="text-base font-semibold text-white m-0 mb-2">Legal & Sitemap</h4>
-            <a href="https://www.astera.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Privacy Policy</a>
-            <a href="https://www.astera.com/terms-and-conditions/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Terms of Use</a>
+            <Link href="/privacy-policy" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Privacy Policy</Link>
+            <Link href="/terms-and-conditions" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Terms of Use</Link>
             <a href="https://www.astera.com/site-map/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Site Map</a>
           </div>
         </div>
       </div>
       <div className="section-container pt-8 border-t border-white/10 flex justify-between items-center flex-wrap gap-4">
         <div className="flex items-center gap-4 flex-wrap">
-          <a href="https://www.astera.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Privacy Policy</a>
+          <Link href="/privacy-policy" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Privacy Policy</Link>
           <span className="text-slate-600 text-sm">|</span>
-          <a href="https://www.astera.com/terms-and-conditions/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Terms of Use</a>
+          <Link href="/terms-and-conditions" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Terms of Use</Link>
           <span className="text-slate-600 text-sm">|</span>
           <a href="https://www.astera.com/site-map/" target="_blank" rel="noopener noreferrer" className="text-slate-400 text-sm no-underline transition-colors hover:text-white">Site Map</a>
         </div>

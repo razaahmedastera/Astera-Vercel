@@ -31,7 +31,7 @@
 /* Hero Section - Modern Split Design */
 .contact-us-hero {
   position: relative;
-  padding: 6rem 0 8rem 0;
+  padding: 70px 0 8rem 0;
   background: var(--contact-bg-gradient);
   overflow: hidden;
 }
@@ -429,7 +429,7 @@
 
 @media (max-width: 1024px) {
   .contact-us-hero {
-    padding: 4rem 0 6rem 0;
+    padding: 60px 0 6rem 0;
   }
 
   .contact-us-hero-wrapper {
@@ -444,7 +444,7 @@
 
 @media (max-width: 768px) {
   .contact-us-hero {
-    padding: 3rem 0 4rem 0;
+    padding: 50px 0 4rem 0;
   }
 
   .contact-us-hero-wrapper {

@@ -100,7 +100,7 @@
    HERO SECTION - REDESIGNED
    ======================================== */
 .industry-hero {
-  padding: 160px 0 100px;
+  padding: 70px 0 100px;
   background: #ffffff;
   position: relative;
   overflow: hidden;
@@ -798,7 +798,7 @@
    ======================================== */
 @media (max-width: 1024px) {
   .industry-hero {
-    padding: 120px 0 60px;
+    padding: 60px 0 60px;
   }
 
   .industry-hero-layout {

@@ -9,7 +9,7 @@
 
 /* ── Page Header ── */
 .video-page-header {
-  padding: 100px 0 40px;
+  padding: 70px 0 40px;
   border-bottom: 2px solid #e5e7eb;
 }
 
@@ -389,7 +389,7 @@
 
 @media (max-width: 768px) {
   .video-page-header {
-    padding: 80px 0 32px;
+    padding: 60px 0 32px;
   }
 
   .video-page-header-inner {

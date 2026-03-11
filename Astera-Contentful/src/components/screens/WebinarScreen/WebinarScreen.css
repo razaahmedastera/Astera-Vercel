@@ -4,7 +4,7 @@
 
 /* ── List Page Header ── */
 .webinar-page-header {
-  padding: 100px 0 48px;
+  padding: 70px 0 48px;
   background: linear-gradient(135deg, #EFF5FF 0%, #DBEAFE 50%, #BFDBFE 100%);
   color: #0f172a;
 }
@@ -598,7 +598,7 @@
 
 /* Section 1 – Hero: thumbnail left, takeaways right */
 .webinar-post-hero {
-  padding: 100px 0 64px;
+  padding: 70px 0 64px;
   background: linear-gradient(135deg, #EFF5FF 0%, #DBEAFE 50%, #BFDBFE 100%);
 }
 
@@ -876,7 +876,7 @@
 
 @media (max-width: 768px) {
   .webinar-page-header {
-    padding: 80px 0 40px;
+    padding: 60px 0 40px;
   }
 
   .webinar-page-title {
