@@ -101,6 +101,7 @@ export default function TrialScreen({ content }: TrialScreenProps) {
                     fill
                     className="object-contain"
                     sizes="380px"
+                    priority
                   />
                 </div>
               )}
@@ -130,7 +131,7 @@ export default function TrialScreen({ content }: TrialScreenProps) {
             </p>
             <div className="trial-trust-logos">
               {content.trustLogos.map((logo, i) => (
-                <img key={i} src={logo.src} alt={logo.alt} loading="lazy" />
+                <Image key={i} src={logo.src} alt={logo.alt} width={100} height={32} loading="lazy" />
               ))}
             </div>
           </div>
@@ -215,9 +216,11 @@ export default function TrialScreen({ content }: TrialScreenProps) {
                             <p className="text-sm font-semibold text-[#0f1c2e]">{t.author}</p>
                             <p className="text-xs text-gray-500 mt-1">{t.title}</p>
                             {t.logo && (
-                              <img
+                              <Image
                                 src={t.logo}
                                 alt={t.author}
+                                width={80}
+                                height={24}
                                 className="h-6 w-auto opacity-50 mt-4"
                                 loading="lazy"
                               />
@@ -281,7 +284,7 @@ export default function TrialScreen({ content }: TrialScreenProps) {
                   className="trial-resource-card group no-underline"
                 >
                   <div className="relative overflow-hidden">
-                    <img src={r.image} alt={r.title} loading="lazy" />
+                    <Image src={r.image} alt={r.title} width={400} height={220} loading="lazy" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                   </div>
                   <div className="p-4">

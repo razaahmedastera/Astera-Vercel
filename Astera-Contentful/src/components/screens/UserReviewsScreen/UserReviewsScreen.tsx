@@ -26,7 +26,7 @@ const DEFAULTS = {
   ctaPrimaryText: 'Start Free Trial',
   ctaPrimaryLink: '/contact-us',
   ctaSecondaryText: 'Explore Products',
-  ctaSecondaryLink: '/product',
+  ctaSecondaryLink: '/products/reportminer',
 };
 
 const PLATFORM_COLORS: Record<string, string> = {

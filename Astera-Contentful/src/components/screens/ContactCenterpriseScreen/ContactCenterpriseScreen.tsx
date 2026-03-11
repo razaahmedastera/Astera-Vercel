@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import ContactUsHubSpotForm from '@/components/ui/HubSpotForm/ContactUsHubSpotForm';
 import './ContactCenterpriseScreen.css';
 
@@ -104,19 +105,28 @@ export default function ContactCenterpriseScreen() {
                 <div className={`ccp-cta-icon ${card.icon}`}>{card.svg}</div>
                 <h3 className="text-base font-bold text-[#0f1c2e] mb-2">{card.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{card.description}</p>
-                <a
-                  href={card.linkUrl}
-                  className="ccp-cta-link"
-                  {...(card.linkUrl.startsWith('http') || card.linkUrl.startsWith('mailto')
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                >
-                  {card.linkText}
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14" />
-                    <path d="M12 5l7 7-7 7" />
-                  </svg>
-                </a>
+                {card.linkUrl.startsWith('http') || card.linkUrl.startsWith('mailto') ? (
+                  <a
+                    href={card.linkUrl}
+                    className="ccp-cta-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {card.linkText}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14" />
+                      <path d="M12 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                ) : (
+                  <Link href={card.linkUrl} className="ccp-cta-link">
+                    {card.linkText}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14" />
+                      <path d="M12 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                )}
               </div>
             ))}
           </div>

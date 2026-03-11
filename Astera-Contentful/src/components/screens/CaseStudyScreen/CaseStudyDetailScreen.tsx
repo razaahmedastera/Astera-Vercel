@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { CaseStudy } from '@/types/contentful';
 import './CaseStudyScreen.css';
 
@@ -35,15 +36,19 @@ export default function CaseStudyDetailScreen({ caseStudy }: CaseStudyDetailScre
               <span className="cs-detail-badge">Case Study</span>
 
               <div className="cs-detail-logos">
-                <img
+                <Image
                   src="/images/astera-logo.svg"
                   alt="Astera"
+                  width={120}
+                  height={40}
                   className="cs-detail-logo"
                 />
                 <span className="cs-detail-logo-divider" />
-                <img
+                <Image
                   src={caseStudy.logoImage || '/images/astera-logo.svg'}
                   alt={caseStudy.entryTitle}
+                  width={120}
+                  height={40}
                   className="cs-detail-logo"
                 />
               </div>
@@ -71,10 +76,14 @@ export default function CaseStudyDetailScreen({ caseStudy }: CaseStudyDetailScre
             {/* Right – Cover Image */}
             <div className="cs-detail-hero-visual">
               {caseStudy.coverImage ? (
-                <img
+                <Image
                   src={caseStudy.coverImage}
                   alt={caseStudy.title}
+                  width={600}
+                  height={400}
                   className="cs-detail-hero-img"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 600px"
                 />
               ) : (
                 <div className="cs-detail-hero-placeholder" />
@@ -143,10 +152,13 @@ export default function CaseStudyDetailScreen({ caseStudy }: CaseStudyDetailScre
                       ))
                     )}
                     {section.image && (
-                      <img
+                      <Image
                         src={section.image}
                         alt={section.heading}
+                        width={900}
+                        height={500}
                         className="cs-body-image"
+                        loading="lazy"
                       />
                     )}
                   </div>

@@ -107,7 +107,7 @@ export default function NewsListScreen({ posts, events }: Props) {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#005CCC]/[0.04] blur-3xl -translate-y-1/2 translate-x-1/3" />
 
         <div className="section-container relative z-10">
-          <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+          <div className={`transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm text-xs font-semibold text-[#005CCC] tracking-wide uppercase mb-6 border border-[#005CCC]/10">
               <span className="w-1.5 h-1.5 rounded-full bg-[#005CCC] animate-pulse" />
               Latest Updates

@@ -12,6 +12,7 @@ const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-poppins',
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#005CCC',
 };
 
 function NavFallback() {
@@ -69,11 +71,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preload" href="/lottie/headerv2.json" as="fetch" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://images.ctfassets.net" />
-        <link rel="dns-prefetch" href="https://images.ctfassets.net" />
-        <link rel="preconnect" href="https://cdn.contentful.com" />
-        <link rel="dns-prefetch" href="https://cdn.contentful.com" />
+        <link rel="preconnect" href="https://images.ctfassets.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.contentful.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://js.hsforms.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.astera.com" />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
       </head>
       <body className={`${poppins.className} flex flex-col min-h-screen`}>
         <Suspense fallback={<NavFallback />}>

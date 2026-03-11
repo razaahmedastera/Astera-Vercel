@@ -165,7 +165,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
           >
             <button
               className={`text-[13px] xl:text-sm font-medium transition-colors flex items-center gap-0.5 whitespace-nowrap ${
-                isSolutionsOpen || pathname === '/product'
+                isSolutionsOpen || pathname.startsWith('/products')
                   ? 'text-[#005CCC] bg-[#EFF5FF]'
                   : 'text-gray-600 hover:text-[#005CCC]'
               } px-2.5 xl:px-3 py-2 rounded-md`}
@@ -426,7 +426,7 @@ export function Header({ products, industries = [] }: HeaderProps) {
               <div>
                 <button
                   className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-[15px] font-medium transition-colors ${
-                    pathname === '/product' ? 'text-[#005CCC] bg-[#EFF5FF]' : 'text-gray-700 hover:bg-gray-50'
+                    pathname.startsWith('/products') ? 'text-[#005CCC] bg-[#EFF5FF]' : 'text-gray-700 hover:bg-gray-50'
                   }`}
                   onClick={() => toggleAccordion('solutions')}
                 >

@@ -61,8 +61,7 @@ export async function POST(request: NextRequest) {
       // Product page content changed - revalidate cache tags and paths
       revalidateTag('product-pages');
       revalidateTag('product');
-      revalidatePath('/product', 'page');
-      revalidatePath('/product', 'layout');
+      revalidatePath('/products/[slug]', 'page');
     } else if (contentType === 'blog') {
       // Blog post changed - revalidate cache tags and paths
       revalidateTag('blog-posts');
@@ -153,7 +152,7 @@ export async function POST(request: NextRequest) {
       revalidatePath('/company/about-us', 'page');
       revalidatePath('/news', 'page');
       revalidatePath('/news/[slug]', 'page');
-      revalidatePath('/product', 'layout');
+      revalidatePath('/products/[slug]', 'page');
       revalidatePath('/blog', 'layout');
       revalidatePath('/type/blog/[slug]', 'page');
       revalidatePath('/type/blog/author/[slug]', 'page');
@@ -227,7 +226,7 @@ export async function GET(request: NextRequest) {
     revalidateTag('news-posts');
     revalidateTag('newsPost');
     revalidatePath('/', 'layout');
-    revalidatePath('/product', 'layout');
+    revalidatePath('/products/[slug]', 'page');
     revalidatePath('/blog', 'layout');
     revalidatePath('/type/blog/[slug]', 'page');
     revalidatePath('/type/blog/author/[slug]', 'page');

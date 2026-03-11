@@ -6,6 +6,7 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import dynamic from 'next/dynamic';
 import type { HomePageContent } from '@/types/contentful';
 import { Awards } from '@/components/ui/Awards/Awards';
+import SmartLink from '@/components/ui/SmartLink/SmartLink';
 
 // Lazy load Lottie to improve initial page load
 const Lottie = dynamic(
@@ -161,18 +162,18 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
               {content.heroSectionDescription}
             </p>
             <div className="hero-section-cta flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <a 
+              <SmartLink 
                 href={content.heroSectionPrimaryCtaUrl}
                 className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-none cursor-pointer transition-all bg-[#005CCC] text-white shadow-[#005CCC]/1 hover:-translate-y-0.3 hover:shadow-xl hover:shadow-[#005CCC]/20 w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionPrimaryCta}
-              </a>
-              <a 
+              </SmartLink>
+              <SmartLink 
                 href={content.heroSectionSecondaryCtaUrl}
                 className="px-5 py-2.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-[10px] text-sm sm:text-base font-medium sm:font-semibold border-2 border-[#005CCC] cursor-pointer transition-all bg-white text-[#005CCC] hover:border-[#004ba3] hover:text-[#004ba3] w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionSecondaryCta}
-              </a>
+              </SmartLink>
             </div>
           </div>
           <div className="hero-section-animation animate-[fadeInRight_0.6s_ease-out]">
@@ -265,9 +266,9 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                   </li>
                 ))}
               </ul>
-              <a href={tabContent[activeTab].learnMoreUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[#005CCC] font-medium sm:font-semibold text-sm sm:text-base no-underline transition-colors hover:text-[#004ba3]">
+              <SmartLink href={tabContent[activeTab].learnMoreUrl} className="inline-flex items-center gap-2 text-[#005CCC] font-medium sm:font-semibold text-sm sm:text-base no-underline transition-colors hover:text-[#004ba3]">
                 Learn More <span>→</span>
-              </a>
+              </SmartLink>
             </div>
             <div className="feature-tabs-visual w-full">
               <div className="feature-tabs-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
@@ -331,15 +332,13 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                 <p className="product-offering-description text-sm leading-relaxed text-gray-600 mb-5">
                   {product.description}
                 </p>
-                <a 
-                  href={product.learnMoreUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <SmartLink 
+                  href={product.learnMoreUrl}
                   className="product-offering-link text-[#005CCC] font-semibold text-sm no-underline transition-all hover:text-[#004ba3] inline-flex items-center gap-2 group-hover:gap-3"
                 >
                   Learn More 
                   <span className="transition-transform group-hover:translate-x-1">→</span>
-                </a>
+                </SmartLink>
               </div>
             ))}
           </div>
@@ -362,11 +361,9 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
           </h2>
           <div className="resources-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {content.resources.map((resource, index) => (
-              <a 
+              <SmartLink 
                 key={index} 
                 href={resource.linkUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 id={`resource-${resource.type.toLowerCase()}-${index}`} 
                 className="resource-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
               >
@@ -397,7 +394,7 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                     {resource.title}
                   </h3>
                 </div>
-              </a>
+              </SmartLink>
             ))}
           </div>
         </div>
@@ -420,9 +417,9 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
                 <div className="relative z-10 flex flex-col flex-grow">
                   <h3 className="cta-title text-lg sm:text-xl font-semibold text-[#000] mb-3 sm:mb-4">{card.title}</h3>
                   <p className="cta-description text-xs sm:text-sm leading-relaxed text-gray-600 mb-4 sm:mb-6 flex-grow">{card.description}</p>
-                  <a href={card.buttonUrl} target={card.buttonUrl.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer" className="cta-button inline-block w-full px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm font-medium sm:font-semibold text-center bg-[#005CCC] text-white hover:bg-[#004ba3] transition-colors mt-auto">
+                  <SmartLink href={card.buttonUrl} className="cta-button inline-block w-full px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm font-medium sm:font-semibold text-center bg-[#005CCC] text-white hover:bg-[#004ba3] transition-colors mt-auto">
                     {card.buttonText}
-                  </a>
+                  </SmartLink>
                 </div>
               </div>
             ))}

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import SmartLink from '@/components/ui/SmartLink/SmartLink';
 import type { BlogCta } from '@/types/contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from '@contentful/rich-text-types';
@@ -41,14 +42,12 @@ export function BlogCtaSection({ cta }: Props) {
                 </div>
               )}
               {hasButton && (
-                <a
+                <SmartLink
                   href={buttonLink}
-                  target={buttonLink && buttonLink !== '#' && buttonLink.startsWith('http') ? '_blank' : '_self'}
-                  rel="noopener noreferrer"
                   className="blog-cta-button"
                 >
                   {buttonText}
-                </a>
+                </SmartLink>
               )}
             </div>
             <div className="blog-cta-image-section">

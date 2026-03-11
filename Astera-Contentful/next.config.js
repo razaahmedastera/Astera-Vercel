@@ -28,6 +28,7 @@ const nextConfig = {
       { source: '/data-sheets', destination: '/datasheets', permanent: true },
       { source: '/data-sheets/:slug', destination: '/data-sheet/:slug', permanent: true },
       { source: '/type/data-sheet/:slug', destination: '/data-sheet/:slug', permanent: true },
+      { source: '/product', destination: '/products/reportminer', permanent: false },
     ];
   },
   async headers() {

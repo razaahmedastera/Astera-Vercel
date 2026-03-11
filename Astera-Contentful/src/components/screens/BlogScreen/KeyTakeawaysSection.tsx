@@ -1,6 +1,7 @@
 import type { Document } from '@contentful/rich-text-types';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types';
+import SmartLink from '@/components/ui/SmartLink/SmartLink';
 
 interface KeyTakeawaysSectionProps {
   keyTakeaways: Document;
@@ -97,14 +98,12 @@ export function KeyTakeawaysSection({ keyTakeaways }: KeyTakeawaysSectionProps) 
   (renderOptions.renderNode as any)[INLINES.HYPERLINK] = (node: any, children: any) => {
     const url = node.data?.uri || '#';
     return (
-      <a
+      <SmartLink
         href={url}
         className="text-[#005CCC] underline hover:text-[#004aad] transition-colors"
-        target={url.startsWith('http') ? '_blank' : undefined}
-        rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
       >
         {children}
-      </a>
+      </SmartLink>
     );
   };
 

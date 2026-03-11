@@ -929,7 +929,7 @@ export function BlogPostScreen({ post }: Props) {
               <p className="blog-promo-description">
                 Learn how Astera Data Stack can simplify and streamline your enterprise&apos;s data management.
               </p>
-              <Link href="/product" className="blog-promo-button">
+              <Link href="/products/reportminer" className="blog-promo-button">
                 Start Your Free Trial
               </Link>
             </div>

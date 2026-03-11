@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import './IntegrationScreen.css';
 
 type Integration = {
@@ -156,9 +157,11 @@ export default function IntegrationScreen() {
             {filtered.map((item) => (
               <div key={item.name + item.category} className="integ-card">
                 {item.comingSoon && <span className="integ-card-coming">Coming Soon</span>}
-                <img
+                <Image
                   src={item.logo}
                   alt={item.name}
+                  width={64}
+                  height={48}
                   className="integ-card-logo"
                   loading="lazy"
                 />

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import SmartLink from '@/components/ui/SmartLink/SmartLink';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES, type Document } from '@contentful/rich-text-types';
 import type { NewsPost } from '@/types/contentful';
@@ -60,7 +61,7 @@ const richTextOptions = {
       <blockquote className="border-l-[3px] border-[#005CCC] pl-6 my-8 italic text-[#4b5563]">{children}</blockquote>
     ),
     [INLINES.HYPERLINK]: (node: any, children: React.ReactNode) => (
-      <a href={node.data.uri} className="text-[#005CCC] underline decoration-[#005CCC]/30 underline-offset-2 hover:decoration-[#005CCC] transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>
+      <SmartLink href={node.data.uri} className="text-[#005CCC] underline decoration-[#005CCC]/30 underline-offset-2 hover:decoration-[#005CCC] transition-colors">{children}</SmartLink>
     ),
   },
 };
@@ -104,7 +105,7 @@ export default function NewsDetailScreen({ post }: Props) {
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #005CCC 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
 
           <div className="section-container relative z-10">
-            <div className={`transition-all duration-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className={`transition-opacity duration-600 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
               {/* Breadcrumb */}
               <Link href="/news" className="inline-flex items-center gap-2 text-sm text-[#005CCC] font-medium hover:text-[#004299] transition-colors mb-8 group">
                 <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>

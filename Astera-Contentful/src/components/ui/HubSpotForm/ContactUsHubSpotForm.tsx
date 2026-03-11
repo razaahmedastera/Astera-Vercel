@@ -688,6 +688,7 @@ export default function ContactUsHubSpotForm({
         <div
           id={containerId}
           className={`hubspot-form-wrapper w-full ${className}`}
+          style={{ minHeight: '320px' }}
         >
           {/* HubSpot form will be injected here */}
         </div>

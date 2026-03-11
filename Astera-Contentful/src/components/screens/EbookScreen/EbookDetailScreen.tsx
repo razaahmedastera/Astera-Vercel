@@ -343,6 +343,7 @@ export default function EbookDetailScreen({ ebook }: Props) {
                     height={300}
                     className="ebook-cover-image"
                     priority
+                    sizes="(max-width: 768px) 100vw, 464px"
                   />
                 </div>
               ) : (

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { ProductPageContent } from '@/types/contentful';
 import ContactUsHubSpotForm from '@/components/ui/HubSpotForm/ContactUsHubSpotForm';
+import SmartLink from '@/components/ui/SmartLink/SmartLink';
 
 function getYouTubeVideoId(url: string): string {
   if (!url) return '';
@@ -235,22 +236,18 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <a 
+              <SmartLink 
                 href={content.heroSectionPrimaryCtaUrl}
-                target="_blank" 
-                rel="noopener noreferrer"
                 className="btn-primary w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionPrimaryCta}
-              </a>
-              <a 
+              </SmartLink>
+              <SmartLink 
                 href={content.heroSectionSecondaryCtaUrl}
-                target="_blank" 
-                rel="noopener noreferrer"
                 className="btn-secondary w-full sm:w-auto text-center no-underline"
               >
                 {content.heroSectionSecondaryCta}
-              </a>
+              </SmartLink>
             </div>
 
             {/* Trust Badges */}
@@ -277,7 +274,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                     alt={content.productName}
                     fill
                     className="object-contain"
-                    loading="eager"
+                    priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 )}
@@ -532,7 +529,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                           <p className="mb-6 text-slate-600">
                             {feature.footer}
                           </p>
-                          <a 
+                          <SmartLink 
                             href={feature.linkUrl}
                             className="inline-flex items-center gap-2 bg-[#005CCC] text-white px-6 py-3 rounded-full font-medium text-base hover:bg-[#004ba3] hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5"
                           >
@@ -540,7 +537,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
-                          </a>
+                          </SmartLink>
                         </div>
                         {/* Right Image */}
                         {feature.image && (
@@ -665,7 +662,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                           </div>
 
                           {/* CTA Link */}
-                          <a 
+                          <SmartLink 
                             href={testimonial.caseStudyUrl}
                             className="inline-flex items-center gap-2 text-[#005CCC] font-medium hover:gap-3 transition-all duration-300 group"
                             style={{ 
@@ -683,7 +680,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
                             >
                               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
-                          </a>
+                          </SmartLink>
                         </div>
                       </div>
                     </div>

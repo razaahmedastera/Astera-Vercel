@@ -96,6 +96,7 @@ export function AuthorScreen({ author, posts }: Props) {
                   width={160}
                   height={160}
                   className="author-avatar-large"
+                  priority
                 />
               ) : (
                 <div className="author-avatar-placeholder">

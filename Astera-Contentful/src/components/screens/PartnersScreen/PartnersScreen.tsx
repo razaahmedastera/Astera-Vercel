@@ -25,7 +25,7 @@ const DEFAULTS: PartnersPageContent = {
   ctaPrimaryText: "Let's Talk",
   ctaPrimaryLink: '/contact-us',
   ctaSecondaryText: 'Learn More',
-  ctaSecondaryLink: '/product',
+  ctaSecondaryLink: '/products/reportminer',
 };
 
 const PARTNER_ICONS: Record<string, React.ReactNode> = {
@@ -176,6 +176,7 @@ function HeroImage({ src }: { src: string }) {
         height={400}
         className="w-full h-auto rounded-2xl object-cover"
         priority
+        sizes="(max-width: 768px) 100vw, 600px"
       />
     </div>
   );
