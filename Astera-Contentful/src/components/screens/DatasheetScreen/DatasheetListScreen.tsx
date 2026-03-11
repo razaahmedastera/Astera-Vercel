@@ -52,7 +52,7 @@ export default function DatasheetListScreen({ datasheets }: Props) {
           ) : (
             <div className="ds-grid">
               {datasheets.map((ds) => (
-                <Link key={ds.id} href={`/type/data-sheet/${ds.slug}`} prefetch={true} className="ds-card">
+                <Link key={ds.id} href={`/data-sheet/${ds.slug}`} prefetch={true} className="ds-card">
                   <div className="ds-card-visual">
                     <div className="ds-card-icon-wrap">
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

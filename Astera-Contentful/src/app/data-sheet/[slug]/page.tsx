@@ -25,12 +25,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       title: ds.seoTitle || ds.title,
       description: ds.seoDescription || '',
-      url: `${baseUrl}/type/data-sheet/${ds.slug}`,
+      url: `${baseUrl}/data-sheet/${ds.slug}`,
       siteName: 'Astera',
       images: ds.ogImage ? [{ url: ds.ogImage, width: 1200, height: 630, alt: ds.title }] : [],
     },
     alternates: {
-      canonical: `${baseUrl}/type/data-sheet/${ds.slug}`,
+      canonical: `${baseUrl}/data-sheet/${ds.slug}`,
     },
   };
 }

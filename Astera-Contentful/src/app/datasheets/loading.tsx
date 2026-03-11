@@ -1,4 +1,4 @@
-export default function DataSheetLoading() {
+export default function DataSheetsLoading() {
   return (
     <div className="min-h-screen p-8 bg-white">
       <div className="max-w-7xl mx-auto" style={{ paddingTop: 100 }}>

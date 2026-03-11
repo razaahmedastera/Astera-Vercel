@@ -25,8 +25,9 @@ const nextConfig = {
       { source: '/whitepapers', destination: '/resources/whitepapers', permanent: true },
       { source: '/whitepaper', destination: '/resources/whitepapers', permanent: true },
       { source: '/whitepapers/:slug', destination: '/type/whitepaper/:slug', permanent: true },
-      { source: '/data-sheets', destination: '/data-sheet', permanent: true },
-      { source: '/data-sheets/:slug', destination: '/type/data-sheet/:slug', permanent: true },
+      { source: '/data-sheets', destination: '/datasheets', permanent: true },
+      { source: '/data-sheets/:slug', destination: '/data-sheet/:slug', permanent: true },
+      { source: '/type/data-sheet/:slug', destination: '/data-sheet/:slug', permanent: true },
     ];
   },
   compress: true,

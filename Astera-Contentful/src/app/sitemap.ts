@@ -51,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       },
       {
-        url: `${baseUrl}/data-sheet`,
+        url: `${baseUrl}/datasheets`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
         priority: 0.8,
@@ -111,7 +111,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     const datasheetPages: MetadataRoute.Sitemap = datasheets.map((ds) => ({
-      url: `${baseUrl}/type/data-sheet/${ds.slug}`,
+      url: `${baseUrl}/data-sheet/${ds.slug}`,
       lastModified: new Date(ds.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
