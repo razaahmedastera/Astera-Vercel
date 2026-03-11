@@ -155,9 +155,9 @@ export function HomeScreenNew({ content }: HomeScreenNewProps) {
             <div className="hero-section-badge inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-br from-primary-50 to-primary-100 text-primary-500 rounded-full text-sm font-semibold mb-6">
               {content.heroSectionBadge}
             </div>
-            <h1 className="hero-section-heading font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
+            <div className="hero-section-heading font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
               {heroHeading}
-            </h1>
+            </div>
             <p className="hero-section-description text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 mb-6 sm:mb-8 lg:mb-10 max-w-[600px] text-left">
               {content.heroSectionDescription}
             </p>
