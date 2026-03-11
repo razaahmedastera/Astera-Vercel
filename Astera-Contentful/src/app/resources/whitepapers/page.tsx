@@ -2,7 +2,7 @@ import WhitepaperListScreen from '@/components/screens/WhitepaperScreen/Whitepap
 import { getAllWhitepapers } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Whitepapers - Astera',

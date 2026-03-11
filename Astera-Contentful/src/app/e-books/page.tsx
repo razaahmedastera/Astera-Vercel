@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import EbookListScreen from '@/components/screens/EbookScreen/EbookListScreen';
 import { getAllEbooks } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'eBooks | Astera',

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAuthorBySlug, getBlogPostsByAuthor } from '@/lib/contentful/api';
 import { AuthorScreen } from '@/components/screens/AuthorScreen/AuthorScreen';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ slug: string }>;

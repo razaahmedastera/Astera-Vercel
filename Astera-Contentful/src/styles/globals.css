@@ -26,6 +26,7 @@
 
   html {
     scroll-behavior: smooth;
+    font-size: 16px;
   }
 
   html,
@@ -41,6 +42,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: var(--text-body);
+    font-size: clamp(14px, 0.9vw + 0.5rem, 16px);
+    line-height: 1.6;
   }
 
   h1 {
@@ -61,13 +64,38 @@
     color: var(--text-dark);
   }
 
+  p {
+    line-height: 1.7;
+  }
+
   a {
     color: #003292;
     text-decoration: none;
   }
-  
+
   a:hover {
     color: #004ba3;
+  }
+
+  /* XS devices (≤375px) */
+  @media (max-width: 375px) {
+    html { font-size: 14px; }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+  }
+
+  /* 4K displays (≥2560px) */
+  @media (min-width: 2560px) {
+    html { font-size: 18px; }
+    body { font-size: 17px; }
+    h1 { font-size: clamp(3rem, 3vw, 4rem); }
+    h2 { font-size: clamp(2.25rem, 2.5vw, 3rem); }
+  }
+
+  /* Ultra-wide 4K (≥3840px) */
+  @media (min-width: 3840px) {
+    html { font-size: 20px; }
+    body { font-size: 18px; }
   }
 }
 
@@ -87,6 +115,25 @@
   @media (min-width: 1920px) {
     .section-container {
       max-width: 1440px;
+    }
+  }
+
+  @media (min-width: 2560px) {
+    .section-container {
+      max-width: 1600px;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    .section-container {
+      max-width: 1920px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .section-container {
+      padding-left: 14px;
+      padding-right: 14px;
     }
   }
 
@@ -229,6 +276,50 @@
     background: var(--azure-blue);
     border-color: var(--azure-blue);
     color: white;
+  }
+
+  /* 4K scaling for buttons */
+  @media (min-width: 2560px) {
+    .btn-primary, .btn-secondary {
+      height: 56px;
+      padding: 0 34px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+
+    .section-title, .section-title-left, .section-heading {
+      font-size: clamp(32px, 2.5vw, 48px);
+    }
+
+    .section-desc, .section-desc-left, .section-description {
+      font-size: clamp(17px, 1.2vw, 20px);
+      max-width: 800px;
+    }
+
+    .card-title {
+      font-size: clamp(18px, 1.2vw, 22px);
+    }
+
+    .card-desc {
+      font-size: clamp(15px, 1vw, 17px);
+    }
+  }
+
+  /* XS scaling for buttons */
+  @media (max-width: 375px) {
+    .btn-primary, .btn-secondary {
+      height: 44px;
+      padding: 0 20px;
+      font-size: 13px;
+    }
+
+    .section-title, .section-title-left, .section-heading {
+      font-size: 20px;
+    }
+
+    .section-desc, .section-desc-left, .section-description {
+      font-size: 14px;
+    }
   }
 
 
@@ -492,6 +583,82 @@
 
   .trust-badge svg {
     color: var(--azure-blue);
+  }
+
+  /* ========================================
+     SHARED CARD HOVER - Reusable across pages
+     ======================================== */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 92, 204, 0.08);
+    border-color: rgba(0, 92, 204, 0.15);
+  }
+
+  /* ========================================
+     SHARED HERO GRADIENT BACKGROUNDS
+     ======================================== */
+  .hero-light-blue {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f8fafc 100%);
+  }
+
+  .hero-soft-blue {
+    background: linear-gradient(180deg, #f4f7ff 0%, #ffffff 100%);
+  }
+
+  /* ========================================
+     SHARED HUBSPOT FORM BASE STYLES
+     ======================================== */
+  .hs-form-container .hs-form input[type="text"],
+  .hs-form-container .hs-form input[type="email"],
+  .hs-form-container .hs-form input[type="tel"],
+  .hs-form-container .hs-form input[type="number"],
+  .hs-form-container .hs-form textarea,
+  .hs-form-container .hs-form select {
+    width: 100% !important;
+    padding: 10px 14px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    color: #1a1a1a !important;
+    background: #fff !important;
+    transition: border-color 0.2s !important;
+    box-sizing: border-box !important;
+  }
+
+  .hs-form-container .hs-form input:focus,
+  .hs-form-container .hs-form textarea:focus,
+  .hs-form-container .hs-form select:focus {
+    outline: none !important;
+    border-color: var(--azure-blue) !important;
+    box-shadow: 0 0 0 3px rgba(0, 92, 204, 0.1) !important;
+  }
+
+  .hs-form-container .hs-form .hs-button {
+    width: 100% !important;
+    padding: 12px 24px !important;
+    background: var(--azure-blue) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+  }
+
+  .hs-form-container .hs-form .hs-button:hover {
+    background: var(--azure-blue-hover) !important;
+  }
+
+  .hs-form-container .hs-form .hs-error-msg {
+    color: #dc2626 !important;
+    font-size: 12px !important;
+    margin-top: 4px !important;
   }
 }
 

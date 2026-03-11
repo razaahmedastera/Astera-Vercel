@@ -1655,3 +1655,20 @@ article.bg-white > section {
     line-height: 1.6;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .blog-post-container { max-width: 960px; }
+  .blog-post-title { font-size: 44px; }
+  .blog-post-body p, .blog-post-body li { font-size: 18px; line-height: 1.8; }
+  .blog-post-body h2 { font-size: 30px; }
+  .blog-post-body h3 { font-size: 24px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .blog-post-title { font-size: 22px; }
+  .blog-post-body p, .blog-post-body li { font-size: 14px; }
+  .blog-post-body h2 { font-size: 20px; }
+  .blog-post-body h3 { font-size: 17px; }
+}

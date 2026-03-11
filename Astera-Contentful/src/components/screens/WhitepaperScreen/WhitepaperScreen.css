@@ -632,3 +632,20 @@
     padding-bottom: 64px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .wp-detail-title { font-size: 40px; }
+  .wp-detail-body p { font-size: 17px; line-height: 1.8; }
+  .wp-detail-body h2, .wp-detail-body h3 { font-size: 26px; }
+  .wp-card-title { font-size: 18px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .wp-detail-hero { padding: 50px 0 48px; }
+  .wp-detail-title { font-size: 22px; }
+  .wp-detail-body p { font-size: 14px; }
+  .wp-card-title { font-size: 14px; }
+  .wp-card { padding: 16px; }
+}

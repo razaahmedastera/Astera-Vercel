@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { HomeScreenNew } from '@/components/screens/HomeScreen/HomeScreenNew';
 import { getHomePageContent } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Astera - AI-Powered Data Platform',

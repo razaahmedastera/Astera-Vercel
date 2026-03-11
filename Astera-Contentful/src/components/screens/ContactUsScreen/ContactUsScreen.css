@@ -500,3 +500,16 @@
     font-size: 14px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .contact-us-title { font-size: 44px; }
+  .contact-us-subtitle { font-size: 19px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .contact-us-hero { padding: 50px 0 3rem 0; }
+  .contact-us-title { font-size: 22px; }
+  .contact-us-subtitle { font-size: 14px; }
+}

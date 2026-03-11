@@ -239,3 +239,28 @@
     font-size: 18px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .legal-hero-inner { max-width: 960px; }
+  .legal-content-wrap { max-width: 960px; }
+  .legal-hero h1 { font-size: 50px; }
+  .legal-hero-subtitle { font-size: 20px; }
+  .legal-section h2 { font-size: 30px; }
+  .legal-section h3 { font-size: 23px; }
+  .legal-section p { font-size: 17px; }
+  .legal-toc a { font-size: 16px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .legal-hero { padding: 50px 0 36px; }
+  .legal-hero h1 { font-size: 24px; }
+  .legal-hero-subtitle { font-size: 14px; }
+  .legal-content-wrap { padding: 32px 12px 48px; }
+  .legal-toc { padding: 18px; }
+  .legal-toc a { font-size: 13px; }
+  .legal-section h2 { font-size: 19px; }
+  .legal-section h3 { font-size: 16px; }
+  .legal-section p { font-size: 14px; }
+}

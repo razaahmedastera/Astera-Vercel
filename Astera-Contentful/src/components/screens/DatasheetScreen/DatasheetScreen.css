@@ -547,3 +547,20 @@
     padding-bottom: 64px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .ds-detail-title { font-size: 40px; }
+  .ds-detail-body p { font-size: 17px; line-height: 1.8; }
+  .ds-detail-body h2, .ds-detail-body h3 { font-size: 26px; }
+  .ds-card-title { font-size: 18px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .ds-detail-hero { padding: 50px 0 48px; }
+  .ds-detail-title { font-size: 22px; }
+  .ds-detail-body p { font-size: 14px; }
+  .ds-card-title { font-size: 14px; }
+  .ds-card { padding: 16px; }
+}

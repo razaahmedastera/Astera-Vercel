@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import PartnersScreen from '@/components/screens/PartnersScreen/PartnersScreen';
 import { getPartnersPageContent } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPartnersPageContent();

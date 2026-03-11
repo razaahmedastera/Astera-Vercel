@@ -268,3 +268,31 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .integ-hero h1 { font-size: 52px; }
+  .integ-hero-subtitle { font-size: 20px; }
+  .integ-grid { grid-template-columns: repeat(5, 1fr); gap: 24px; }
+  .integ-card { min-height: 150px; padding: 28px 20px 22px; }
+  .integ-card-logo { width: 72px; height: 56px; }
+  .integ-card-name { font-size: 14px; }
+  .integ-tabs { width: 260px; }
+  .integ-tab { font-size: 15px; padding: 12px 18px; }
+  .integ-container { gap: 56px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .integ-hero h1 { font-size: 24px; }
+  .integ-hero-subtitle { font-size: 14px; }
+  .integ-hero-badge { font-size: 11px; padding: 4px 12px; }
+  .integ-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .integ-card { padding: 14px 10px 12px; min-height: 100px; }
+  .integ-card-logo { width: 48px; height: 36px; }
+  .integ-card-name { font-size: 11px; }
+  .integ-tab { font-size: 12px; padding: 6px 10px; }
+  .integ-cta-inner { padding: 24px 16px; }
+  .integ-cta-inner p { font-size: 15px; }
+  .integ-cta-inner a { font-size: 13px; padding: 10px 20px; }
+}

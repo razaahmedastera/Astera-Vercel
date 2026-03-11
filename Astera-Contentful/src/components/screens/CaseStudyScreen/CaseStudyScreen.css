@@ -795,3 +795,25 @@
   margin-bottom: 28px;
   line-height: 1.6;
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .cs-detail-title { font-size: 40px; }
+  .cs-detail-subtitle { font-size: 19px; }
+  .cs-body-section h3 { font-size: 26px; }
+  .cs-body-section p { font-size: 17px; }
+  .cs-blockquote-text { font-size: 19px; }
+  .cs-list-title { font-size: 40px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .cs-detail-title { font-size: 22px; }
+  .cs-detail-subtitle { font-size: 14px; }
+  .cs-body-section h3 { font-size: 18px; }
+  .cs-body-section p { font-size: 14px; }
+  .cs-blockquote { padding: 18px; }
+  .cs-blockquote-text { font-size: 15px; }
+  .cs-list-title { font-size: 24px; }
+  .cs-card-title { font-size: 16px; }
+}

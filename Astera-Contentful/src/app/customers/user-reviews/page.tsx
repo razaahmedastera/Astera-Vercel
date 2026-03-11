@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import UserReviewsScreen from '@/components/screens/UserReviewsScreen/UserReviewsScreen';
 import { getReviewPageSettings, getAllUserReviews } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getReviewPageSettings();

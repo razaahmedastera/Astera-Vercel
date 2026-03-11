@@ -18,6 +18,16 @@ export const metadata: Metadata = {
   title: 'Astera - AI-Powered Data Platform',
   description: 'Accelerate data prep, modeling, analytics, ETL and workflows with intelligent automation. Astera\'s agentic platform simplifies every step from raw data to real insight.',
   keywords: 'data management, AI data platform, ETL, data warehouse, data automation',
+  openGraph: {
+    title: 'Astera - AI-Powered Data Platform',
+    description: 'Accelerate data prep, modeling, analytics, ETL and workflows with intelligent automation.',
+    type: 'website',
+    siteName: 'Astera',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport = {

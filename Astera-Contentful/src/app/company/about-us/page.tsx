@@ -2,7 +2,7 @@ import AboutUsScreen from '@/components/screens/AboutUsScreen/AboutUsScreen';
 import { getAboutUsPageContent } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getAboutUsPageContent();

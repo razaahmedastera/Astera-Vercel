@@ -4,7 +4,7 @@ import { getBlogPostsByTag } from '@/lib/contentful/api';
 import { getCategoryBySlug } from '@/lib/categories';
 import CategoryScreen from '@/components/screens/CategoryScreen/CategoryScreen';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type CategoryPageProps = {
   params: Promise<{ slug: string }>;

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import AwardsPageScreen from '@/components/screens/AwardsScreen/AwardsPageScreen';
 import { getAwardsPageSettings, getAllAwardEntries } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getAwardsPageSettings();

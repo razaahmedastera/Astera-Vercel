@@ -2,7 +2,7 @@ import NewsListScreen from '@/components/screens/NewsScreen/NewsListScreen';
 import { getAllNewsPosts, getAllNewsEvents } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'News & Events | Astera',

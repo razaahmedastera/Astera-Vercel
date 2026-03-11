@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import CaseStudyDetailScreen from '@/components/screens/CaseStudyScreen/CaseStudyDetailScreen';
 import { getCaseStudyBySlug } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ slug: string }>;

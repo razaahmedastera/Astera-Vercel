@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import WhitepaperDetailScreen from '@/components/screens/WhitepaperScreen/WhitepaperDetailScreen';
 import { getWhitepaperBySlug } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ slug: string }>;

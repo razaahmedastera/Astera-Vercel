@@ -925,3 +925,18 @@
     font-size: 20px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .webinar-post-title { font-size: 36px; }
+  .webinar-post-body p { font-size: 17px; line-height: 1.8; }
+  .webinar-card-title { font-size: 18px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .webinar-post-hero { padding: 50px 0 48px; }
+  .webinar-post-title { font-size: 22px; }
+  .webinar-post-body p { font-size: 14px; }
+  .webinar-card-title { font-size: 14px; }
+}

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import BlogListClient from '@/components/screens/BlogScreen/BlogListClient';
 import { getAllBlogPosts, getAllBlogCategories } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog | Astera',

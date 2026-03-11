@@ -861,3 +861,20 @@
     margin-bottom: 20px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .industry-title { font-size: 48px; }
+  .industry-subtitle { font-size: 20px; }
+  .industry-section-title { font-size: 36px; }
+  .industry-section-desc { font-size: 17px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .industry-hero { padding: 50px 0 60px; }
+  .industry-title { font-size: 24px; }
+  .industry-subtitle { font-size: 14px; }
+  .industry-section-title { font-size: 20px; }
+  .industry-section-desc { font-size: 14px; }
+}

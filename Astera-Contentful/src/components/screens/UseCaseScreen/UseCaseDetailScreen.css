@@ -1096,3 +1096,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .use-case-detail-hero-title { font-size: 40px; }
+  .use-case-detail-hero-description { font-size: 18px; }
+  .use-case-body-section p { font-size: 17px; line-height: 1.8; }
+  .use-case-body-section h2, .use-case-body-section h3 { font-size: 28px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .use-case-detail-hero { padding: 50px 0 48px; }
+  .use-case-detail-hero-title { font-size: 22px; }
+  .use-case-detail-hero-description { font-size: 14px; }
+  .use-case-body-section p { font-size: 14px; }
+}

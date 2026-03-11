@@ -991,3 +991,17 @@
     padding: 10px 0 10px 24px;
   }
 }
+
+/* 4K */
+@media (min-width: 2560px) {
+  .ebook-detail-title { font-size: 40px; }
+  .ebook-detail-body p { font-size: 17px; line-height: 1.8; }
+  .ebook-detail-body h2, .ebook-detail-body h3 { font-size: 26px; }
+}
+
+/* XS */
+@media (max-width: 375px) {
+  .ebook-detail-hero { padding: 50px 0 48px; }
+  .ebook-detail-title { font-size: 22px; }
+  .ebook-detail-body p { font-size: 14px; }
+}

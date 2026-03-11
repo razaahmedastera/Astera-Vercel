@@ -4,7 +4,7 @@ import IndustryScreen from '@/components/screens/IndustryScreen/IndustryScreen';
 import { getIndustryBySlug } from '@/lib/contentful/api';
 import type { IndustryData } from '@/data/industries';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type IndustryPageProps = {
   params: Promise<{ slug: string }>;

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import CaseStudyListScreen from '@/components/screens/CaseStudyScreen/CaseStudyListScreen';
 import { getAllCaseStudies } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Case Studies | Astera',

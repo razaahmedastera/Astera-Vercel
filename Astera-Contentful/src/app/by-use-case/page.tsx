@@ -2,7 +2,7 @@ import UseCaseListScreen from '@/components/screens/UseCaseScreen/UseCaseListScr
 import { getAllUseCases } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Use Cases - Astera',

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import NewsDetailScreen from '@/components/screens/NewsScreen/NewsDetailScreen';
 import { getNewsPostBySlug } from '@/lib/contentful/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 type NewsDetailPageProps = {
   params: Promise<{ slug: string }>;
