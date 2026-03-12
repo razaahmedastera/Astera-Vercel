@@ -370,59 +370,123 @@
   min-width: 180px;
 }
 
-/* Responsive Design */
+/* ─── Responsive: Tablet (1024px) ─── */
+@media (max-width: 1024px) {
+  .use-case-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+/* ─── Responsive: Mobile (768px) ─── */
 @media (max-width: 768px) {
-  .use-case-header {
-    padding: 60px 0 40px;
-  }
+  .use-case-header { padding: 60px 0 40px; }
+  .use-case-header-title { font-size: 28px; }
+  .use-case-header-subtitle { font-size: 15px; }
 
   .use-case-featured-card {
     flex-direction: column;
     padding: 32px 24px;
     text-align: center;
   }
+  .use-case-featured-icon-wrapper { width: 100px; height: 100px; }
+  .use-case-featured-title { font-size: 22px; }
+  .use-case-featured-description { font-size: 14px; }
+  .use-case-featured-nav { display: none; }
 
-  .use-case-featured-icon-wrapper {
-    width: 100px;
-    height: 100px;
-  }
+  .use-case-search-input { height: 46px; font-size: 15px; }
 
-  .use-case-featured-nav {
-    display: none;
-  }
+  .use-case-grid { grid-template-columns: 1fr; gap: 20px; }
+  .use-case-card { padding: 24px; }
+  .use-case-card-title { font-size: 17px; }
+  .use-case-card-description { font-size: 14px; }
 
-  .use-case-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+  .use-case-pagination { gap: 8px; }
+  .use-case-pagination-number { width: 36px; height: 36px; font-size: 13px; }
+  .use-case-pagination-btn { padding: 8px 14px; font-size: 13px; }
 
-  .use-case-card {
-    padding: 24px;
-  }
-
-  .use-case-pagination {
-    gap: 8px;
-  }
-
-  .use-case-pagination-number {
-    width: 36px;
-    height: 36px;
-    font-size: 13px;
-  }
-
-  .use-case-cta {
-    padding: 60px 0;
-  }
+  .use-case-cta { padding: 60px 0; }
+  .use-case-cta-title { font-size: 24px; }
+  .use-case-cta-subtitle { font-size: 15px; }
 }
 
+/* ─── Responsive: Small Mobile (480px) ─── */
 @media (max-width: 480px) {
-  .use-case-featured-card {
-    padding: 24px 16px;
-  }
+  .use-case-featured-card { padding: 24px 16px; }
+  .use-case-card { padding: 20px; }
+  .use-case-search-wrapper { margin: 0 8px; }
+}
 
-  .use-case-card {
-    padding: 20px;
-  }
+/* ─── XS (375px) ─── */
+@media (max-width: 375px) {
+  .use-case-header { padding: 50px 0 36px; }
+  .use-case-header-title { font-size: 24px; }
+  .use-case-header-subtitle { font-size: 14px; }
+
+  .use-case-featured-icon-wrapper { width: 80px; height: 80px; }
+  .use-case-featured-title { font-size: 20px; }
+  .use-case-featured-description { font-size: 13px; }
+  .use-case-featured-link { font-size: 14px; }
+
+  .use-case-card { padding: 18px; }
+  .use-case-card-title { font-size: 16px; }
+  .use-case-card-description { font-size: 13px; }
+  .use-case-card-icon { width: 52px; height: 52px; border-radius: 10px; }
+  .use-case-icon-image { width: 36px; height: 36px; }
+
+  .use-case-search-input { height: 42px; font-size: 14px; border-radius: 10px; }
+
+  .use-case-pagination-number { width: 32px; height: 32px; font-size: 12px; }
+  .use-case-pagination-btn { padding: 6px 10px; font-size: 12px; }
+
+  .use-case-cta { padding: 48px 0; }
+  .use-case-cta-title { font-size: 22px; }
+  .use-case-cta-subtitle { font-size: 14px; margin-bottom: 24px; }
+  .use-case-cta-button { font-size: 14px; min-width: 150px; }
+
+  .use-case-grid-section { padding: 40px 0; }
+  .use-case-search { padding: 20px 0; }
+  .use-case-featured { padding: 28px 0; }
+}
+
+/* ─── 3XL / Large Desktop (1920px) ─── */
+@media (min-width: 1920px) {
+  .use-case-header-title { font-size: 52px; }
+  .use-case-header-subtitle { font-size: 20px; }
+  .use-case-featured-title { font-size: 34px; }
+  .use-case-featured-description { font-size: 18px; }
+  .use-case-featured-link { font-size: 17px; }
+  .use-case-featured-icon-wrapper { width: 140px; height: 140px; }
+  .use-case-card-title { font-size: 22px; }
+  .use-case-card-description { font-size: 16px; }
+  .use-case-card { padding: 36px; }
+  .use-case-search-input { height: 56px; font-size: 17px; }
+  .use-case-cta-title { font-size: 40px; }
+  .use-case-cta-subtitle { font-size: 20px; }
+}
+
+/* ─── 4K (2560px) ─── */
+@media (min-width: 2560px) {
+  .use-case-header { padding: 100px 0 80px; }
+  .use-case-header-title { font-size: 60px; }
+  .use-case-header-subtitle { font-size: 22px; }
+  .use-case-featured-card { padding: 52px; gap: 40px; border-radius: 20px; }
+  .use-case-featured-title { font-size: 38px; }
+  .use-case-featured-description { font-size: 20px; }
+  .use-case-featured-link { font-size: 18px; }
+  .use-case-featured-icon-wrapper { width: 160px; height: 160px; border-radius: 20px; }
+  .use-case-icon-image { width: 64px; height: 64px; }
+  .use-case-grid { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .use-case-card { padding: 40px; border-radius: 16px; }
+  .use-case-card-icon { width: 80px; height: 80px; border-radius: 16px; }
+  .use-case-card-title { font-size: 24px; }
+  .use-case-card-description { font-size: 17px; }
+  .use-case-search-input { height: 60px; font-size: 18px; border-radius: 14px; max-width: 700px; }
+  .use-case-search-wrapper { max-width: 700px; }
+  .use-case-pagination-number { width: 48px; height: 48px; font-size: 16px; }
+  .use-case-pagination-btn { padding: 12px 24px; font-size: 16px; }
+  .use-case-cta { padding: 100px 0; }
+  .use-case-cta-title { font-size: 44px; }
+  .use-case-cta-subtitle { font-size: 22px; }
+  .use-case-cta-button { font-size: 18px; min-width: 220px; }
+  .use-case-grid-section { padding: 80px 0; }
 }
 
 /* No results state */
