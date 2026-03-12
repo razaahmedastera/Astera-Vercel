@@ -1,5 +1,5 @@
 import UseCaseDetailScreen from '@/components/screens/UseCaseScreen/UseCaseDetailScreen';
-import { getUseCaseBySlug } from '@/lib/contentful/api';
+import { getUseCaseBySlug, getAllBlogPosts } from '@/lib/contentful/api';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -34,11 +34,24 @@ export async function generateMetadata({ params }: UseCasePageProps): Promise<Me
 
 export default async function UseCaseDetailPage({ params }: UseCasePageProps) {
   const { slug } = await params;
-  const useCase = await getUseCaseBySlug(slug);
+  const [useCase, allPosts] = await Promise.all([
+    getUseCaseBySlug(slug),
+    getAllBlogPosts(),
+  ]);
 
   if (!useCase) {
     notFound();
   }
 
-  return <UseCaseDetailScreen useCase={useCase} />;
+  const resources = allPosts
+    .filter((p) => p.coverImage)
+    .slice(0, 3)
+    .map((p) => ({
+      title: p.title,
+      url: `/type/blog/${p.slug}`,
+      type: 'Blog',
+      image: p.coverImage,
+    }));
+
+  return <UseCaseDetailScreen useCase={useCase} resources={resources} />;
 }
