@@ -34,24 +34,27 @@ export async function generateMetadata({ params }: UseCasePageProps): Promise<Me
 
 export default async function UseCaseDetailPage({ params }: UseCasePageProps) {
   const { slug } = await params;
-  const [useCase, allPosts] = await Promise.all([
-    getUseCaseBySlug(slug),
-    getAllBlogPosts(),
-  ]);
+  const useCase = await getUseCaseBySlug(slug);
 
   if (!useCase) {
     notFound();
   }
 
-  const resources = allPosts
-    .filter((p) => p.coverImage)
-    .slice(0, 3)
-    .map((p) => ({
-      title: p.title,
-      url: `/type/blog/${p.slug}`,
-      type: 'Blog',
-      image: p.coverImage,
-    }));
+  let resources = useCase.resources || [];
+
+  // Fallback: if no resources set in Contentful, pull latest 3 blog posts
+  if (resources.length === 0) {
+    const allPosts = await getAllBlogPosts();
+    resources = allPosts
+      .filter((p) => p.featuredImage)
+      .slice(0, 3)
+      .map((p) => ({
+        title: p.title,
+        url: `/type/blog/${p.slug}`,
+        type: 'Blog',
+        image: p.featuredImage,
+      }));
+  }
 
   return <UseCaseDetailScreen useCase={useCase} resources={resources} />;
 }

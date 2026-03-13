@@ -1,24 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { BLOCKS, MARKS } from '@contentful/rich-text-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import ContactUsHubSpotForm from '@/components/ui/HubSpotForm/ContactUsHubSpotForm';
-import type { UseCase } from '@/types/contentful';
+import type { UseCase, UseCaseResource } from '@/types/contentful';
 import './UseCaseDetailScreen.css';
 
 interface Props {
   useCase: UseCase;
   resources?: UseCaseResource[];
-}
-
-interface UseCaseResource {
-  title: string;
-  url: string;
-  type: string;
-  image?: string;
 }
 
 function parseStatValue(value: string): { num: number; suffix: string; prefix: string } {
@@ -63,65 +54,8 @@ function AnimatedStat({ value }: { value: string }) {
   return <div ref={ref} className="uc-stat-value">{display}</div>;
 }
 
-function normalizeContent(content: any): any {
-  if (!content || typeof content !== 'object') return null;
-  if (!content.nodeType) return null;
-
-  const normalized: any = {
-    nodeType: content.nodeType,
-    data: content.data || {},
-  };
-
-  if (content.content) {
-    if (!Array.isArray(content.content)) return normalized;
-    normalized.content = content.content
-      .filter((node: any) => node && typeof node === 'object')
-      .map((node: any) => {
-        if (node.nodeType === 'text') {
-          return { nodeType: 'text', value: node.value || '', marks: node.marks || [], data: node.data || {} };
-        }
-        return normalizeContent(node) || node;
-      })
-      .filter((node: any) => node !== null);
-  }
-
-  return normalized;
-}
-
 export default function UseCaseDetailScreen({ useCase, resources }: Props) {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-
-  const rawContent = useCase.content as any;
-  const contentData = rawContent ? normalizeContent(rawContent) : null;
-  const hasRichText = contentData?.nodeType === 'document' && Array.isArray(contentData.content) && contentData.content.length > 0;
-
-  const renderOptions = {
-    renderNode: {
-      [BLOCKS.HEADING_2]: (_node: any, children: any) => <h2 className="use-case-content-h2">{children}</h2>,
-      [BLOCKS.HEADING_3]: (_node: any, children: any) => <h3 className="use-case-content-h3">{children}</h3>,
-      [BLOCKS.PARAGRAPH]: (_node: any, children: any) => <p className="use-case-content-p">{children}</p>,
-      [BLOCKS.UL_LIST]: (_node: any, children: any) => <ul className="use-case-content-ul">{children}</ul>,
-      [BLOCKS.OL_LIST]: (_node: any, children: any) => <ol className="use-case-content-ol">{children}</ol>,
-      [BLOCKS.LIST_ITEM]: (_node: any, children: any) => <li className="use-case-content-li">{children}</li>,
-      [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
-        const asset = node.data.target;
-        if (asset?.fields?.file?.url) {
-          const url = asset.fields.file.url.startsWith('//') ? `https:${asset.fields.file.url}` : asset.fields.file.url.startsWith('http') ? asset.fields.file.url : `https:${asset.fields.file.url}`;
-          return (
-            <figure className="use-case-content-image-wrapper">
-              <Image src={url} alt={asset.fields.title || ''} width={1200} height={675} className="use-case-content-image" loading="lazy" sizes="(max-width: 768px) 100vw, 1200px" />
-              {asset.fields.description && <figcaption className="use-case-content-image-caption">{asset.fields.description}</figcaption>}
-            </figure>
-          );
-        }
-        return null;
-      },
-    },
-    renderMark: {
-      [MARKS.BOLD]: (text: any) => <strong>{text}</strong>,
-      [MARKS.ITALIC]: (text: any) => <em>{text}</em>,
-    },
-  };
 
   const hasStats = useCase.stats && useCase.stats.length > 0;
   const hasFeatures = useCase.features && useCase.features.length > 0;
@@ -224,20 +158,6 @@ export default function UseCaseDetailScreen({ useCase, resources }: Props) {
                   <div className="uc-stat-label">{stat.label}</div>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ─── Rich Text Content ─── */}
-      {hasRichText && (
-        <section className="use-case-detail-content-section">
-          <div className="section-container">
-            <div className="use-case-detail-content-wrapper">
-              {(() => {
-                try { return documentToReactComponents(contentData, renderOptions); }
-                catch { return null; }
-              })()}
             </div>
           </div>
         </section>

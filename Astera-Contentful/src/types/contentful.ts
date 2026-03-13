@@ -818,6 +818,13 @@ export interface UseCaseFAQ {
   answer: string;
 }
 
+export interface UseCaseResource {
+  title: string;
+  url: string;
+  type: string;
+  image?: string;
+}
+
 /**
  * Use Case Content (parsed/simplified)
  */
@@ -834,14 +841,10 @@ export interface UseCase {
   heroCtaSecondaryUrl?: string;
   heroBulletPoints?: string[];
   
-  // Rich Text Content
-  content?: Document | string;
-  
   // Stats Section
   statsSectionBadge?: string;
   statsSectionTitle?: string;
   stats: UseCaseStat[];
-  benefits: string;
   
   // Features Section
   featuresSectionTitle?: string;
@@ -865,9 +868,6 @@ export interface UseCase {
   clientLogosSectionTitle?: string;
   clientLogos?: UseCaseClientLogo[];
   
-  // Integrations
-  integrations: string[];
-  
   // Case Study
   caseStudy?: UseCaseCaseStudy;
   
@@ -880,6 +880,9 @@ export interface UseCase {
   contactFormSubtitle?: string;
   contactFormBenefits?: string[];
   hubspotFormId?: string;
+  
+  // Resources
+  resources?: UseCaseResource[];
   
   // SEO Fields
   seoTitle?: string;
@@ -899,8 +902,7 @@ export interface UseCaseSummary {
   slug: string;
   title: string;
   description: string;
-  icon?: string;
-  iconImage?: string; // Icon image URL from Contentful
+  iconImage?: string;
   category?: string;
   featured?: boolean;
 }
@@ -922,14 +924,10 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
     heroCtaSecondaryUrl?: string;
     heroBulletPoints?: string[];
     
-    // Rich Text Content
-    content?: Document;
-    
     // Stats Section
     statsSectionBadge?: string;
     statsSectionTitle?: string;
     stats?: Array<{ value: string; label: string }>;
-    benefits: string;
     
     // Features Section
     featuresSectionTitle?: string;
@@ -971,9 +969,6 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
       image?: string;
     }>;
     
-    // Integrations
-    integrations?: string[];
-    
     // Case Study
     caseStudy?: {
       quote: string;
@@ -992,9 +987,16 @@ export interface UseCaseSkeleton extends EntrySkeletonType {
     contactFormBenefits?: string[];
     hubspotFormId?: string;
     
+    // Resources
+    resources?: Array<{
+      title: string;
+      url: string;
+      type: string;
+      image?: string;
+    }>;
+    
     // Listing fields
     description?: string;
-    icon?: string;
     iconImage?: any;
     category?: string;
     featured?: boolean;

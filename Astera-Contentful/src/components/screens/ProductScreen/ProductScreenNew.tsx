@@ -48,7 +48,9 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
   const whyAsteraCards = content.whyThisProductSectionCards || [];
 
   // Memoize rich text rendering to avoid re-computation on state changes
-  const renderedHeroHeading = useMemo(() => content.heroSectionHeading ? documentToReactComponents(content.heroSectionHeading) : null, [content.heroSectionHeading]);
+  const renderedHeroHeading = useMemo(() => content.heroSectionHeading ? documentToReactComponents(content.heroSectionHeading, {
+    renderNode: { 'paragraph': (_node: any, children: any) => <>{children}</> },
+  }) : null, [content.heroSectionHeading]);
   const renderedWhyTitle = useMemo(() => content.whyThisProductSectionTitle ? documentToReactComponents(content.whyThisProductSectionTitle) : null, [content.whyThisProductSectionTitle]);
   const renderedTestimonialsTitle = useMemo(() => content.testimonialsSectionTitle ? documentToReactComponents(content.testimonialsSectionTitle) : null, [content.testimonialsSectionTitle]);
   const renderedUseCasesTitle = useMemo(() => content.useCasesSectionTitle ? documentToReactComponents(content.useCasesSectionTitle) : null, [content.useCasesSectionTitle]);
@@ -225,7 +227,7 @@ export function ProductScreenNew({ content }: ProductScreenNewProps) {
             </div>
             
             {/* Main Heading */}
-            <h1 className="font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 3rem)', lineHeight: 'clamp(32px, 8vw, 60px)' }}>
+            <h1 className="font-semibold text-[#000] mb-4 sm:mb-6 tracking-tight text-left" style={{ fontSize: 'clamp(1.75rem, 5vw, 40px)', lineHeight: 'clamp(32px, 8vw, 55px)' }}>
               {renderedHeroHeading}
             </h1>
             

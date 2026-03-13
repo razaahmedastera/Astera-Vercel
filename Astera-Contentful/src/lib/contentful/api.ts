@@ -1406,7 +1406,6 @@ export async function getAllUseCases(): Promise<UseCaseSummary[]> {
       slug: fields.slug,
       title: fields.title,
       description: fields.description || '',
-      icon: fields.icon || '',
       iconImage: fields.iconImage ? extractAssetUrl(fields.iconImage, response.includes) : undefined,
       category: fields.category || '',
       featured: fields.featured || false,
@@ -1456,12 +1455,9 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
     heroCtaSecondaryUrl: fields.heroCtaSecondaryUrl || undefined,
     heroBulletPoints: fields.heroBulletPoints || undefined,
     
-    content: fields.content || undefined,
-    
     statsSectionBadge: fields.statsSectionBadge || undefined,
     statsSectionTitle: fields.statsSectionTitle || undefined,
     stats: fields.stats || [],
-    benefits: fields.benefits || '',
     
     featuresSectionTitle: fields.featuresSectionTitle || undefined,
     featuresDescription: fields.featuresDescription || undefined,
@@ -1491,8 +1487,6 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
     clientLogosSectionTitle: fields.clientLogosSectionTitle || undefined,
     clientLogos: fields.clientLogos || undefined,
     
-    integrations: fields.integrations || [],
-    
     caseStudy: fields.caseStudy ? {
       quote: fields.caseStudy.quote || '',
       author: fields.caseStudy.author || '',
@@ -1507,6 +1501,15 @@ export async function getUseCaseBySlug(slug: string): Promise<UseCase | null> {
     contactFormSubtitle: fields.contactFormSubtitle || undefined,
     contactFormBenefits: fields.contactFormBenefits || undefined,
     hubspotFormId: fields.hubspotFormId || undefined,
+    
+    resources: Array.isArray(fields.resources)
+      ? fields.resources.map((r: any) => ({
+          title: r.title || '',
+          url: r.url || '#',
+          type: r.type || 'Blog',
+          image: r.image || undefined,
+        }))
+      : undefined,
     
     seoTitle: fields.seoTitle || undefined,
     seoDescription: fields.seoDescription || undefined,
